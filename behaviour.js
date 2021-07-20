@@ -54,7 +54,6 @@ const drawPolyline = (lines) => {
     type: "FeatureCollection",
     features
   }
-  console.log(geojson)
 
   map.addSource('route', {
     'type': 'geojson',
@@ -70,9 +69,29 @@ const drawPolyline = (lines) => {
       'line-cap': 'round'
     },
     'paint': {
-      'line-color': '#888',
-      'line-width': 8
+      'line-color': '#162da0',
+      'line-width': 6
     }
+  });
+
+
+  var coordinates = features.map(f => f.geometry.coordinates).flat();
+
+  /*
+Pass the first coordinates in the LineString to `lngLatBounds`,
+then wrap each coordinate pair in `extend` to include them
+in the bounds result. A variation of this technique could be
+applied to zooming to the bounds of multiple Points or
+Polygon geomtetries, which would require wrapping all
+the coordinates with the extend method.
+*/
+
+  var bounds = coordinates.reduce(function (bounds, coord) {
+    return bounds.extend(coord);
+  }, new maplibregl.LngLatBounds(coordinates[0], coordinates[0]));
+
+  map.fitBounds(bounds, {
+    padding: 20
   });
 }
 
