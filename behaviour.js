@@ -33,26 +33,32 @@ fetch("https://api.entur.io/journey-planner/v3/graphql", {
 })
   .then(response => response.json())
   .then(response => {
-    response.data.trip.tripPatterns[0].legs.forEach(l => {
-      drawPolyline(l.pointsOnLink.points);
-    })
+    const polyline = response.data.trip.tripPatterns[0].legs.map(l => l.pointsOnLink.points);
+    drawPolyline(polyline);
   });
 
-const drawPolyline = (line) => {
+const drawPolyline = (lines) => {
 
-  const geojson = polyline.toGeoJSON(line);
+  const features = lines.map(l => {
+    const geojson = polyline.toGeoJSON(l);
 
-  const x = {
-    'type': 'Feature',
-    'properties': {},
-    'geometry': geojson
-  };
+    return {
+      'type': 'Feature',
+      'properties': {},
+      'geometry': geojson
+    };
+  })
 
+
+  const geojson = {
+    type: "FeatureCollection",
+    features
+  }
   console.log(geojson)
 
   map.addSource('route', {
     'type': 'geojson',
-    'data': x
+    'data': geojson
   });
 
   map.addLayer({
