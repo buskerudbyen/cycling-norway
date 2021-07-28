@@ -123,8 +123,13 @@ const queryAndRender = (start, dest) => {
   })
     .then(response => response.json())
     .then(response => {
-      const polyline = response.data.trip.tripPatterns[0].legs.map(l => l.pointsOnLink.points);
-      drawPolyline(polyline);
+      const tripPatterns = response.data.trip.tripPatterns;
+      if(tripPatterns.length > 0) {
+        const polyline = response.data.trip.tripPatterns[0].legs.map(l => l.pointsOnLink.points);
+       drawPolyline(polyline);
+      } else {
+        alert("Sorry, could not find a bicycle route.")
+      }
     });
 
 }
