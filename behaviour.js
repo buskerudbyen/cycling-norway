@@ -7,35 +7,72 @@ var map = new maplibregl.Map({
 
 let startMarker, destMarker = null;
 
-map.on('click', function (e) {
-  let marker = new maplibregl.Marker({ draggable: true })
-    .setLngLat(e.lngLat);
+map.on('load', () => {
+  map.addSource('route', {
+    'type': 'geojson',
+    'data': {
+      "type": "FeatureCollection",
+      "features": []
+    }
+  });
 
-  if(!startMarker) {
-    startMarker = marker;
-  }
-  else if(!destMarker) {
-    destMarker = marker;
-  } else {
-    // dest already exists
-    destMarker.remove();
-    destMarker = marker;
-  }
-  marker.addTo(map);
-  marker.on('dragend', refreshRoute);
+  map.addLayer({
+    'id': 'route',
+    'type': 'line',
+    'source': 'route',
+    'layout': {
+      'line-join': 'round',
+      'line-cap': 'round'
+    },
+    'paint': {
+      'line-color': '#162da0',
+      'line-width': 6
+    }
+  });
 
-  refreshRoute();
 });
 
+const drawPolyline = (lines) => {
 
-const refreshRoute = () => {
-  if(startMarker && destMarker) {
-    queryAndRender(startMarker.getLngLat(), destMarker.getLngLat());
+  const features = lines.map(l => {
+    const geojson = polyline.toGeoJSON(l);
+
+    return {
+      'type': 'Feature',
+      'properties': {},
+      'geometry': geojson
+    };
+  })
+
+
+  const geojson = {
+    type: "FeatureCollection",
+    features
   }
+
+  map.getSource('route').setData(geojson);
+
+  var coordinates = features.map(f => f.geometry.coordinates).flat();
+
+  /*
+Pass the first coordinates in the LineString to `lngLatBounds`,
+then wrap each coordinate pair in `extend` to include them
+in the bounds result. A variation of this technique could be
+applied to zooming to the bounds of multiple Points or
+Polygon geomtetries, which would require wrapping all
+the coordinates with the extend method.
+*/
+
+  var bounds = coordinates.reduce(function (bounds, coord) {
+    return bounds.extend(coord);
+  }, new maplibregl.LngLatBounds(coordinates[0], coordinates[0]));
+
+  map.fitBounds(bounds, {
+    padding: 100
+  });
 }
 
 const queryAndRender = (start, dest) => {
-  console.log(start, dest)
   fetch("https://api.entur.io/journey-planner/v3/graphql", {
     "method": "POST",
     "headers": {
@@ -70,61 +107,29 @@ const queryAndRender = (start, dest) => {
 
 }
 
-const drawPolyline = (lines) => {
+map.on('click', function (e) {
+  let marker = new maplibregl.Marker({ draggable: true })
+    .setLngLat(e.lngLat);
 
-  const features = lines.map(l => {
-    const geojson = polyline.toGeoJSON(l);
-
-    return {
-      'type': 'Feature',
-      'properties': {},
-      'geometry': geojson
-    };
-  })
-
-
-  const geojson = {
-    type: "FeatureCollection",
-    features
+  if(!startMarker) {
+    startMarker = marker;
   }
+  else if(!destMarker) {
+    destMarker = marker;
+  } else {
+    // dest already exists
+    destMarker.remove();
+    destMarker = marker;
+  }
+  marker.addTo(map);
+  marker.on('dragend', refreshRoute);
 
-  map.addSource('route', {
-    'type': 'geojson',
-    'data': geojson
-  });
-
-  map.addLayer({
-    'id': 'route',
-    'type': 'line',
-    'source': 'route',
-    'layout': {
-      'line-join': 'round',
-      'line-cap': 'round'
-    },
-    'paint': {
-      'line-color': '#162da0',
-      'line-width': 6
-    }
-  });
+  refreshRoute();
+});
 
 
-  var coordinates = features.map(f => f.geometry.coordinates).flat();
-
-  /*
-Pass the first coordinates in the LineString to `lngLatBounds`,
-then wrap each coordinate pair in `extend` to include them
-in the bounds result. A variation of this technique could be
-applied to zooming to the bounds of multiple Points or
-Polygon geomtetries, which would require wrapping all
-the coordinates with the extend method.
-*/
-
-  var bounds = coordinates.reduce(function (bounds, coord) {
-    return bounds.extend(coord);
-  }, new maplibregl.LngLatBounds(coordinates[0], coordinates[0]));
-
-  map.fitBounds(bounds, {
-    padding: 20
-  });
+const refreshRoute = () => {
+  if(startMarker && destMarker) {
+    queryAndRender(startMarker.getLngLat(), destMarker.getLngLat());
+  }
 }
-
