@@ -72,7 +72,17 @@ the coordinates with the extend method.
   });
 }
 
+const latLngToString = ({ lat, lng} ) => `${lat.toFixed(5)},${lng.toFixed(5)}`;
+
 const queryAndRender = (start, dest) => {
+
+  const url = new URL(window.location);
+
+  url.searchParams.set('from', latLngToString(start));
+  url.searchParams.set('to', latLngToString(dest));
+  window.history.pushState({}, '', url);
+
+
   fetch("https://api.entur.io/journey-planner/v3/graphql", {
     "method": "POST",
     "headers": {
