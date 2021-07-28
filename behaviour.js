@@ -1,7 +1,7 @@
 var map = new maplibregl.Map({
   container: 'map',
   style: 'https://api.maptiler.com/maps/voyager/style.json?key=HrARH01SH6sg5I6HoXdU',
-  center: [10.7445, 59.9114],
+  center: [10.1878, 59.7390],
   zoom: 14
 });
 
@@ -90,7 +90,7 @@ const queryAndRender = (start, dest) => {
     },
     "body": `
 {
-  trip(from: {coordinates: {latitude: ${start.lat}, longitude: ${start.lng} }}, modes: {directMode: bicycle}, to: {coordinates: {latitude: ${ dest.lat }, longitude: ${dest.lng }}}) {
+  trip(bicycleOptimisationMethod: safe, from: {coordinates: {latitude: ${start.lat}, longitude: ${start.lng} }}, modes: {directMode: bicycle}, to: {coordinates: {latitude: ${ dest.lat }, longitude: ${dest.lng }}}) {
     dateTime
     fromPlace {
       name
