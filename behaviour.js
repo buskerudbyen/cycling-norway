@@ -7,6 +7,11 @@ var map = new maplibregl.Map({
 
 let startMarker, destMarker = null;
 
+const parseLatLng = (s) => {
+  const [lat, lng] = s.split(",").map(n => Number(n));
+  return { lat, lng };
+};
+
 map.on('load', () => {
   map.addSource('route', {
     'type': 'geojson',
@@ -30,6 +35,13 @@ map.on('load', () => {
     }
   });
 
+  const url = new URLSearchParams(window.location.search);
+  if(url.has("from") && url.has("to")) {
+    const from = parseLatLng(url.get("from"));
+    const to = parseLatLng(url.get("to"));
+    [ makeStartMarker(from), makeDestMarker(to)].map(m => m.addTo(map));
+    queryAndRender(from, to);
+  }
 });
 
 const drawPolyline = (lines) => {
@@ -117,22 +129,43 @@ const queryAndRender = (start, dest) => {
 
 }
 
-map.on('click', function (e) {
-  let marker = new maplibregl.Marker({ draggable: true })
-    .setLngLat(e.lngLat);
+const makeStartMarker = (latLng) => {
+  console.log(latLng)
+  const marker = new maplibregl.Marker({ draggable: true })
+    .setLngLat(latLng);
+  marker.on('dragend', refreshRoute);
+  startMarker = marker;
+  return marker;
+}
 
+const makeDestMarker = (latLng) => {
+  var el = document.createElement('img');
+  el.src = "checkered-flag.svg";
+  el.style.width = "40px";
+  el.style.height = "40px";
+
+  destMarker = new maplibregl.Marker(el, { draggable: true, anchor: 'bottom-left' })
+    .setLngLat(latLng);
+
+  destMarker.on('dragend', refreshRoute);
+  return destMarker;
+}
+
+map.on('click', function (e) {
+
+  let marker;
   if(!startMarker) {
-    startMarker = marker;
+    marker = makeStartMarker(e.lngLat);
   }
   else if(!destMarker) {
-    destMarker = marker;
+    marker = makeDestMarker(e.lngLat);
   } else {
     // dest already exists
     destMarker.remove();
-    destMarker = marker;
+    marker = makeDestMarker(e.lngLat);
   }
   marker.addTo(map);
-  marker.on('dragend', refreshRoute);
+
 
   refreshRoute();
 });
