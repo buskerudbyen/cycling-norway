@@ -5,14 +5,45 @@ var map = new maplibregl.Map({
   zoom: 14
 });
 
-fetch("https://api.entur.io/journey-planner/v3/graphql", {
-  "method": "POST",
-  "headers": {
-    "Content-Type": "application/graphql"
-  },
-  "body": `
+let startMarker, destMarker = null;
+
+map.on('click', function (e) {
+  let marker = new maplibregl.Marker({ draggable: true })
+    .setLngLat(e.lngLat);
+
+  if(!startMarker) {
+    startMarker = marker;
+  }
+  else if(!destMarker) {
+    destMarker = marker;
+  } else {
+    // dest already exists
+    destMarker.remove();
+    destMarker = marker;
+  }
+  marker.addTo(map);
+  marker.on('dragend', refreshRoute);
+
+  refreshRoute();
+});
+
+
+const refreshRoute = () => {
+  if(startMarker && destMarker) {
+    queryAndRender(startMarker.getLngLat(), destMarker.getLngLat());
+  }
+}
+
+const queryAndRender = (start, dest) => {
+  console.log(start, dest)
+  fetch("https://api.entur.io/journey-planner/v3/graphql", {
+    "method": "POST",
+    "headers": {
+      "Content-Type": "application/graphql"
+    },
+    "body": `
 {
-  trip(from: {coordinates: {latitude: 59.9203144, longitude: 10.7128375}}, modes: {directMode: bicycle}, to: {coordinates: {latitude: 59.7351, longitude: 10.1831}}) {
+  trip(from: {coordinates: {latitude: ${start.lat}, longitude: ${start.lng} }}, modes: {directMode: bicycle}, to: {coordinates: {latitude: ${ dest.lat }, longitude: ${dest.lng }}}) {
     dateTime
     fromPlace {
       name
@@ -30,12 +61,14 @@ fetch("https://api.entur.io/journey-planner/v3/graphql", {
   }
 }
 `
-})
-  .then(response => response.json())
-  .then(response => {
-    const polyline = response.data.trip.tripPatterns[0].legs.map(l => l.pointsOnLink.points);
-    drawPolyline(polyline);
-  });
+  })
+    .then(response => response.json())
+    .then(response => {
+      const polyline = response.data.trip.tripPatterns[0].legs.map(l => l.pointsOnLink.points);
+      drawPolyline(polyline);
+    });
+
+}
 
 const drawPolyline = (lines) => {
 
