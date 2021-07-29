@@ -8,12 +8,14 @@
   <script src="https://unpkg.com/maplibre-gl@1.15.2/dist/maplibre-gl.js"></script>
   <link href="https://unpkg.com/maplibre-gl@1.15.2/dist/maplibre-gl.css" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/@mapbox/polyline@1.1.1/src/polyline.js" integrity="sha384-Zz2RwwoHc1kbxhNBoFvzray+S4UnRSCKNbozh/SVgYa+0yWjfY3lRBceaD4Tb9nc" crossorigin="anonymous"></script>
+  <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.2/mapbox-gl-geocoder.min.js"></script>
+  <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.2/mapbox-gl-geocoder.css" type="text/css">
 
   <style>
     #map {position: absolute; top: 0; right: 0; bottom: 0; left: 0;}
     .menu {
       position: absolute;
-      top: 0;
+      top: 32px;
       left: 15px;
       z-index:999;
       list-style-type: none;
@@ -49,7 +51,7 @@
 <body>
   <div id="map">
     <ul class="menu">
-      <li><a href="./">Reset</a></li>
+      <li id="reset"><a href="#">Reset</a></li>
       <li id="show-help"><a href="#">Help</a></li>
     </ul>
 

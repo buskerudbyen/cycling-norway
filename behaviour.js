@@ -8,6 +8,20 @@ const map = new maplibregl.Map({
 
 map.addControl(new maplibregl.NavigationControl());
 
+// Add the control to the map.
+map.addControl(
+  new MapboxGeocoder({
+    accessToken: "pk.eyJ1IjoibGVvbmFyZGVocmVuZnJpZWQiLCJhIjoiY2l1ZWk1cjlsMDAxZTJ2cWxmNHowbmVvdCJ9.jd86A83HNqNlNyjRY0iGIg",
+    mapboxgl: maplibregl,
+    placeholder: "Type to search origin",
+    anchor: "top-left",
+    marker: false
+  }),
+  "top-left"
+);
+
+let startMarker, destMarker = null;
+
 const showHelp = () => {
   const help = document.getElementById("help").cloneNode(true);
   const popup = new maplibregl.Popup({className: 'my-class'})
@@ -17,12 +31,33 @@ const showHelp = () => {
     .addTo(map);
 }
 
+
+
 const help = document.getElementById("show-help");
 help.onclick = () => {
   showHelp();
 }
 
-let startMarker, destMarker = null;
+
+const reset = () => {
+  startMarker.remove();
+  startMarker = null;
+  destMarker.remove();
+  destMarker = null;
+  drawPolyline([]);
+
+  const url = new URL(window.location);
+
+  url.searchParams.delete('from');
+  url.searchParams.delete('to');
+  window.history.pushState({}, '', url);
+
+}
+
+const res = document.getElementById("reset");
+res.onclick = () => {
+  reset();
+}
 
 const parseLatLng = (s) => {
   const [lat, lng] = s.split(",").map(n => Number(n));
@@ -101,10 +136,12 @@ the coordinates with the extend method.
     return bounds.extend(coord);
   }, new maplibregl.LngLatBounds(coordinates[0], coordinates[0]));
 
-  map.fitBounds(bounds, {
-    padding: 100
-  });
-}
+  if(lines.length) {
+    map.fitBounds(bounds, {
+      padding: 100
+    });
+  }
+};
 
 const showThrobber = () => {
   const e = document.getElementById("throbber");
