@@ -106,6 +106,16 @@ the coordinates with the extend method.
   });
 }
 
+const showThrobber = () => {
+  const e = document.getElementById("throbber");
+  e.classList.remove("hidden");
+}
+
+const hideThrobber = () => {
+  const e = document.getElementById("throbber");
+  e.classList.add("hidden");
+}
+
 const latLngToString = ({ lat, lng} ) => `${lat.toFixed(5)},${lng.toFixed(5)}`;
 
 const queryAndRender = (start, dest) => {
@@ -116,6 +126,7 @@ const queryAndRender = (start, dest) => {
   url.searchParams.set('to', latLngToString(dest));
   window.history.pushState({}, '', url);
 
+  showThrobber();
 
   fetch("https://api.entur.io/journey-planner/v3/graphql", {
     "method": "POST",
@@ -145,6 +156,8 @@ const queryAndRender = (start, dest) => {
   })
     .then(response => response.json())
     .then(response => {
+
+      hideThrobber();
       const tripPatterns = response.data.trip.tripPatterns;
       if(tripPatterns.length > 0) {
         const polyline = response.data.trip.tripPatterns[0].legs.map(l => l.pointsOnLink.points);

@@ -24,6 +24,26 @@
       font-size: 14px;
     }
 
+    .throbber {
+      position: absolute;
+      z-index:999;
+      display: block;
+      margin: auto;
+      top: 50%;
+      bottom: 50%;
+      left: 50%;
+      right: 50%;
+      width: 39px;
+      height: 39px;
+      padding: 5px;
+      border-radius: 3px;
+      background-color: grey;
+    }
+
+    .hidden {
+      display: none;
+    }
+
   </style>
 </head>
 <body>
@@ -32,6 +52,10 @@
       <li><a href="./">Reset</a></li>
       <li id="show-help"><a href="#">Help</a></li>
     </ul>
+
+    <div id="throbber" class="throbber hidden">
+      <img src="oval.svg"/>
+    </div>
   </div>
 
   <div id="help">
