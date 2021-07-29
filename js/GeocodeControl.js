@@ -23,7 +23,11 @@ export default class GeocodeControl {
             return resolve([])
           }
 
-          fetch(url)
+          fetch(url, {
+            headers: {
+              'ET-Client-Name': 'leonard.io-buskerudbyen-cycling'
+            }
+          })
             .then(response => response.json())
             .then(data => {
               resolve(data.features)
@@ -43,7 +47,7 @@ export default class GeocodeControl {
       getResultValue: feature => {
 
         console.log(feature)
-        return feature.properties.name
+        return feature.properties.label
 
       },
 
