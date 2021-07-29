@@ -10,10 +10,39 @@
 
   <style>
     #map {position: absolute; top: 0; right: 0; bottom: 0; left: 0;}
+    .menu {
+      position: absolute;
+      top: 0;
+      left: 15px;
+      z-index:999;
+      list-style-type: none;
+      padding: 0;
+    }
+    .menu li {
+      display: inline
+    }
+
   </style>
 </head>
 <body>
   <div id="map">
+    <ul class="menu">
+      <li><a href="./">Reset</a></li>
+      <li class="show-help">Help</li>
+    </ul>
+  </div>
+
+  <div id="help">
+    <h2>Bicycle route planning prototype</h2>
+    <p>
+      Please click on the map once to select the start of the route and click a second time to select its destination
+    </p>
+    <p>
+      When the route is diplayed you can drag the markers to change the start or destination.
+    </p>
+    <p>
+      <a href="./?from=59.72785%2C10.20643&to=59.75285%2C10.16012">Show example</a>
+    </p>
   </div>
 
   <p><a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a></p>

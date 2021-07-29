@@ -1,9 +1,24 @@
-var map = new maplibregl.Map({
+const center = [10.1878, 59.7390];
+const map = new maplibregl.Map({
   container: 'map',
   style: 'https://api.maptiler.com/maps/voyager/style.json?key=HrARH01SH6sg5I6HoXdU',
-  center: [10.1878, 59.7390],
+  center: center,
   zoom: 14
 });
+
+map.addControl(new maplibregl.NavigationControl());
+
+if(!localStorage.getItem("helpShown")) {
+
+  const help = document.getElementById("help");
+  const popup = new maplibregl.Popup({className: 'my-class'})
+    .setLngLat(center)
+    .setDOMContent(help)
+    .setMaxWidth("300px")
+    .addTo(map);
+
+  localStorage.setItem('helpShown', true);
+}
 
 let startMarker, destMarker = null;
 
@@ -126,7 +141,7 @@ const queryAndRender = (start, dest) => {
       const tripPatterns = response.data.trip.tripPatterns;
       if(tripPatterns.length > 0) {
         const polyline = response.data.trip.tripPatterns[0].legs.map(l => l.pointsOnLink.points);
-       drawPolyline(polyline);
+        drawPolyline(polyline);
       } else {
         alert("Sorry, could not find a bicycle route.")
       }
