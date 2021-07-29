@@ -8,16 +8,18 @@ const map = new maplibregl.Map({
 
 map.addControl(new maplibregl.NavigationControl());
 
-if(!localStorage.getItem("helpShown")) {
-
-  const help = document.getElementById("help");
+const showHelp = () => {
+  const help = document.getElementById("help").cloneNode(true);
   const popup = new maplibregl.Popup({className: 'my-class'})
-    .setLngLat(center)
+    .setLngLat(map.getCenter())
     .setDOMContent(help)
     .setMaxWidth("300px")
     .addTo(map);
+}
 
-  localStorage.setItem('helpShown', true);
+const help = document.getElementById("show-help");
+help.onclick = () => {
+  showHelp();
 }
 
 let startMarker, destMarker = null;
@@ -49,6 +51,11 @@ map.on('load', () => {
       'line-width': 6
     }
   });
+
+  if(!localStorage.getItem("helpShown")) {
+    showHelp();
+    localStorage.setItem('helpShown', true);
+  }
 
   const url = new URLSearchParams(window.location.search);
   if(url.has("from") && url.has("to")) {

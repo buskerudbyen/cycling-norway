@@ -3,6 +3,7 @@
 <html>
 <head>
   <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+  <title>Cycling Norway Routing Prototype</title>
 
   <script src="https://unpkg.com/maplibre-gl@1.15.2/dist/maplibre-gl.js"></script>
   <link href="https://unpkg.com/maplibre-gl@1.15.2/dist/maplibre-gl.css" rel="stylesheet" />
@@ -19,7 +20,8 @@
       padding: 0;
     }
     .menu li {
-      display: inline
+      display: inline;
+      font-size: 14px;
     }
 
   </style>
@@ -28,7 +30,7 @@
   <div id="map">
     <ul class="menu">
       <li><a href="./">Reset</a></li>
-      <li class="show-help">Help</li>
+      <li id="show-help"><a href="#">Help</a></li>
     </ul>
   </div>
 
