@@ -1,3 +1,5 @@
+import GeocoderControl from "./js/GeocodeControl.js";
+
 const center = [10.1878, 59.7390];
 const map = new maplibregl.Map({
   container: 'map',
@@ -10,7 +12,7 @@ map.addControl(new maplibregl.NavigationControl());
 
 // Add the control to the map.
 map.addControl(
-  new MapboxGeocoder({
+  new GeocoderControl({
     accessToken: "pk.eyJ1IjoibGVvbmFyZGVocmVuZnJpZWQiLCJhIjoiY2l1ZWk1cjlsMDAxZTJ2cWxmNHowbmVvdCJ9.jd86A83HNqNlNyjRY0iGIg",
     mapboxgl: maplibregl,
     placeholder: "Type to search origin",

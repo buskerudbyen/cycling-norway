@@ -8,16 +8,17 @@
   <script src="https://unpkg.com/maplibre-gl@1.15.2/dist/maplibre-gl.js"></script>
   <link href="https://unpkg.com/maplibre-gl@1.15.2/dist/maplibre-gl.css" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/@mapbox/polyline@1.1.1/src/polyline.js" integrity="sha384-Zz2RwwoHc1kbxhNBoFvzray+S4UnRSCKNbozh/SVgYa+0yWjfY3lRBceaD4Tb9nc" crossorigin="anonymous"></script>
-  <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.2/mapbox-gl-geocoder.min.js"></script>
-  <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.2/mapbox-gl-geocoder.css" type="text/css">
+
+  <script src="https://cdn.jsdelivr.net/npm/@trevoreyre/autocomplete-js@2.2.0/dist/autocomplete.min.js" integrity="sha256-RejJnrh2ZUqUiwto0xqUf2s3Tzqjsi6GesylotzjTPg=" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@trevoreyre/autocomplete-js@2.2.0/dist/style.css" integrity="sha256-JWyFOABWIv5jXCWeR0ygY9dDNeegXfbqcVAjbzGVXP0=" crossorigin="anonymous">
 
   <style>
     #map {position: absolute; top: 0; right: 0; bottom: 0; left: 0;}
     .menu {
       position: absolute;
-      top: 32px;
+      top: 45px;
       left: 15px;
-      z-index:999;
+      z-index: 1;
       list-style-type: none;
       padding: 0;
     }
@@ -46,12 +47,16 @@
       display: none;
     }
 
+    #autocomplete {
+      z-index: 999;
+    }
+
   </style>
 </head>
 <body>
   <div id="map">
     <ul class="menu">
-      <li id="reset"><a href="#">Reset</a></li>
+      <li id="reset"><a href="#">Reset route</a></li>
       <li id="show-help"><a href="#">Help</a></li>
     </ul>
 
@@ -75,7 +80,12 @@
 
   <p><a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a></p>
 
-  <script src="behaviour.js"></script>
+  <div id="autocomplete" class="autocomplete">
+    <input class="autocomplete-input" autocomplete="off" placeholder="Search for a place"/>
+    <ul class="autocomplete-result-list"></ul>
+  </div>
+
+  <script src="behaviour.js" type="module"></script>
 
 </body>
 </html>
