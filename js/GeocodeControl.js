@@ -11,10 +11,6 @@ export default class GeocodeControl {
 
       debounceTime: 200,
 
-      // Search function can return a promise
-      // which resolves with an array of
-      // results. In this case we're using
-      // the Wikipedia search API.
       search: input => {
         const url = `https://api.entur.io/geocoder/v1/autocomplete?text=${input}&lang=en`;
 
@@ -25,7 +21,7 @@ export default class GeocodeControl {
 
           fetch(url, {
             headers: {
-              'ET-Client-Name': 'leonard.io-buskerudbyen-cycling'
+              'ET-Client-Name': 'buskerudbyen-cycling-prototype(mail@leonard.io)'
             }
           })
             .then(response => response.json())
@@ -35,27 +31,12 @@ export default class GeocodeControl {
         })
       },
 
-      // Wikipedia returns a format like this:
-      //
-      // {
-      //   pageid: 12345,
-      //   title: 'Article title',
-      //   ...
-      // }
-      //
-      // We want to display the title
-      getResultValue: feature => {
+      getResultValue: feature => feature.properties.label,
 
-        console.log(feature)
-        return feature.properties.label
-
-      },
-
-      // Open the selected article in
-      // a new window
       onSubmit: result => {
         map.setCenter(result.geometry.coordinates);
       }
+
     });
 
     this.container.appendChild(autoComplete);
