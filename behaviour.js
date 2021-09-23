@@ -174,7 +174,13 @@ const queryAndRender = (start, dest) => {
     },
     "body": `
 {
-  trip(bicycleOptimisationMethod: safe, from: {coordinates: {latitude: ${start.lat}, longitude: ${start.lng} }}, modes: { directMode: bicycle, accessMode: bicycle, egressMode: bicycle, transportModes: { transportMode: water }}, to: {coordinates: {latitude: ${ dest.lat }, longitude: ${dest.lng }}}) {
+  trip(
+    modes: { directMode: bicycle, accessMode: bicycle, egressMode: bicycle, transportModes: { transportMode: water }},
+    from: {coordinates: {latitude: ${start.lat}, longitude: ${start.lng} }},
+    to: {coordinates: {latitude: ${ dest.lat }, longitude: ${dest.lng }}}
+    bicycleOptimisationMethod: triangle,
+    triangleFactors: {safety: 0.5, slope: 0.4, time: 0.1}
+  ) {
     dateTime
     fromPlace {
       name
