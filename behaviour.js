@@ -167,7 +167,7 @@ const queryAndRender = (start, dest) => {
 
   showThrobber();
 
-  fetch("https://api.staging.entur.io/journey-planner/v3/graphql", {
+  fetch("https://api.entur.io/journey-planner/v3/graphql", {
     "method": "POST",
     "headers": {
       "Content-Type": "application/graphql"
