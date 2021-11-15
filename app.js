@@ -8,9 +8,14 @@ const map = new maplibregl.Map({
   zoom: 14
 });
 
-map.loadImage('img/png/bicycle_parking.png', function(error, image) {
-  if (error) throw error;
-  map.addImage('bicycle-parking', image, { sdf: false });
+["parking", "covered", "shed", "locker"].forEach(icon => {
+
+  const name = `bicycle_${icon}`;
+  map.loadImage(`img/png/${name}.png`, function(error, image) {
+    if (error) throw error;
+    map.addImage(name, image, { sdf: false });
+  });
+
 });
 
 map.addControl(new maplibregl.NavigationControl());
@@ -38,13 +43,10 @@ const showHelp = () => {
     .addTo(map);
 }
 
-
-
 const help = document.getElementById("show-help");
 help.onclick = () => {
   showHelp();
 }
-
 
 const reset = () => {
   startMarker.remove();
@@ -94,9 +96,9 @@ map.on('load', () => {
     'source-layer': 'bicycle_parking',
     'type': 'symbol',
     'layout': {
-      'icon-image': 'bicycle-parking',
+      'icon-image': ["get", "class"],
       "icon-size": {
-        "base": 0.3,
+        "base": 0.25,
         "stops": [
           [
             11,
@@ -104,7 +106,7 @@ map.on('load', () => {
           ],
           [
             20,
-            0.4
+            0.3
           ]
         ]
       }
