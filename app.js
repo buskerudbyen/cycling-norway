@@ -5,7 +5,8 @@ const map = new maplibregl.Map({
   container: 'map',
   style: 'https://api.maptiler.com/maps/voyager/style.json?key=HrARH01SH6sg5I6HoXdU',
   center: center,
-  zoom: 14
+  zoom: 14,
+  hash: true
 });
 
 ["parking", "covered", "shed", "locker"].forEach(icon => {
