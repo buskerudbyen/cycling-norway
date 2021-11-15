@@ -8,6 +8,11 @@ const map = new maplibregl.Map({
   zoom: 14
 });
 
+map.loadImage('https://upload.wikimedia.org/wikipedia/commons/f/fe/Map_marker_icon_%E2%80%93_Nicolas_Mollet_%E2%80%93_Parking_Bicycle_%E2%80%93_Transportation_%E2%80%93_Simple.png', function(error, image) {
+  if (error) throw error;
+  map.addImage('bicycle-parking', image, { sdf: false });
+});
+
 map.addControl(new maplibregl.NavigationControl());
 
 // Add the control to the map.
@@ -74,6 +79,26 @@ map.on('load', () => {
       "features": []
     }
   });
+
+  map.addSource('bicycle-parking', {
+    'type': 'vector',
+    'tiles': [ 'https://byvekstavtale.leonard.io/tiles/bicycle-parking/{z}/{x}/{y}.pbf' ],
+    'minzoom': 6,
+    'maxzoom': 14
+  });
+
+  map.addLayer({
+    "id": "bicycle-parking",
+    "type": "circle",
+    "source": "bicycle-parking",
+    'source-layer': 'bicycle_parking',
+    'type': 'symbol',
+    'layout': {
+      'icon-image': 'bicycle-parking',
+    }
+  });
+
+
 
   map.addLayer({
     'id': 'route',
