@@ -8,7 +8,7 @@ const map = new maplibregl.Map({
   zoom: 14
 });
 
-map.loadImage('https://upload.wikimedia.org/wikipedia/commons/f/fe/Map_marker_icon_%E2%80%93_Nicolas_Mollet_%E2%80%93_Parking_Bicycle_%E2%80%93_Transportation_%E2%80%93_Simple.png', function(error, image) {
+map.loadImage('img/png/bicycle_parking.png', function(error, image) {
   if (error) throw error;
   map.addImage('bicycle-parking', image, { sdf: false });
 });
@@ -95,6 +95,19 @@ map.on('load', () => {
     'type': 'symbol',
     'layout': {
       'icon-image': 'bicycle-parking',
+      "icon-size": {
+        "base": 0.3,
+        "stops": [
+          [
+            11,
+            0.1
+          ],
+          [
+            20,
+            0.4
+          ]
+        ]
+      }
     }
   });
 
