@@ -9,12 +9,14 @@ deploy:
 		lenni@leonard.io:${DEST}
 	ssh lenni@leonard.io 'sudo chown www-data:www-data -R ${DEST}'
 
-OBJS=$(patsubst img/svg/%.svg, img/png/%.png, $(wildcard img/svg/*.svg))
-
-pngs: img/png/bicycle_parking.png img/png/bicycle_shed.png img/png/bicycle_covered.png img/png/bicycle_locker.png
+SVGS:=$(shell find img/svg)
+pngs: $(patsubst img/svg/%.svg, img/png/%.png, $(SVGS))
 
 img/png/%.png : img/svg/%.svg
 	inkscape -z -w 64 -h 64 $< -o $@
+
+clean:
+	rm -rf img/png/*
 
 watch:
 	ag -l | entr make deploy

@@ -11,11 +11,13 @@ const map = new maplibregl.Map({
 
 ["parking", "covered", "shed", "locker"].forEach(icon => {
 
-  const name = `bicycle_${icon}`;
-  map.loadImage(`img/png/${name}.png`, function(error, image) {
-    if (error) throw error;
-    map.addImage(name, image, { sdf: false });
-  });
+  ["public", "private"].forEach(access => {
+    const name = `bicycle_${icon}_${access}`;
+    map.loadImage(`img/png/${name}.png`, function(error, image) {
+      if (error) throw error;
+      map.addImage(name, image, { sdf: false });
+    });
+  })
 
 });
 
@@ -75,14 +77,6 @@ const parseLatLng = (s) => {
 };
 
 map.on('load', () => {
-  map.addSource('route', {
-    'type': 'geojson',
-    'data': {
-      "type": "FeatureCollection",
-      "features": []
-    }
-  });
-
   map.addSource('bicycle-parking', {
     'type': 'vector',
     'tiles': [ 'https://byvekstavtale.leonard.io/tiles/bicycle-parking/{z}/{x}/{y}.pbf' ],
@@ -92,7 +86,6 @@ map.on('load', () => {
 
   map.addLayer({
     "id": "bicycle-parking",
-    "type": "circle",
     "source": "bicycle-parking",
     'source-layer': 'bicycle_parking',
     'type': 'symbol',
@@ -114,6 +107,13 @@ map.on('load', () => {
     }
   });
 
+  map.addSource('route', {
+    'type': 'geojson',
+    'data': {
+      "type": "FeatureCollection",
+      "features": []
+    }
+  });
 
 
   map.addLayer({
