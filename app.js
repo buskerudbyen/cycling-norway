@@ -1,4 +1,4 @@
-import GeocoderControl from "./js/GeocodeControl.js";
+import GeocoderControl from "./js/GeocoderControl.js";
 import MapFeaturesControl from "./js/MapFeaturesControl.js";
 
 const center = [10.1878, 59.7390];
@@ -22,29 +22,9 @@ const map = new maplibregl.Map({
 
 });
 
+map.addControl(new MapFeaturesControl(), "top-right");
+map.addControl(new GeocoderControl(), "top-left");
 map.addControl(new maplibregl.NavigationControl(), "bottom-left");
-
-// Add the control to the map.
-map.addControl(
-  new GeocoderControl({
-    accessToken: "pk.eyJ1IjoibGVvbmFyZGVocmVuZnJpZWQiLCJhIjoiY2l1ZWk1cjlsMDAxZTJ2cWxmNHowbmVvdCJ9.jd86A83HNqNlNyjRY0iGIg",
-    mapboxgl: maplibregl,
-    placeholder: "Type to search origin",
-    anchor: "top-left",
-    marker: false
-  }),
-  "top-left"
-);
-
-// Toggle map features
-map.addControl(
-  new MapFeaturesControl({
-    mapboxgl: maplibregl
-  }),
-  "top-right"
-);
-
-
 
 let startMarker, destMarker = null;
 
