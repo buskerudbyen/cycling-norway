@@ -1,5 +1,7 @@
 export default class GeocodeControl {
 
+
+
   onAdd(map) {
     this.map = map;
     this.container = document.createElement('div');

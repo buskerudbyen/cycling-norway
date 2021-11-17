@@ -1,4 +1,5 @@
 import GeocoderControl from "./js/GeocodeControl.js";
+import MapFeaturesControl from "./js/MapFeaturesControl.js";
 
 const center = [10.1878, 59.7390];
 const map = new maplibregl.Map({
@@ -21,7 +22,7 @@ const map = new maplibregl.Map({
 
 });
 
-map.addControl(new maplibregl.NavigationControl());
+map.addControl(new maplibregl.NavigationControl(), "bottom-left");
 
 // Add the control to the map.
 map.addControl(
@@ -34,6 +35,16 @@ map.addControl(
   }),
   "top-left"
 );
+
+// Toggle map features
+map.addControl(
+  new MapFeaturesControl({
+    mapboxgl: maplibregl
+  }),
+  "top-right"
+);
+
+
 
 let startMarker, destMarker = null;
 
@@ -90,6 +101,7 @@ map.on('load', () => {
     'source-layer': 'bicycle_parking',
     'type': 'symbol',
     'layout': {
+      'visibility': 'visible',
       'icon-image': ["get", "class"],
       "icon-size": {
         "base": 0.25,
