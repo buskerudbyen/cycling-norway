@@ -4,7 +4,7 @@ import MapFeaturesControl from "./js/MapFeaturesControl.js";
 const center = [10.1878, 59.7390];
 const map = new maplibregl.Map({
   container: 'map',
-  style: 'https://api.maptiler.com/maps/voyager/style.json?key=HrARH01SH6sg5I6HoXdU',
+  style: 'https://byvekstavtale.leonard.io/tiles/bicycle/v1/style.json',
   center: center,
   zoom: 14,
   hash: true
