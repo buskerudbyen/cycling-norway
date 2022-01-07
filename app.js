@@ -79,7 +79,7 @@ const parseLatLng = (s) => {
 map.on('load', () => {
   map.addSource('bicycle-parking', {
     'type': 'vector',
-    'tiles': [ 'https://byvekstavtale.leonard.io/tiles/bicycle-parking/{z}/{x}/{y}.pbf' ],
+    'tiles': [ 'https://byvekstavtale.leonard.io/tiles/bicycle-amenities/{z}/{x}/{y}.pbf' ],
     'minzoom': 6,
     'maxzoom': 14
   });
