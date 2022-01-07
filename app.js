@@ -22,6 +22,15 @@ const map = new maplibregl.Map({
 
 });
 
+["bicycle_repair"].forEach(icon => {
+  map.loadImage(`img/png/${icon}.png`, function(error, image) {
+    if (error) throw error;
+    map.addImage(icon, image, { sdf: false });
+  });
+});
+
+
+
 map.addControl(new MapFeaturesControl(), "top-right");
 map.addControl(new GeocoderControl(), "top-left");
 map.addControl(new maplibregl.NavigationControl(), "bottom-left");
@@ -83,6 +92,30 @@ map.on('load', () => {
     'layout': {
       'visibility': 'visible',
       'icon-image': ["get", "class"],
+      "icon-size": {
+        "base": 0.25,
+        "stops": [
+          [
+            11,
+            0.1
+          ],
+          [
+            20,
+            0.3
+          ]
+        ]
+      }
+    }
+  });
+
+  map.addLayer({
+    "id": "bicycle-repair",
+    "source": "bicycle-parking",
+    'source-layer': 'bicycle_repair',
+    'type': 'symbol',
+    'layout': {
+      'visibility': 'visible',
+      'icon-image': "bicycle_repair",
       "icon-size": {
         "base": 0.25,
         "stops": [
