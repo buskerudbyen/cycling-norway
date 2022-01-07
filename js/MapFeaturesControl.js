@@ -1,3 +1,18 @@
+const layers = [
+
+  {
+    text: "Bicycle parking",
+    layer: "bicycle-parking"
+  },
+
+  {
+    text: "Bicycle repair stations",
+    layer: "bicycle-repair"
+  }
+
+];
+
+
 export default class MapFeaturesControl {
 
   onAdd(map) {
@@ -8,22 +23,31 @@ export default class MapFeaturesControl {
     this.container.classList.add("mapboxgl-ctrl-group");
     this.container.classList.add("map-features-control");
 
-    const checkbox = document.createElement('input');
-    checkbox.type = "checkbox";
-    checkbox.name = "name";
-    checkbox.value = "value";
-    checkbox.id = "id";
-    checkbox.checked = "checked";
+    layers.forEach(i => {
 
-    checkbox.onclick = () => this.toggleLayer();
+      const div = document.createElement('div');
 
-    const label = document.createElement('label')
-    label.htmlFor = "id";
-    label.appendChild(document.createTextNode('Show bicycle parking'));
+      const id = `layer-${i.layer}`;
 
-    this.container.appendChild(checkbox);
-    this.container.appendChild(label);
+      const checkbox = document.createElement('input');
+      checkbox.type = "checkbox";
+      checkbox.name = "name";
+      checkbox.value = "value";
+      checkbox.id = id;
+      checkbox.checked = "checked";
 
+      checkbox.onclick = () => this.toggleLayer(i.layer);
+
+      const label = document.createElement('label')
+      label.htmlFor = id;
+      label.appendChild(document.createTextNode(i.text));
+
+      div.appendChild(checkbox);
+      div.appendChild(label);
+
+      this.container.appendChild(div);
+
+    });
 
     return this.container;
   }
@@ -33,9 +57,8 @@ export default class MapFeaturesControl {
     this.map = undefined;
   }
 
-  toggleLayer() {
+  toggleLayer(clickedLayer) {
 
-    const clickedLayer = "bicycle-parking";
     const visibility = this.map.getLayoutProperty(
       clickedLayer,
       'visibility'
