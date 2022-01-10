@@ -160,6 +160,20 @@ map.on('load', () => {
     localStorage.setItem('helpShown', true);
   }
 
+  const targets = {
+    "bicycle-lane": "Cycle lane",
+    "bicycle-route-national-background": "National cycling route",
+    "bicycle-route-local-background": "Local cycling route",
+    "bicycle-route-national-overlay": "National cycling route",
+    "bicycle-route-local-overlay": "Local cycling route"
+  };
+
+  map.addControl(new watergis.MaplibreLegendControl(targets, {
+        showDefault: true,
+        showCheckbox: false,
+        onlyRendered: true ,
+  }), 'top-right');
+
   const url = new URLSearchParams(window.location.search);
   if(url.has("from") && url.has("to")) {
     const from = parseLatLng(url.get("from"));

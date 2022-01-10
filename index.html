@@ -12,6 +12,9 @@
   <script src="https://cdn.jsdelivr.net/npm/@trevoreyre/autocomplete-js@2.2.0/dist/autocomplete.min.js" integrity="sha256-RejJnrh2ZUqUiwto0xqUf2s3Tzqjsi6GesylotzjTPg=" crossorigin="anonymous"></script>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@trevoreyre/autocomplete-js@2.2.0/dist/style.css" integrity="sha256-JWyFOABWIv5jXCWeR0ygY9dDNeegXfbqcVAjbzGVXP0=" crossorigin="anonymous">
 
+  <script src="https://watergis.github.io/maplibre-gl-legend/maplibre-gl-legend.js"></script>
+  <link href='https://watergis.github.io/maplibre-gl-legend/maplibre-gl-legend.css' rel='stylesheet' />
+
   <style>
     #map {position: absolute; top: 0; right: 0; bottom: 0; left: 0;}
     .menu {
@@ -53,6 +56,16 @@
 
     .map-features-control {
       padding: 3px 9px 3px 3px;
+      width: 143px;
+    }
+
+    .maplibregl-legend-onlyRendered-checkbox, .maplibregl-legend-onlyRendered-label {
+      display: none;
+    }
+
+    .maplibregl-legend-list {
+      padding: 3px 9px 3px 3px;
+      overflow-y: auto;
     }
 
   </style>
