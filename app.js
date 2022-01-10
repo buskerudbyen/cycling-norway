@@ -161,11 +161,11 @@ map.on('load', () => {
   }
 
   const targets = {
-    "bicycle-lane": "Cycle lane",
-    "bicycle-route-national-background": "National cycling route",
-    "bicycle-route-local-background": "Local cycling route",
-    "bicycle-route-national-overlay": "National cycling route",
-    "bicycle-route-local-overlay": "Local cycling route"
+    "bicycle-lane": "Sykkelveier",
+    "bicycle-route-national-background": "Nasjonale sykkelruter",
+    "bicycle-route-local-background": "Lokale sykkelruter",
+    "bicycle-route-national-overlay": "Nasjonale sykkelruter",
+    "bicycle-route-local-overlay": "Lokale sykkelruter"
   };
 
   map.addControl(new watergis.MaplibreLegendControl(targets, {
