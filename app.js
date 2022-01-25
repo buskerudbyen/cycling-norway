@@ -91,7 +91,8 @@ map.on('load', () => {
     "bicycle-route-national-overlay": "Nasjonale sykkelruter",
     "bicycle-route-local-overlay": "Lokale sykkelruter",
     "poi-bicycle-parking-public": "Offentlig sykkelparkering",
-    "poi-bicycle-parking-private": "Privat sykkelparkering"
+    "poi-bicycle-parking-private": "Privat sykkelparkering",
+    "poi-bicycle-repair-station": "Sykkelreparasjonsstasjon"
   };
 
   map.addControl(new watergis.MaplibreLegendControl(targets, {
