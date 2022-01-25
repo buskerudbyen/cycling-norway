@@ -1,13 +1,13 @@
 const layers = [
 
   {
-    text: "Bicycle parking",
-    layer: "bicycle-parking"
+    text: "Sykkelparkering",
+    layer: "poi-bicycle-parking-public"
   },
 
   {
-    text: "Bicycle repair stations",
-    layer: "bicycle-repair"
+    text: "Sykkelreparasjonsstasjon",
+    layer: "poi-bicycle-repair-station"
   }
 
 ];
@@ -65,7 +65,7 @@ export default class MapFeaturesControl {
     );
 
     // Toggle layer visibility by changing the layout object's visibility property.
-    if (visibility === 'visible') {
+    if (visibility === 'visible' || visibility === undefined) {
       this.map.setLayoutProperty(clickedLayer, 'visibility', 'none');
       this.className = '';
     } else {
