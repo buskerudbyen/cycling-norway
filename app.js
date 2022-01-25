@@ -10,27 +10,6 @@ const map = new maplibregl.Map({
   hash: true
 });
 
-["parking", "covered", "shed", "locker"].forEach(icon => {
-
-  ["public", "private"].forEach(access => {
-    const name = `bicycle_${icon}_${access}`;
-    map.loadImage(`img/png/${name}.png`, function(error, image) {
-      if (error) throw error;
-      map.addImage(name, image, { sdf: false });
-    });
-  })
-
-});
-
-["bicycle_repair"].forEach(icon => {
-  map.loadImage(`img/png/${icon}.png`, function(error, image) {
-    if (error) throw error;
-    map.addImage(icon, image, { sdf: false });
-  });
-});
-
-
-
 map.addControl(new MapFeaturesControl(), "top-right");
 map.addControl(new GeocoderControl(), "top-left");
 map.addControl(new maplibregl.NavigationControl(), "bottom-left");
@@ -77,61 +56,6 @@ const parseLatLng = (s) => {
 };
 
 map.on('load', () => {
-  map.addSource('bicycle-parking', {
-    'type': 'vector',
-    'tiles': [ 'https://byvekstavtale.leonard.io/tiles/bicycle-amenities/{z}/{x}/{y}.pbf' ],
-    'minzoom': 6,
-    'maxzoom': 14
-  });
-
-  map.addLayer({
-    "id": "bicycle-parking",
-    "source": "bicycle-parking",
-    'source-layer': 'bicycle_parking',
-    'type': 'symbol',
-    'layout': {
-      'visibility': 'visible',
-      'icon-image': ["get", "class"],
-      "icon-size": {
-        "base": 0.25,
-        "stops": [
-          [
-            11,
-            0.1
-          ],
-          [
-            20,
-            0.3
-          ]
-        ]
-      }
-    }
-  });
-
-  map.addLayer({
-    "id": "bicycle-repair",
-    "source": "bicycle-parking",
-    'source-layer': 'bicycle_repair',
-    'type': 'symbol',
-    'layout': {
-      'visibility': 'visible',
-      'icon-image': "bicycle_repair",
-      "icon-size": {
-        "base": 0.25,
-        "stops": [
-          [
-            11,
-            0.1
-          ],
-          [
-            20,
-            0.3
-          ]
-        ]
-      }
-    }
-  });
-
   map.addSource('route', {
     'type': 'geojson',
     'data': {
