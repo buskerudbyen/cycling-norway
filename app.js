@@ -92,6 +92,9 @@ map.on('load', () => {
     "bicycle-route-local-overlay": "Lokale sykkelruter",
     "poi-bicycle-parking-public": "Offentlig sykkelparkering",
     "poi-bicycle-parking-private": "Privat sykkelparkering",
+    "poi-bicycle-parking-lockers": "Sykkelskap",
+    "poi-bicycle-parking-shed": "Sykkelhotel",
+    "poi-bicycle-parking-covered": "Overbygd sykkelparkering",
     "poi-bicycle-repair-station": "Sykkelreparasjonsstasjon"
   };
 
