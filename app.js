@@ -89,13 +89,16 @@ map.on('load', () => {
     "bicycle-route-national-background": "Nasjonale sykkelruter",
     "bicycle-route-local-background": "Lokale sykkelruter",
     "bicycle-route-national-overlay": "Nasjonale sykkelruter",
-    "bicycle-route-local-overlay": "Lokale sykkelruter"
+    "bicycle-route-local-overlay": "Lokale sykkelruter",
+    "poi-bicycle-parking-public": "Offentlig sykkelparkering",
+    "poi-bicycle-parking-private": "Privat sykkelparkering"
   };
 
   map.addControl(new watergis.MaplibreLegendControl(targets, {
         showDefault: true,
         showCheckbox: false,
-        onlyRendered: true ,
+        onlyRendered: true,
+        title: "Tegnforklaring"
   }), 'top-right');
 
   const url = new URLSearchParams(window.location.search);
