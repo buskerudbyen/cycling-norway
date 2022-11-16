@@ -111,17 +111,26 @@ map.on('load', () => {
   });
 
   map.addLayer({
-    "id": "bikely",
-    "type": "circle",
+    "id": "poi-bikely",
+    "type": "symbol",
     "source": "bikely",
-    'source-layer': 'bikely',
+    "source-layer": "bikely",
+    "minzoom": 7,
+    "layout": {
+      "icon-image": "bicycle_parking_lockers_11",
+      "text-anchor": "top",
+      "text-field": "{availability.bicyclePlaces}",
+      "text-font": ["Noto Sans Regular"],
+      "text-max-width": 9,
+      "text-offset": [1, -1],
+      "text-padding": 2,
+      "text-size": 11
+    },
     "paint": {
-      "circle-radius": {
-        "base": 1.1,
-        "stops": [[7, 2], [17, 7]]
-      },
-      "circle-color": "#f73109",
-      "circle-opacity": 0.9
+      "text-color": "#666",
+      "text-halo-blur": 0.5,
+      "text-halo-color": "#ffffff",
+      "text-halo-width": 1
     }
   });
 
