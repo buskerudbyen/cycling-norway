@@ -123,9 +123,9 @@ map.on('load', () => {
       "text-field": "{availability.bicyclePlaces}",
       "text-font": ["Noto Sans Regular"],
       "text-max-width": 9,
-      "text-offset": [0.7, -1.1],
+      "text-offset": [0.6, -1.1],
       "text-padding": 2,
-      "text-size": 11
+      "text-size": 12
     },
     "paint": {
       "text-color": "#ffffff",
