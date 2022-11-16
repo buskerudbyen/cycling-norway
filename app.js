@@ -117,19 +117,20 @@ map.on('load', () => {
     "source-layer": "bikely",
     "minzoom": 7,
     "layout": {
-      "icon-image": "bicycle_parking_lockers_11",
+      "icon-image": "bicycle_parking_lockers_bikely_11",
+      "icon-size": 1.2,
       "text-anchor": "top",
       "text-field": "{availability.bicyclePlaces}",
       "text-font": ["Noto Sans Regular"],
       "text-max-width": 9,
-      "text-offset": [1, -1],
+      "text-offset": [0.7, -1.1],
       "text-padding": 2,
       "text-size": 11
     },
     "paint": {
-      "text-color": "#666",
+      "text-color": "#ffffff",
       "text-halo-blur": 0.5,
-      "text-halo-color": "#ffffff",
+      "text-halo-color": "#858484",
       "text-halo-width": 1
     }
   });
