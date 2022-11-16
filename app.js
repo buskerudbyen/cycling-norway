@@ -105,6 +105,26 @@ map.on('load', () => {
         title: "Tegnforklaring"
   }), 'top-right');
 
+  map.addSource('bikely', {
+    type: 'vector',
+    url: "https://byvekstavtale.leonard.io/tiles/bikely.json"
+  });
+
+  map.addLayer({
+    "id": "bikely",
+    "type": "circle",
+    "source": "bikely",
+    'source-layer': 'bikely',
+    "paint": {
+      "circle-radius": {
+        "base": 1.1,
+        "stops": [[7, 2], [17, 7]]
+      },
+      "circle-color": "#f73109",
+      "circle-opacity": 0.9
+    }
+  });
+
   const url = new URLSearchParams(window.location.search);
   if(url.has("from") && url.has("to")) {
     const from = parseLatLng(url.get("from"));
