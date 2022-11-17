@@ -135,6 +135,43 @@ map.on('load', () => {
     }
   });
 
+  // Create a popup, but don't add it to the map yet.
+  var popup = new maplibregl.Popup({
+    closeButton: false,
+    closeOnClick: false
+  });
+
+  map.on('mouseenter', 'poi-bikely', function (e) {
+    // Change the cursor style as a UI indicator.
+    map.getCanvas().style.cursor = 'pointer';
+
+    var coordinates = e.features[0].geometry.coordinates.slice();
+
+    const p = e.features[0].properties;
+
+    const html = `
+      <strong>${p.name}</strong>
+      <div>${p.id}</div>
+      
+    `;
+
+    // Ensure that if the map is zoomed out such that multiple
+    // copies of the feature are visible, the popup appears
+    // over the copy being pointed to.
+    while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+      coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+    }
+
+    // Populate the popup and set its coordinates
+    // based on the feature found.
+    popup.setLngLat(coordinates).setHTML(html).addTo(map);
+  });
+
+  map.on('mouseleave', 'poi-bikely', function () {
+    map.getCanvas().style.cursor = '';
+    popup.remove();
+  });
+
   const url = new URLSearchParams(window.location.search);
   if(url.has("from") && url.has("to")) {
     const from = parseLatLng(url.get("from"));
