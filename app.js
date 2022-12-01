@@ -149,10 +149,10 @@ map.on('load', () => {
 
     const p = e.features[0].properties;
 
+
     const html = `
-      <strong>${p.name}</strong>
-      <div>${p.id}</div>
-      
+      <h3>${p.name} (${p.id})</h3>
+      <div>${p.note}</div>
     `;
 
     // Ensure that if the map is zoomed out such that multiple
