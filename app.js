@@ -141,7 +141,7 @@ map.on('load', () => {
     closeOnClick: false
   });
 
-  map.on('mouseenter', 'poi-bikely', function (e) {
+  map.on('click', 'poi-bikely', function (e) {
     // Change the cursor style as a UI indicator.
     map.getCanvas().style.cursor = 'pointer';
 
@@ -165,11 +165,6 @@ map.on('load', () => {
     // Populate the popup and set its coordinates
     // based on the feature found.
     popup.setLngLat(coordinates).setHTML(html).addTo(map);
-  });
-
-  map.on('mouseleave', 'poi-bikely', function () {
-    map.getCanvas().style.cursor = '';
-    popup.remove();
   });
 
   const url = new URLSearchParams(window.location.search);
@@ -316,21 +311,30 @@ const makeDestMarker = (latLng) => {
 
 map.on('click', function (e) {
 
-  let marker;
-  if(!startMarker) {
-    marker = makeStartMarker(e.lngLat);
-  }
-  else if(!destMarker) {
-    marker = makeDestMarker(e.lngLat);
-  } else {
-    // dest already exists
-    destMarker.remove();
-    marker = makeDestMarker(e.lngLat);
-  }
-  marker.addTo(map);
+  const bbox = [
+    [e.point.x - 5, e.point.y - 5],
+    [e.point.x + 5, e.point.y + 5]
+  ];
+  // Find features intersecting the bounding box.
+  const bikelyFeatures = map.queryRenderedFeatures(bbox, {
+    layers: ['poi-bikely']
+  });
 
+  if (bikelyFeatures.length === 0) {
+    let marker;
+    if (!startMarker) {
+      marker = makeStartMarker(e.lngLat);
+    } else if (!destMarker) {
+      marker = makeDestMarker(e.lngLat);
+    } else {
+      // dest already exists
+      destMarker.remove();
+      marker = makeDestMarker(e.lngLat);
+    }
+    marker.addTo(map);
 
-  refreshRoute();
+    refreshRoute();
+  }
 });
 
 
