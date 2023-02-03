@@ -5,7 +5,7 @@ import 'mapbox-gl/dist/mapbox-gl.css'
 import Menu from './Menu';
 import SearchField from "./SearchField";
 import MapFeaturesControl from "./MapFeaturesControl";
-import Map, {GeolocateControl, Layer, Marker, NavigationControl, Source} from "react-map-gl";
+import Map, {AttributionControl, GeolocateControl, Layer, Marker, NavigationControl, Source} from "react-map-gl";
 import {Backdrop, CircularProgress} from "@mui/material";
 import polyline from '@mapbox/polyline';
 
@@ -47,6 +47,14 @@ export default class MapContainer extends React.Component {
 			})
 			this.getQuery(from, to);
 		}
+	}
+	
+	getAttributionText() {
+		return "<p>" +
+			"<a href=\"https://www.maptiler.com/copyright/\" target=\"_blank\">&copy; MapTiler</a>" +
+			"&#32;&#32;&#32;" +
+			"<a href=\"https://www.openstreetmap.org/copyright\" target=\"_blank\">&copy; Map data from OpenStreetMap</a>" +
+			"</p>";
 	}
 	
 	resetRoute() {
@@ -261,6 +269,8 @@ export default class MapContainer extends React.Component {
 						trackUserLocation={true}
 					/>
 					<NavigationControl position="bottom-left" showCompass showZoom />
+					<AttributionControl position="bottom-right" compact={false}
+					                    customAttribution={this.getAttributionText()} />
 					{this.state.hasStart ? (
 						<Marker longitude={this.state.start?.lng} latitude={this.state.start?.lat} color="blue" anchor="center" />
 						)
