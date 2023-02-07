@@ -104,6 +104,20 @@ export default class MapContainer extends React.Component {
 		}
 	}
 	
+	updateStartCoord = (event) => {
+		this.setState({
+			start: event.lngLat
+		});
+		this.getQuery(event.lngLat, this.state.dest);
+	}
+	
+	updateDestCoord = (event) => {
+		this.setState({
+			dest: event.lngLat
+		});
+		this.getQuery(this.state.start, event.lngLat);
+	}
+	
 	drawPolyline = (lines) => {
 		const features = lines.map(l => {
 			const geojson = polyline.toGeoJSON(l);
@@ -201,7 +215,7 @@ export default class MapContainer extends React.Component {
 				<div id="controls">
 					<SearchField onChoose={this.onStartChoose} />
 					<Menu reset={this.resetRoute} />
-					<MapFeaturesControl />
+					<MapFeaturesControl map={this.map.current} />
 					<Backdrop
 						sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
 						open={this.state.isBackdropOpen}
@@ -272,12 +286,22 @@ export default class MapContainer extends React.Component {
 					<AttributionControl position="bottom-right" compact={false}
 					                    customAttribution={this.getAttributionText()} />
 					{this.state.hasStart ? (
-						<Marker longitude={this.state.start?.lng} latitude={this.state.start?.lat} color="blue" anchor="center" />
-						)
+						<Marker
+							longitude={this.state.start?.lng}
+							latitude={this.state.start?.lat}
+							color="blue"
+							anchor="center"
+							draggable
+							onDragEnd={this.updateStartCoord} />)
 						: null }
 					{this.state.hasEnd ? (
-						<Marker longitude={this.state.dest?.lng} latitude={this.state.dest?.lat} color="red" anchor="center" />
-						)
+						<Marker
+							longitude={this.state.dest?.lng}
+							latitude={this.state.dest?.lat}
+							color="red"
+							anchor="center"
+							draggable
+							onDragEnd={this.updateDestCoord} />)
 						: null }
 				</Map>
 			</div>
