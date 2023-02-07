@@ -8,6 +8,7 @@ import MapFeaturesControl from "./MapFeaturesControl";
 import Map, {AttributionControl, GeolocateControl, Layer, Marker, NavigationControl, Source} from "react-map-gl";
 import {Backdrop, CircularProgress} from "@mui/material";
 import polyline from '@mapbox/polyline';
+import BikelyPopup from "./BikelyPopup";
 
 const INITIAL_LAT = 59.7390;
 const INITIAL_LON = 10.1878;
@@ -24,11 +25,16 @@ export default class MapContainer extends React.Component {
 			start: null,
 			hasEnd: false,
 			dest: null,
-			isBackdropOpen: false
+			isBackdropOpen: false,
+			isBikelyPopupOpen: false,
+			popupCoords: null,
+			popupPoint: null
 		}
 		this.map = React.createRef();
 		this.resetRoute = this.resetRoute.bind(this);
 		this.onStartChoose = this.onStartChoose.bind(this);
+		this.onPopupClose = this.onPopupClose.bind(this);
+		this.onMapClick = this.onMapClick.bind(this);
 		this.addMarker = this.addMarker.bind(this);
 		this.drawPolyline = this.drawPolyline.bind(this);
 		this.getQuery = this.getQuery.bind(this);
@@ -85,6 +91,30 @@ export default class MapContainer extends React.Component {
 	};
 	
 	lngLatToString = (lngLat) => `${lngLat.lat.toFixed(5)},${lngLat.lng.toFixed(5)}`;
+	
+	onMapClick(event) {
+		const features = this.map.current.queryRenderedFeatures(event.point, {
+			layers: ["poi-bikely"]
+		})
+		if (features.length > 0) {
+			const feature = features[0].properties;
+			this.setState({
+				isBikelyPopupOpen: true,
+				popupCoords: event.lngLat,
+				popupPoint: feature
+			})
+		} else {
+			this.addMarker(event);
+		}
+	}
+	
+	onPopupClose() {
+		this.setState({
+			isBikelyPopupOpen: false,
+			bikelyPopupCoords: null,
+			popupPoint: null
+		})
+	}
 	
 	addMarker(event) {
 		if (this.state.hasStart && this.state.hasEnd) {
@@ -235,7 +265,7 @@ export default class MapContainer extends React.Component {
 					scrollZoom
 					interactive
 					mapStyle='https://byvekstavtale.leonard.io/tiles/bicycle/v1/style.json'
-					onClick={this.addMarker}
+					onClick={this.onMapClick}
 				>
 					<Source type="geojson" id="route"
 					        data={{
@@ -277,6 +307,8 @@ export default class MapContainer extends React.Component {
 							"text-halo-width": 1
 						}}
 					/>
+					{this.state.isBikelyPopupOpen && (
+						<BikelyPopup lngLat={this.state.popupCoords} onClose={this.onPopupClose} point={this.state.popupPoint} />)}
 					<GeolocateControl
 						position="top-left"
 						positionOptions={{enableHighAccuracy: true}}
@@ -285,24 +317,22 @@ export default class MapContainer extends React.Component {
 					<NavigationControl position="bottom-left" showCompass showZoom />
 					<AttributionControl position="bottom-right" compact={false}
 					                    customAttribution={this.getAttributionText()} />
-					{this.state.hasStart ? (
+					{this.state.hasStart && (
 						<Marker
 							longitude={this.state.start?.lng}
 							latitude={this.state.start?.lat}
 							color="blue"
 							anchor="center"
 							draggable
-							onDragEnd={this.updateStartCoord} />)
-						: null }
-					{this.state.hasEnd ? (
+							onDragEnd={this.updateStartCoord} />)}
+					{this.state.hasEnd && (
 						<Marker
 							longitude={this.state.dest?.lng}
 							latitude={this.state.dest?.lat}
 							color="red"
 							anchor="center"
 							draggable
-							onDragEnd={this.updateDestCoord} />)
-						: null }
+							onDragEnd={this.updateDestCoord} />)}
 				</Map>
 			</div>
 		);
