@@ -4,7 +4,6 @@ import '../styles/map.css';
 import 'maplibre-gl/dist/maplibre-gl.css'
 import Menu from './Menu';
 import SearchField from "./SearchField";
-import MapFeaturesControl from "./MapFeaturesControl";
 import Map, {AttributionControl, GeolocateControl, Layer, Marker, NavigationControl, Source} from "react-map-gl";
 import {Backdrop, CircularProgress} from "@mui/material";
 import polyline from '@mapbox/polyline';
@@ -50,7 +49,6 @@ export default class MapContainer extends React.Component {
 		this.resetRoute = this.resetRoute.bind(this);
 		this.onStartChoose = this.onStartChoose.bind(this);
 		this.onPopupClose = this.onPopupClose.bind(this);
-		this.toggleLayer = this.toggleLayer.bind(this);
 		this.onMapClick = this.onMapClick.bind(this);
 		this.addMarker = this.addMarker.bind(this);
 		this.drawPolyline = this.drawPolyline.bind(this);
@@ -83,7 +81,7 @@ export default class MapContainer extends React.Component {
 	addLegend() {
 		this.map.current.addControl(new MaplibreLegendControl(TARGETS, {
 			showDefault: true,
-			showCheckbox: false,
+			showCheckbox: true,
 			onlyRendered: true,
 			title: "Tegnforklaring"
 		}), 'top-right');
@@ -140,19 +138,6 @@ export default class MapContainer extends React.Component {
 			bikelyPopupCoords: null,
 			popupPoint: null
 		})
-	}
-	
-	toggleLayer(event) {
-		const clickedLayer = event.target.id?.slice(6); // remove the layer- prefix
-		const layer = this.map.current.getLayer(clickedLayer);
-		
-		// Toggle layer visibility by changing the layout object's visibility property.
-		if (layer.getLayoutProperty('visibility') !== 'none') {
-			layer.setLayoutProperty('visibility', 'none');
-		} else {
-			layer.setLayoutProperty('visibility', 'visible');
-		}
-		// TODO there is no update on the map
 	}
 	
 	addMarker(event) {
@@ -339,7 +324,6 @@ export default class MapContainer extends React.Component {
 						<BikelyPopup lngLat={this.state.popupCoords} onClose={this.onPopupClose} point={this.state.popupPoint} />)}
 					<SearchField onChoose={this.onStartChoose} />
 					<Menu reset={this.resetRoute} />
-					<MapFeaturesControl toggleLayer={this.toggleLayer} />
 					<Backdrop
 						sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
 						open={this.state.isBackdropOpen}
