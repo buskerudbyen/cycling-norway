@@ -20,29 +20,18 @@ class MapFeaturesControl extends React.Component {
 		};
 	}
 	
-	toggleLayer = (layer) => {
-		// TODO
-	}
-	
 	getLayerActive = (layer) => {
 		return (
-			<div className="layerSwitch">
+			<div>
 				<Checkbox
 					id={"layer-" + layer.id}
 					defaultChecked
 					label={layer.text}
 					value={layer.value}
-					onChange={this.toggleLayer(layer)}
+					onChange={this.props.toggleLayer}
+					size="small"
 				/>
 				<FormLabel htmlFor={"layer-" + layer.id}>{layer.text}</FormLabel>
-			</div>
-		);
-	}
-	
-	getLayerLegend = (layer) => {
-		return (
-			<div>
-				<FormLabel htmlFor={"legend-" + layer.id}>{layer.text}</FormLabel>
 			</div>
 		);
 	}
@@ -50,14 +39,9 @@ class MapFeaturesControl extends React.Component {
 	render() {
 		return (
 			<div id="mapFeatures">
-				<div className="mapFeatures">
+				<div className="maplibregl-ctrl maplibregl-ctrl-group layerSwitch">
 					{this.getLayerActive(this.state.layers[0])}
 					{this.getLayerActive(this.state.layers[1])}
-				</div>
-				<div className="mapFeatures">
-					<h4>Tegnforklaring</h4>
-					{this.getLayerLegend(this.state.layers[0])}
-					{this.getLayerLegend(this.state.layers[1])}
 				</div>
 			</div>
 		);

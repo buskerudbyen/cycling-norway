@@ -1,7 +1,7 @@
 import React from "react";
 import maplibregl from "maplibre-gl";
 import '../styles/map.css';
-import 'mapbox-gl/dist/mapbox-gl.css'
+import 'maplibre-gl/dist/maplibre-gl.css'
 import Menu from './Menu';
 import SearchField from "./SearchField";
 import MapFeaturesControl from "./MapFeaturesControl";
@@ -9,10 +9,25 @@ import Map, {AttributionControl, GeolocateControl, Layer, Marker, NavigationCont
 import {Backdrop, CircularProgress} from "@mui/material";
 import polyline from '@mapbox/polyline';
 import BikelyPopup from "./BikelyPopup";
+import {MaplibreLegendControl} from "@watergis/maplibre-gl-legend";
 
 const INITIAL_LAT = 59.7390;
 const INITIAL_LON = 10.1878;
 const INITIAL_ZOOM = 14;
+
+const TARGETS = {
+	"bicycle-lane": "Sykkelveier",
+	"bicycle-route-national-background": "Nasjonale sykkelruter",
+	"bicycle-route-local-background": "Lokale sykkelruter",
+	"bicycle-route-national-overlay": "Nasjonale sykkelruter",
+	"bicycle-route-local-overlay": "Lokale sykkelruter",
+	"poi-bicycle-parking-public": "Offentlig sykkelparkering",
+	"poi-bicycle-parking-private": "Privat sykkelparkering",
+	"poi-bicycle-parking-lockers": "Sykkelskap",
+	"poi-bicycle-parking-shed": "Sykkelhotel",
+	"poi-bicycle-parking-covered": "Overbygd sykkelparkering",
+	"poi-bicycle-repair-station": "Sykkelreparasjonsstasjon"
+};
 
 export default class MapContainer extends React.Component {
 	constructor(props) {
@@ -31,9 +46,11 @@ export default class MapContainer extends React.Component {
 			popupPoint: null
 		}
 		this.map = React.createRef();
+		this.addLegend = this.addLegend.bind(this);
 		this.resetRoute = this.resetRoute.bind(this);
 		this.onStartChoose = this.onStartChoose.bind(this);
 		this.onPopupClose = this.onPopupClose.bind(this);
+		this.toggleLayer = this.toggleLayer.bind(this);
 		this.onMapClick = this.onMapClick.bind(this);
 		this.addMarker = this.addMarker.bind(this);
 		this.drawPolyline = this.drawPolyline.bind(this);
@@ -61,6 +78,15 @@ export default class MapContainer extends React.Component {
 			"&#32;&#32;&#32;" +
 			"<a href=\"https://www.openstreetmap.org/copyright\" target=\"_blank\">&copy; Map data from OpenStreetMap</a>" +
 			"</p>";
+	}
+	
+	addLegend() {
+		this.map.current.addControl(new MaplibreLegendControl(TARGETS, {
+			showDefault: true,
+			showCheckbox: false,
+			onlyRendered: true,
+			title: "Tegnforklaring"
+		}), 'top-right');
 	}
 	
 	resetRoute() {
@@ -114,6 +140,19 @@ export default class MapContainer extends React.Component {
 			bikelyPopupCoords: null,
 			popupPoint: null
 		})
+	}
+	
+	toggleLayer(event) {
+		const clickedLayer = event.target.id?.slice(6); // remove the layer- prefix
+		const layer = this.map.current.getLayer(clickedLayer);
+		
+		// Toggle layer visibility by changing the layout object's visibility property.
+		if (layer.getLayoutProperty('visibility') !== 'none') {
+			layer.setLayoutProperty('visibility', 'none');
+		} else {
+			layer.setLayoutProperty('visibility', 'visible');
+		}
+		// TODO there is no update on the map
 	}
 	
 	addMarker(event) {
@@ -238,21 +277,9 @@ export default class MapContainer extends React.Component {
 			});
 	}
 	
-	// https://www.lostcreekdesigns.co/writing/a-complete-guide-to-sources-and-layers-in-react-and-mapbox-gl-js/
 	render() {
 		return (
 			<div className="map-wrap">
-				<div id="controls">
-					<SearchField onChoose={this.onStartChoose} />
-					<Menu reset={this.resetRoute} />
-					<MapFeaturesControl map={this.map.current} />
-					<Backdrop
-						sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-						open={this.state.isBackdropOpen}
-					>
-						<CircularProgress color="inherit" />
-					</Backdrop>
-				</div>
 				<Map
 					id="map"
 					ref={this.map}
@@ -266,6 +293,7 @@ export default class MapContainer extends React.Component {
 					interactive
 					mapStyle='https://byvekstavtale.leonard.io/tiles/bicycle/v1/style.json'
 					onClick={this.onMapClick}
+					onLoad={this.addLegend}
 				>
 					<Source type="geojson" id="route"
 					        data={{
@@ -309,6 +337,15 @@ export default class MapContainer extends React.Component {
 					/>
 					{this.state.isBikelyPopupOpen && (
 						<BikelyPopup lngLat={this.state.popupCoords} onClose={this.onPopupClose} point={this.state.popupPoint} />)}
+					<SearchField onChoose={this.onStartChoose} />
+					<Menu reset={this.resetRoute} />
+					<MapFeaturesControl toggleLayer={this.toggleLayer} />
+					<Backdrop
+						sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+						open={this.state.isBackdropOpen}
+					>
+						<CircularProgress color="inherit" />
+					</Backdrop>
 					<GeolocateControl
 						position="top-left"
 						positionOptions={{enableHighAccuracy: true}}
