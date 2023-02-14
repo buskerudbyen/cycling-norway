@@ -9,6 +9,7 @@ import {Backdrop, CircularProgress} from "@mui/material";
 import polyline from '@mapbox/polyline';
 import BikelyPopup from "./BikelyPopup";
 import {MaplibreLegendControl} from "@watergis/maplibre-gl-legend";
+import SportsScoreIcon from '@mui/icons-material/SportsScore';
 
 const INITIAL_LAT = 59.7390;
 const INITIAL_LON = 10.1878;
@@ -350,10 +351,11 @@ export default class MapContainer extends React.Component {
 						<Marker
 							longitude={this.state.dest?.lng}
 							latitude={this.state.dest?.lat}
-							color="red"
 							anchor="center"
 							draggable
-							onDragEnd={this.updateDestCoord} />)}
+							onDragEnd={this.updateDestCoord} >
+							<SportsScoreIcon fontSize="large" />
+						</Marker>)}
 				</Map>
 			</div>
 		);
