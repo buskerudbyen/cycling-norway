@@ -280,6 +280,7 @@ export default class MapContainer extends React.Component {
 					mapStyle='https://byvekstavtale.leonard.io/tiles/bicycle/v1/style.json'
 					onClick={this.onMapClick}
 					onLoad={this.addLegend}
+					hash={true}
 				>
 					<Source type="geojson" id="route"
 					        data={{
