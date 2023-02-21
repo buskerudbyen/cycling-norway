@@ -21,12 +21,12 @@ const TARGETS = {
 	"bicycle-route-local-background": "Lokale sykkelruter",
 	"bicycle-route-national-overlay": "Nasjonale sykkelruter",
 	"bicycle-route-local-overlay": "Lokale sykkelruter",
-	"poi-bicycle-parking-public": "Offentlig sykkelparkering",
+	"poi-bicycle-parking-public": "Sykkelparkering",
 	"poi-bicycle-parking-private": "Privat sykkelparkering",
 	"poi-bicycle-parking-lockers": "Sykkelskap",
 	"poi-bicycle-parking-shed": "Sykkelhotel",
-	"poi-bicycle-parking-covered": "Overbygd sykkelparkering",
-	"poi-bicycle-repair-station": "Sykkelreparasjonsstasjon"
+	"poi-bicycle-parking-covered": "Sykkelparkering m/tak",
+	"poi-bicycle-repair-station": "Sykkelmekk-stasjon"
 };
 
 export default class MapContainer extends React.Component {
