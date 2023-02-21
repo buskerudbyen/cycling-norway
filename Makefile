@@ -1,11 +1,16 @@
 SHELL := /bin/bash
-DEST := /home/lenni/www/
+DEST := /home/lenni/www/cycling-norway/
 
-deploy:
-	rsync -rC \
+.PHONY: build
+
+build:
+	npm run build
+
+deploy: build
+	rsync -rCv \
 		-e "ssh" --rsync-path="sudo rsync" \
 		--exclude 'Makefile' \
-		`pwd` \
+		`pwd`/build/ \
 		lenni@leonard.io:${DEST}
 	ssh lenni@leonard.io 'sudo chown www-data:www-data -R ${DEST}'
 
