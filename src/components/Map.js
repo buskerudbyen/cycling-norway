@@ -10,6 +10,7 @@ import polyline from '@mapbox/polyline';
 import BikelyPopup from "./BikelyPopup";
 import {MaplibreLegendControl} from "@watergis/maplibre-gl-legend";
 import SportsScoreIcon from '@mui/icons-material/SportsScore';
+import SnowPlowPopup from "./SnowPlowPopup";
 
 const INITIAL_LAT = 59.7390;
 const INITIAL_LON = 10.1878;
@@ -42,11 +43,14 @@ export default class MapContainer extends React.Component {
 			dest: null,
 			isBackdropOpen: false,
 			isBikelyPopupOpen: false,
+			isSnowPlowPopupOpen: false,
 			popupCoords: null,
 			popupPoint: null
 		}
 		this.map = React.createRef();
+		this.mapOnLoad = this.mapOnLoad.bind(this);
 		this.addLegend = this.addLegend.bind(this);
+		this.loadSnowPlowData = this.loadSnowPlowData.bind(this);
 		this.resetRoute = this.resetRoute.bind(this);
 		this.onStartChoose = this.onStartChoose.bind(this);
 		this.onPopupClose = this.onPopupClose.bind(this);
@@ -88,6 +92,45 @@ export default class MapContainer extends React.Component {
 		}), 'top-right');
 	}
 	
+	loadSnowPlowData() {
+		fetch("https://cycling-norway.leonard.io/snow-plow-konnerudgata", {
+			"method": "GET",
+			"headers": {
+				"Origin": "http://135.181.82.102/snow-plow-konnerudgata",
+			}
+		}).then(response => response.json())
+			.then(jsonResponse => {
+				// Separate data into two arrays, depending on the age.
+				
+				const greenLines = [];
+				const redLines = [];
+				
+				for (let feature of jsonResponse.features) {
+					if (process.env.REACT_APP_TEST_MODE) {
+						// For when we do not have accurate snow plow data.
+						if (Math.floor(1 + Math.random() * (100 - 1)) % 2 === 0) {
+							redLines.push(feature);
+						} else {
+							greenLines.push(feature);
+						}
+					} else if (feature.properties.isOld) {
+						redLines.push(feature);
+					} else {
+						greenLines.push(feature);
+					}
+				}
+				
+				this.map.current.getSource('snow-plow-green').setData({
+					type: "FeatureCollection",
+					features: greenLines
+				});
+				this.map.current.getSource('snow-plow-red').setData({
+					type: "FeatureCollection",
+					features: redLines
+				});
+			});
+	}
+	
 	resetRoute() {
 		this.setState({
 			hasStart: false,
@@ -118,16 +161,28 @@ export default class MapContainer extends React.Component {
 	lngLatToString = (lngLat) => `${lngLat.lat.toFixed(5)},${lngLat.lng.toFixed(5)}`;
 	
 	onMapClick(event) {
-		const features = this.map.current.queryRenderedFeatures(event.point, {
+		const bikelyFeatures = this.map.current.queryRenderedFeatures(event.point, {
 			layers: ["poi-bikely"]
-		})
-		if (features.length > 0) {
-			const feature = features[0].properties;
+		});
+		const snowPlowFeatures = this.map.current.queryRenderedFeatures(event.point, {
+			layers: ["poi-snow-plow-warn", "poi-snow-plow-ok"]
+		});
+		if (bikelyFeatures.length > 0) {
+			const feature = bikelyFeatures[0].properties;
 			this.setState({
+				isSnowPlowPopupOpen: false,
 				isBikelyPopupOpen: true,
 				popupCoords: event.lngLat,
 				popupPoint: feature
-			})
+			});
+		} else if (snowPlowFeatures.length > 0) {
+			const feature = snowPlowFeatures[0].properties;
+			this.setState({
+				isSnowPlowPopupOpen: true,
+				isBikelyPopupOpen: false,
+				popupCoords: event.lngLat,
+				popupPoint: feature
+			});
 		} else {
 			this.addMarker(event);
 		}
@@ -136,7 +191,7 @@ export default class MapContainer extends React.Component {
 	onPopupClose() {
 		this.setState({
 			isBikelyPopupOpen: false,
-			bikelyPopupCoords: null,
+			isSnowPlowPopupOpen: false,
 			popupPoint: null
 		})
 	}
@@ -195,7 +250,7 @@ export default class MapContainer extends React.Component {
 		then wrap each coordinate pair in `extend` to include them
 		in the bounds result. A variation of this technique could be
 		applied to zooming to the bounds of multiple Points or
-		Polygon geomtetries, which would require wrapping all
+		Polygon geometries, which would require wrapping all
 		the coordinates with the extend method. */
 		
 		let bounds = coordinates.reduce(function (bounds, coord) {
@@ -263,6 +318,11 @@ export default class MapContainer extends React.Component {
 			});
 	}
 	
+	mapOnLoad() {
+		this.addLegend();
+		this.loadSnowPlowData();
+	}
+	
 	render() {
 		return (
 			<div className="map-wrap">
@@ -279,15 +339,14 @@ export default class MapContainer extends React.Component {
 					interactive
 					mapStyle='https://byvekstavtale.leonard.io/tiles/bicycle/v1/style.json'
 					onClick={this.onMapClick}
-					onLoad={this.addLegend}
+					onLoad={this.mapOnLoad}
 					hash={true}
 				>
 					<Source type="geojson" id="route"
 					        data={{
 								"type": "FeatureCollection",
 								"features": []
-							}}
-					/>
+							}}/>
 					<Layer type="line" id="route" source="route"
 					       layout={{
 						       'line-join': 'round',
@@ -320,10 +379,37 @@ export default class MapContainer extends React.Component {
 							"text-halo-blur": 0.5,
 							"text-halo-color": "#858484",
 							"text-halo-width": 1
-						}}
-					/>
+						}}/>
+					<Source type="geojson" id="snow-plow-green" data={{
+						"type": "FeatureCollection",
+						"features": []
+						}}/>
+					<Layer type="line" id="poi-snow-plow-ok" source="snow-plow-green"
+					       layout={{
+						       'line-join': 'round',
+						       'line-cap': 'round'
+					       }}
+					       paint={{
+						       'line-color': '#00FF00',
+						       'line-width': 5
+					       }}/>
+					<Source type="geojson" id="snow-plow-red" data={{
+						"type": "FeatureCollection",
+						"features": []
+					}}/>
+					<Layer type="line" id="poi-snow-plow-warn" source="snow-plow-red"
+					       layout={{
+						       'line-join': 'round',
+						       'line-cap': 'round'
+					       }}
+					       paint={{
+						       'line-color': '#FF0000',
+						       'line-width': 5
+					       }}/>
 					{this.state.isBikelyPopupOpen && (
 						<BikelyPopup lngLat={this.state.popupCoords} onClose={this.onPopupClose} point={this.state.popupPoint} />)}
+					{this.state.isSnowPlowPopupOpen && (
+						<SnowPlowPopup lngLat={this.state.popupCoords} onClose={this.onPopupClose} point={this.state.popupPoint} />)}
 					<SearchField onChoose={this.onStartChoose} />
 					<Menu reset={this.resetRoute} />
 					<Backdrop
