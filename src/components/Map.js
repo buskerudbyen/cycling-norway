@@ -106,7 +106,6 @@ export default class MapContainer extends React.Component {
 				const url = new URL(window.location);
 				const simulate = url.searchParams.has("simulateSnowPlows");
 
-				console.log(url.searchParams)
 				for (let feature of jsonResponse.features) {
 					if (simulate) {
 						// For when we do not have accurate snow plow data.
