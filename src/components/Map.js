@@ -93,7 +93,7 @@ export default class MapContainer extends React.Component {
 	}
 	
 	loadSnowPlowData() {
-		fetch("http://135.181.82.102/snow-plow-konnerudgata", {
+		fetch("https://cycling-norway.leonard.io/snow-plow-konnerudgata", {
 			"method": "GET",
 			"headers": {
 				"Origin": "http://135.181.82.102/snow-plow-konnerudgata",
