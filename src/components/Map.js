@@ -101,9 +101,14 @@ export default class MapContainer extends React.Component {
 				
 				const greenLines = [];
 				const redLines = [];
-				
+
+
+				const url = new URL(window.location);
+				const simulate = url.searchParams.has("simulateSnowPlows");
+
+				console.log(url.searchParams)
 				for (let feature of jsonResponse.features) {
-					if (process.env.REACT_APP_TEST_MODE) {
+					if (simulate) {
 						// For when we do not have accurate snow plow data.
 						if (Math.floor(1 + Math.random() * (100 - 1)) % 2 === 0) {
 							redLines.push(feature);
