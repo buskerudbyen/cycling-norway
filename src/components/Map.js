@@ -53,6 +53,7 @@ export default class MapContainer extends React.Component {
 		this.loadSnowPlowData = this.loadSnowPlowData.bind(this);
 		this.resetRoute = this.resetRoute.bind(this);
 		this.onStartChoose = this.onStartChoose.bind(this);
+		this.onDestChoose = this.onDestChoose.bind(this);
 		this.onPopupClose = this.onPopupClose.bind(this);
 		this.onMapClick = this.onMapClick.bind(this);
 		this.addMarker = this.addMarker.bind(this);
@@ -150,7 +151,29 @@ export default class MapContainer extends React.Component {
 	
 	onStartChoose(event, value) {
 		if (value != null && this.map.current != null) {
-			this.map.current.setCenter(value.geometry.coordinates)
+			let coords = new maplibregl.LngLat(value.geometry.coordinates[0], value.geometry.coordinates[1]);
+			this.map.current.setCenter(value.geometry.coordinates);
+			console.error(value.geometry)
+			this.setState({
+				hasStart: true,
+				start: coords
+			});
+			if (this.state.hasEnd) {
+				this.getQuery(this.state.start, coords);
+			}
+		}
+	}
+	
+	onDestChoose(event, value) {
+		if (value != null && this.map.current != null) {
+			let coords = new maplibregl.LngLat(value.geometry.coordinates[0], value.geometry.coordinates[1]);
+			this.setState({
+				hasEnd: true,
+				dest: coords
+			});
+			if (this.state.hasStart) {
+				this.getQuery(this.state.start, coords);
+			}
 		}
 	}
 	
@@ -411,7 +434,10 @@ export default class MapContainer extends React.Component {
 						<BikelyPopup lngLat={this.state.popupCoords} onClose={this.onPopupClose} point={this.state.popupPoint} />)}
 					{this.state.isSnowPlowPopupOpen && (
 						<SnowPlowPopup lngLat={this.state.popupCoords} onClose={this.onPopupClose} point={this.state.popupPoint} />)}
-					<SearchField onChoose={this.onStartChoose} />
+					<div id="searchFields" >
+						<SearchField onChoose={this.onStartChoose} labelText="Fra" />
+						<SearchField onChoose={this.onDestChoose} labelText="Til" />
+					</div>
 					<Menu reset={this.resetRoute} />
 					<Backdrop
 						sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}

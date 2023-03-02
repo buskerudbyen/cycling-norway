@@ -11,11 +11,15 @@
     height: 100%;
 }
 
-.autocomplete {
-    background-color: #fff;
+#searchFields {
     position: relative;
     top: 10px;
     left: 50px;
+    display: flex;
+}
+
+.autocomplete {
+    background-color: #fff;
 }
 
 .menu {
