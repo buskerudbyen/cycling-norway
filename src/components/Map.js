@@ -153,13 +153,12 @@ export default class MapContainer extends React.Component {
 		if (value != null && this.map.current != null) {
 			let coords = new maplibregl.LngLat(value.geometry.coordinates[0], value.geometry.coordinates[1]);
 			this.map.current.setCenter(value.geometry.coordinates);
-			console.error(value.geometry)
 			this.setState({
 				hasStart: true,
 				start: coords
 			});
 			if (this.state.hasEnd) {
-				this.getQuery(this.state.start, coords);
+				this.getQuery(coords, this.state.dest);
 			}
 		}
 	}
