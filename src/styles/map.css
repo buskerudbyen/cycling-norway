@@ -16,13 +16,12 @@
         position: relative;
         top: 10px;
         left: 50px;
-        display: flex;
     }
 
     .menu {
         position: absolute;
-        top: 75px;
-        left: 45px;
+        top: 145px;
+        left: 50px;
     }
 
     .maplibregl-legend-list {
@@ -61,10 +60,11 @@
 
 .autocomplete {
     background-color: #fff;
+    margin-bottom: 5px;
 }
 
 .menu button {
-    margin: 5px;
+    margin-right: 5px;
 }
 
 .maplibregl-legend-list {
