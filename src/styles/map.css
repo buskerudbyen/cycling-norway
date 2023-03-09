@@ -11,27 +11,63 @@
     height: 100%;
 }
 
-.autocomplete {
-    background-color: #fff;
-    position: relative;
-    top: 10px;
-    left: 50px;
+@media only screen and (min-width: 900px) {
+    #searchFields {
+        position: relative;
+        top: 10px;
+        left: 50px;
+    }
+
+    .menu {
+        position: absolute;
+        top: 145px;
+        left: 50px;
+    }
+
+    .maplibregl-legend-list {
+        width: 200px;
+    }
+}
+
+@media only screen and (max-width: 900px) {
+    #searchFields {
+        position: relative;
+        top: 50px;
+        left: 10px;
+    }
+
+    .menu {
+        position: absolute;
+        top: 185px;
+        left: 10px;
+    }
+
+    .maplibregl-legend-list {
+        width: 180px;
+    }
+}
+
+@media only screen and (max-width: 510px) {
+    .autocomplete {
+        width: 220px !important;
+    }
 }
 
 .menu {
-    position: absolute;
-    top: 75px;
-    left: 45px;
     z-index: 1;
     padding: 0;
 }
 
+.autocomplete {
+    background-color: #fff;
+    margin-bottom: 5px;
+}
+
 .menu button {
-    margin: 5px;
+    margin-right: 5px;
 }
 
 .maplibregl-legend-list {
-    width: 200px;
     overflow-y: auto;
     max-height: calc(100vh * 0.7);
 }
