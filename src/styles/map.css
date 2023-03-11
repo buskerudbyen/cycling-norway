@@ -45,11 +45,19 @@
     .maplibregl-legend-list {
         width: 180px;
     }
+
+    .modal-box {
+        width: 400px;
+    }
 }
 
 @media only screen and (max-width: 510px) {
     .autocomplete {
         width: 220px !important;
+    }
+
+    .modal-box {
+        width: 250px;
     }
 }
 
@@ -65,6 +73,12 @@
 
 .menu button {
     margin-right: 5px;
+}
+
+.modal-box {
+    word-wrap: break-word;
+    overflow-y: auto;
+    max-height: 80%;
 }
 
 .maplibregl-legend-list {
