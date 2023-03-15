@@ -94,43 +94,41 @@ export default class MapContainer extends React.Component {
 	}
 	
 	loadSnowPlowData() {
-		fetch("https://cycling-norway.leonard.io/snow-plow-konnerudgata", {
-			"method": "GET"
-		}).then(response => response.json())
-			.then(jsonResponse => {
-				// Separate data into two arrays, depending on the age.
-				
-				const greenLines = [];
-				const redLines = [];
-
-
-				const url = new URL(window.location);
-				const simulate = url.searchParams.has("simulateSnowPlows");
-
-				for (let feature of jsonResponse.features) {
-					if (simulate) {
-						// For when we do not have accurate snow plow data.
-						if (Math.floor(1 + Math.random() * (100 - 1)) % 2 === 0) {
-							redLines.push(feature);
-						} else {
-							greenLines.push(feature);
-						}
-					} else if (feature.properties.isOld) {
-						redLines.push(feature);
-					} else {
-						greenLines.push(feature);
-					}
+		const roadOk = [];
+		const roadWarn = [];
+		if (url.searchParams.has("simulateSnowPlows")) {
+			// For when we do not have accurate snow plow data.
+			let data = require('../assets/snow-plow-example.json');
+			for (let feature of data.features) {
+				if (Math.floor(1 + Math.random() * (100 - 1)) % 2 === 0) {
+					roadWarn.push(feature);
+				} else {
+					roadOk.push(feature);
 				}
-				
-				this.map.current.getSource('snow-plow-green').setData({
-					type: "FeatureCollection",
-					features: greenLines
+			}
+		} else {
+			fetch("https://cycling-norway.leonard.io/snow-plow-konnerudgata", {
+				"method": "GET"
+			}).then(response => response.json())
+				.then(jsonResponse => {
+					// Separate data into two arrays, depending on the age.
+					for (let feature of jsonResponse.features) {
+						if (feature.properties.isOld) {
+							roadWarn.push(feature);
+						} else {
+							roadOk.push(feature);
+						}
+					}
 				});
-				this.map.current.getSource('snow-plow-red').setData({
-					type: "FeatureCollection",
-					features: redLines
-				});
-			});
+		}
+		this.map.current.getSource('snow-plow-ok').setData({
+			type: "FeatureCollection",
+			features: roadOk
+		});
+		this.map.current.getSource('snow-plow-warn').setData({
+			type: "FeatureCollection",
+			features: roadWarn
+		});
 	}
 	
 	resetRoute() {
@@ -403,11 +401,11 @@ export default class MapContainer extends React.Component {
 							"text-halo-color": "#858484",
 							"text-halo-width": 1
 						}}/>
-					<Source type="geojson" id="snow-plow-green" data={{
+					<Source type="geojson" id="snow-plow-ok" data={{
 						"type": "FeatureCollection",
 						"features": []
 						}}/>
-					<Layer type="line" id="poi-snow-plow-ok" source="snow-plow-green"
+					<Layer type="line" id="poi-snow-plow-ok" source="snow-plow-ok"
 					       layout={{
 						       'line-join': 'round',
 						       'line-cap': 'round'
@@ -416,11 +414,11 @@ export default class MapContainer extends React.Component {
 						       'line-color': '#00FF00',
 						       'line-width': 5
 					       }}/>
-					<Source type="geojson" id="snow-plow-red" data={{
+					<Source type="geojson" id="snow-plow-warn" data={{
 						"type": "FeatureCollection",
 						"features": []
 					}}/>
-					<Layer type="line" id="poi-snow-plow-warn" source="snow-plow-red"
+					<Layer type="line" id="poi-snow-plow-warn" source="snow-plow-warn"
 					       layout={{
 						       'line-join': 'round',
 						       'line-cap': 'round'
