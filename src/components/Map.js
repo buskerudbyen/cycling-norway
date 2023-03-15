@@ -27,7 +27,9 @@ const TARGETS = {
 	"poi-bicycle-parking-lockers": "Sykkelskap",
 	"poi-bicycle-parking-shed": "Sykkelhotel",
 	"poi-bicycle-parking-covered": "Sykkelparkering m/tak",
-	"poi-bicycle-repair-station": "Sykkelmekk-stasjon"
+	"poi-bicycle-repair-station": "Sykkelmekk-stasjon",
+	"poi-snow-plow-ok": "0-3 timer siden sist brøyting",
+	"poi-snow-plow-warn": "3 timer eller senere"
 };
 
 export default class MapContainer extends React.Component {
@@ -94,6 +96,11 @@ export default class MapContainer extends React.Component {
 	}
 	
 	loadSnowPlowData() {
+		const url = new URL(window.location);
+		if (!url.searchParams.has("showSnowPlows")) {
+			return;
+		}
+		
 		const roadOk = [];
 		const roadWarn = [];
 		if (url.searchParams.has("simulateSnowPlows")) {
@@ -424,7 +431,7 @@ export default class MapContainer extends React.Component {
 						       'line-cap': 'round'
 					       }}
 					       paint={{
-						       'line-color': '#FF0000',
+						       'line-color': '#f69a20',
 						       'line-width': 5
 					       }}/>
 					{this.state.isBikelyPopupOpen && (
