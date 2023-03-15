@@ -27,7 +27,9 @@ const TARGETS = {
 	"poi-bicycle-parking-lockers": "Sykkelskap",
 	"poi-bicycle-parking-shed": "Sykkelhotel",
 	"poi-bicycle-parking-covered": "Sykkelparkering m/tak",
-	"poi-bicycle-repair-station": "Sykkelmekk-stasjon"
+	"poi-bicycle-repair-station": "Sykkelmekk-stasjon",
+	"poi-snow-plow-ok": "0-3 timer siden sist brøyting",
+	"poi-snow-plow-warn": "3 timer eller senere"
 };
 
 export default class MapContainer extends React.Component {
@@ -45,7 +47,8 @@ export default class MapContainer extends React.Component {
 			isBikelyPopupOpen: false,
 			isSnowPlowPopupOpen: false,
 			popupCoords: null,
-			popupPoint: null
+			popupPoint: null,
+			searchFieldsOpen: true
 		}
 		this.map = React.createRef();
 		this.mapOnLoad = this.mapOnLoad.bind(this);
@@ -59,6 +62,7 @@ export default class MapContainer extends React.Component {
 		this.addMarker = this.addMarker.bind(this);
 		this.drawPolyline = this.drawPolyline.bind(this);
 		this.getQuery = this.getQuery.bind(this);
+		this.toggleSearchFields = this.toggleSearchFields.bind(this);
 	}
 	
 	componentDidMount() {
@@ -341,6 +345,12 @@ export default class MapContainer extends React.Component {
 			});
 	}
 	
+	toggleSearchFields() {
+		this.setState(prevState => ({
+			searchFieldsOpen: !prevState.searchFieldsOpen
+		}));
+	}
+	
 	mapOnLoad() {
 		this.addLegend();
 		this.loadSnowPlowData();
@@ -433,11 +443,11 @@ export default class MapContainer extends React.Component {
 						<BikelyPopup lngLat={this.state.popupCoords} onClose={this.onPopupClose} point={this.state.popupPoint} />)}
 					{this.state.isSnowPlowPopupOpen && (
 						<SnowPlowPopup lngLat={this.state.popupCoords} onClose={this.onPopupClose} point={this.state.popupPoint} />)}
-					<div id="searchFields" >
-						<SearchField onChoose={this.onStartChoose} labelText="Fra" />
-						<SearchField onChoose={this.onDestChoose} labelText="Til" />
+					<div id="searchFields">
+						<SearchField onChoose={this.onStartChoose} labelText="Fra" hidden={!this.state.searchFieldsOpen} />
+						<SearchField onChoose={this.onDestChoose} labelText="Til" hidden={!this.state.searchFieldsOpen} />
 					</div>
-					<Menu reset={this.resetRoute} />
+					<Menu reset={this.resetRoute} toggleSearch={this.toggleSearchFields} />
 					<Backdrop
 						sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
 						open={this.state.isBackdropOpen}
