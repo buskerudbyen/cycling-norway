@@ -1,7 +1,7 @@
 import {Autocomplete, debounce, TextField} from "@mui/material";
 import React, {useState} from "react";
 
-export default function SearchField({ onChoose, labelText }) {
+export default function SearchField({ onChoose, labelText, hidden }) {
 	let [options, setOptions] = useState([]);
 	
 	const inputChanged = (event, value) => {
@@ -38,6 +38,7 @@ export default function SearchField({ onChoose, labelText }) {
 		              sx={{ width: 300 }}
 		              renderInput={(params) => <TextField {...params} label={labelText} />}
 		              onChange={onChoose}
+		              hidden={hidden}
 		/>
 	);
 }

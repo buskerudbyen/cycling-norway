@@ -45,7 +45,8 @@ export default class MapContainer extends React.Component {
 			isBikelyPopupOpen: false,
 			isSnowPlowPopupOpen: false,
 			popupCoords: null,
-			popupPoint: null
+			popupPoint: null,
+			searchFieldsOpen: true
 		}
 		this.map = React.createRef();
 		this.mapOnLoad = this.mapOnLoad.bind(this);
@@ -59,9 +60,12 @@ export default class MapContainer extends React.Component {
 		this.addMarker = this.addMarker.bind(this);
 		this.drawPolyline = this.drawPolyline.bind(this);
 		this.getQuery = this.getQuery.bind(this);
+		this.toggleSearchFields = this.toggleSearchFields.bind(this);
 	}
 	
 	componentDidMount() {
+		window.addEventListener("resize", this.updateBySize.bind(this));
+		
 		const url = new URL(window.location);
 		if (url.searchParams.has("from") && url.searchParams.has("to")) {
 			const from = this.parseLngLat(url.searchParams.get("from"));
@@ -74,6 +78,12 @@ export default class MapContainer extends React.Component {
 			})
 			this.getQuery(from, to);
 		}
+	}
+	
+	updateBySize() {
+		this.setState({
+			searchFieldsOpen: window.innerWidth > 450
+		});
 	}
 	
 	getAttributionText() {
@@ -341,6 +351,12 @@ export default class MapContainer extends React.Component {
 			});
 	}
 	
+	toggleSearchFields() {
+		this.setState(prevState => ({
+			searchFieldsOpen: !prevState.searchFieldsOpen
+		}));
+	}
+	
 	mapOnLoad() {
 		this.addLegend();
 		this.loadSnowPlowData();
@@ -433,11 +449,11 @@ export default class MapContainer extends React.Component {
 						<BikelyPopup lngLat={this.state.popupCoords} onClose={this.onPopupClose} point={this.state.popupPoint} />)}
 					{this.state.isSnowPlowPopupOpen && (
 						<SnowPlowPopup lngLat={this.state.popupCoords} onClose={this.onPopupClose} point={this.state.popupPoint} />)}
-					<div id="searchFields" >
-						<SearchField onChoose={this.onStartChoose} labelText="Fra" />
-						<SearchField onChoose={this.onDestChoose} labelText="Til" />
+					<div id="searchFields">
+						<SearchField onChoose={this.onStartChoose} labelText="Fra" hidden={!this.state.searchFieldsOpen} />
+						<SearchField onChoose={this.onDestChoose} labelText="Til" hidden={!this.state.searchFieldsOpen} />
 					</div>
-					<Menu reset={this.resetRoute} />
+					<Menu reset={this.resetRoute} toggleSearch={this.toggleSearchFields} />
 					<Backdrop
 						sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
 						open={this.state.isBackdropOpen}
@@ -447,7 +463,8 @@ export default class MapContainer extends React.Component {
 					<GeolocateControl
 						position="top-left"
 						positionOptions={{enableHighAccuracy: true}}
-						trackUserLocation={true}
+						showAccuracyCircle={true}
+						trackUserLocation={false}
 					/>
 					<NavigationControl position="bottom-left" showCompass showZoom />
 					<AttributionControl position="bottom-right" compact={false}

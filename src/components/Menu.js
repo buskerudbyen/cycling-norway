@@ -10,6 +10,7 @@ class Menu extends React.Component {
 		this.toggleHelpPopup = this.toggleHelpPopup.bind(this);
 		this.closeHelpPopup = this.closeHelpPopup.bind(this);
 		this.resetRoute = this.resetRoute.bind(this);
+		this.toggleSearch = this.toggleSearch.bind(this);
 		
 		this.style = {
 			position: 'absolute',
@@ -21,6 +22,10 @@ class Menu extends React.Component {
 			boxShadow: 24,
 			p: 2,
 		};
+	}
+	
+	toggleSearch() {
+		this.props.toggleSearch();
 	}
 	
 	resetRoute() {
@@ -42,6 +47,10 @@ class Menu extends React.Component {
 	render() {
 		return (
 			<div className="menu">
+				<Button id="searchFieldsButton"
+				        variant={'contained'}
+				        size={'small'}
+				        onClick={this.toggleSearch}>Tekstsøk</Button>
 				<Button id={"reset"} variant={'contained'} size={'small'} onClick={this.resetRoute}>Nullstill rute</Button>
 				<Button id={"show-help"} variant={'contained'} size={'small'} onClick={this.toggleHelpPopup}>Hjelp</Button>
 				
