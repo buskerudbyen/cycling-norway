@@ -66,6 +66,8 @@ export default class MapContainer extends React.Component {
 	}
 	
 	componentDidMount() {
+		window.addEventListener("resize", this.updateBySize.bind(this));
+		
 		const url = new URL(window.location);
 		if (url.searchParams.has("from") && url.searchParams.has("to")) {
 			const from = this.parseLngLat(url.searchParams.get("from"));
@@ -78,6 +80,12 @@ export default class MapContainer extends React.Component {
 			})
 			this.getQuery(from, to);
 		}
+	}
+	
+	updateBySize() {
+		this.setState({
+			searchFieldsOpen: window.innerWidth > 450
+		});
 	}
 	
 	getAttributionText() {
