@@ -1,17 +1,13 @@
 .map-wrap {
     position: relative;
-    width: 100%;
-    height: 100vh;
-    overflow: hidden;
-}
-
-#map {
-    position: absolute;
-    width: 100%;
-    height: 100%;
+    width: 100vw;
 }
 
 @media only screen and (min-width: 450px) {
+    .map-wrap {
+        height: 100vh;
+    }
+
     .menu {
         position: absolute;
         top: 10px;
@@ -30,6 +26,11 @@
 }
 
 @media only screen and (max-width: 450px) {
+    .map-wrap {
+        height: 95vh;
+        height: 100svh;
+    }
+
     .menu {
         position: absolute;
         top: 10px;
