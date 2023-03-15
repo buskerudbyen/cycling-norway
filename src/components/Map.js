@@ -465,7 +465,8 @@ export default class MapContainer extends React.Component {
 					<GeolocateControl
 						position="top-left"
 						positionOptions={{enableHighAccuracy: true}}
-						trackUserLocation={true}
+						showAccuracyCircle={true}
+						trackUserLocation={false}
 					/>
 					<NavigationControl position="bottom-left" showCompass showZoom />
 					<AttributionControl position="bottom-right" compact={false}
