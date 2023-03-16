@@ -97,23 +97,10 @@ export default class MapContainer extends React.Component {
 	
 	loadSnowPlowData() {
 		const url = new URL(window.location);
-		if (!url.searchParams.has("showSnowPlows")) {
-			return;
-		}
-		
 		const roadOk = [];
 		const roadWarn = [];
-		if (url.searchParams.has("simulateSnowPlows")) {
-			// For when we do not have accurate snow plow data.
-			let data = require('../assets/snow-plow-example.json');
-			for (let feature of data.features) {
-				if (Math.floor(1 + Math.random() * (100 - 1)) % 2 === 0) {
-					roadWarn.push(feature);
-				} else {
-					roadOk.push(feature);
-				}
-			}
-		} else {
+		
+		if (url.searchParams.has("showSnowPlows")) {
 			fetch("https://cycling-norway.leonard.io/snow-plow-konnerudgata", {
 				"method": "GET"
 			}).then(response => response.json())
@@ -127,7 +114,18 @@ export default class MapContainer extends React.Component {
 						}
 					}
 				});
+		} else if (url.searchParams.has("simulateSnowPlows")) {
+			// For when we do not have accurate snow plow data.
+			let data = require('../assets/snow-plow-example.json');
+			for (let feature of data.features) {
+				if (Math.floor(1 + Math.random() * (100 - 1)) % 2 === 0) {
+					roadWarn.push(feature);
+				} else {
+					roadOk.push(feature);
+				}
+			}
 		}
+		
 		this.map.current.getSource('snow-plow-ok').setData({
 			type: "FeatureCollection",
 			features: roadOk
