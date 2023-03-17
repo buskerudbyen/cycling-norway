@@ -123,6 +123,7 @@ export default class MapContainer extends React.Component {
 							roadOk.push(feature);
 						}
 					}
+					this.drawOnMap(roadOk, roadWarn);
 				});
 		} else if (url.searchParams.has("simulateSnowPlows")) {
 			// For when we do not have accurate snow plow data.
@@ -134,8 +135,11 @@ export default class MapContainer extends React.Component {
 					roadOk.push(feature);
 				}
 			}
+			this.drawOnMap(roadOk, roadWarn);
 		}
-		
+	}
+
+	drawOnMap(roadOk, roadWarn) {
 		this.map.current.getSource('snow-plow-ok').setData({
 			type: "FeatureCollection",
 			features: roadOk
@@ -145,7 +149,7 @@ export default class MapContainer extends React.Component {
 			features: roadWarn
 		});
 	}
-	
+
 	resetRoute() {
 		this.setState({
 			hasStart: false,
