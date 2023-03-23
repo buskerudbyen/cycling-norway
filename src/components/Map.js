@@ -31,7 +31,8 @@ const TARGETS = {
 	"poi-snow-plow-ok": "0-3 timer siden sist brøyting",
 	"poi-snow-plow-warn": "3 timer eller senere",
 	"poi-bicycle-pump-station": "Sykkelpumpe",
-	"poi-bicycle-shop": "Sykkelbutikk"
+	"poi-bicycle-shop": "Sykkelbutikk",
+	"poi-pump-track": "Sykkelbaner"
 };
 
 export default class MapContainer extends React.Component {
