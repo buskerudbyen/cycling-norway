@@ -30,6 +30,7 @@ const TARGETS = {
 	"poi-bicycle-repair-station": "Sykkelmekk-stasjon",
 	"poi-snow-plow-ok": "0-3 timer siden sist brøyting",
 	"poi-snow-plow-warn": "3 timer eller senere",
+	"poi-bicycle-pump-station": "Sykkelpumpe",
 	"poi-bicycle-shop": "Sykkelbutikk"
 };
 
