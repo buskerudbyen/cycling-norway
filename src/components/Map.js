@@ -426,19 +426,6 @@ export default class MapContainer extends React.Component {
 							"text-halo-color": "#858484",
 							"text-halo-width": 1
 						}}/>
-					<Source type="geojson" id="snow-plow-ok" data={{
-						"type": "FeatureCollection",
-						"features": []
-						}}/>
-					<Layer type="line" id="poi-snow-plow-ok" source="snow-plow-ok"
-					       layout={{
-						       'line-join': 'round',
-						       'line-cap': 'round'
-					       }}
-					       paint={{
-						       'line-color': '#00FF00',
-						       'line-width': 5
-					       }}/>
 					<Source type="geojson" id="snow-plow-warn" data={{
 						"type": "FeatureCollection",
 						"features": []
@@ -450,6 +437,19 @@ export default class MapContainer extends React.Component {
 					       }}
 					       paint={{
 						       'line-color': '#f69a20',
+						       'line-width': 5
+					       }}/>
+					<Source type="geojson" id="snow-plow-ok" data={{
+						"type": "FeatureCollection",
+						"features": []
+						}}/>
+					<Layer type="line" id="poi-snow-plow-ok" source="snow-plow-ok"
+					       layout={{
+						       'line-join': 'round',
+						       'line-cap': 'round'
+					       }}
+					       paint={{
+						       'line-color': '#00FF00',
 						       'line-width': 5
 					       }}/>
 					{this.state.isBikelyPopupOpen && (
