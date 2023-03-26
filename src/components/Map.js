@@ -117,7 +117,7 @@ export default class MapContainer extends React.Component {
 				.then(jsonResponse => {
 					// Separate data into two arrays, depending on the age.
 					for (let feature of jsonResponse.features) {
-						if (feature.properties.isOld) {
+						if (feature.properties.isOld === undefined || feature.properties.isOld) {
 							roadWarn.push(feature);
 						} else {
 							roadOk.push(feature);
