@@ -22,6 +22,7 @@
         position: relative;
         top: 50px;
         left: 10px;
+        width: 300px !important;
     }
 }
 
@@ -50,6 +51,7 @@
         position: absolute;
         top: 50px;
         left: 10px;
+        width: 230px !important;
     }
 
     .autocomplete {
