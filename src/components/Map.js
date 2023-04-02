@@ -3,7 +3,6 @@ import maplibregl from "maplibre-gl";
 import '../styles/map.css';
 import 'maplibre-gl/dist/maplibre-gl.css'
 import Menu from './Menu';
-import SearchField from "./SearchField";
 import Map, {AttributionControl, GeolocateControl, Layer, Marker, NavigationControl, Source} from "react-map-gl";
 import {Backdrop, CircularProgress} from "@mui/material";
 import polyline from '@mapbox/polyline';
@@ -11,6 +10,7 @@ import BikelyPopup from "./BikelyPopup";
 import {MaplibreLegendControl} from "@watergis/maplibre-gl-legend";
 import SportsScoreIcon from '@mui/icons-material/SportsScore';
 import SnowPlowPopup from "./SnowPlowPopup";
+import RoutingSidebar from "./RoutingSidebar";
 
 const INITIAL_LAT = 59.7390;
 const INITIAL_LON = 10.1878;
@@ -459,11 +459,11 @@ export default class MapContainer extends React.Component {
 						<BikelyPopup lngLat={this.state.popupCoords} onClose={this.onPopupClose} point={this.state.popupPoint} />)}
 					{this.state.isSnowPlowPopupOpen && (
 						<SnowPlowPopup lngLat={this.state.popupCoords} onClose={this.onPopupClose} point={this.state.popupPoint} />)}
-					<div id="searchFields">
-						<SearchField onChoose={this.onStartChoose} labelText="Fra" hidden={!this.state.searchFieldsOpen} />
-						<SearchField onChoose={this.onDestChoose} labelText="Til" hidden={!this.state.searchFieldsOpen} />
-					</div>
 					<Menu reset={this.resetRoute} toggleSearch={this.toggleSearchFields} />
+					<RoutingSidebar chooseStart={this.onStartChoose}
+					                chooseDest={this.onDestChoose}
+					                hidden={!this.state.searchFieldsOpen}
+					/>
 					<Backdrop
 						sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
 						open={this.state.isBackdropOpen}

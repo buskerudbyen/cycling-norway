@@ -9,20 +9,11 @@
     }
 
     .menu {
-        position: absolute;
-        top: 10px;
-        left: 50px;
+        width: 260px !important;
     }
 
     #searchFieldsButton {
         display: none;
-    }
-
-    #searchFields {
-        position: relative;
-        top: 50px;
-        left: 10px;
-        width: 300px !important;
     }
 }
 
@@ -32,11 +23,8 @@
         height: 100svh;
     }
 
-    .menu {
-        position: absolute;
-        top: 10px;
-        left: 50px;
-        max-width: 90%;
+    #searchFields {
+        width: 220px;
     }
 
     .menu button {
@@ -45,13 +33,6 @@
 
     #searchFieldsButton {
         display: block;
-    }
-
-    #searchFields {
-        position: absolute;
-        top: 50px;
-        left: 10px;
-        width: 230px !important;
     }
 
     .autocomplete {
@@ -69,10 +50,22 @@
     }
 }
 
+#routing {
+    position: absolute;
+    top: 45px;
+    left: 10px;
+}
+
 .menu {
-    z-index: 1;
     padding: 0;
     display: flex;
+    position: absolute;
+    top: 10px;
+    left: 50px;
+}
+
+#searchFields {
+    margin-top: 5px;
 }
 
 .autocomplete {
