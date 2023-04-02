@@ -51,7 +51,9 @@ export default class MapContainer extends React.Component {
 			isSnowPlowPopupOpen: false,
 			popupCoords: null,
 			popupPoint: null,
-			searchFieldsOpen: true
+			searchFieldsOpen: true,
+			routeDuration: null,
+			routeDistance: null
 		}
 		this.map = React.createRef();
 		this.mapOnLoad = this.mapOnLoad.bind(this);
@@ -158,7 +160,9 @@ export default class MapContainer extends React.Component {
 			hasStart: false,
 			start: null,
 			hasEnd: false,
-			dest: null
+			dest: null,
+			routeDuration: null,
+			routeDistance: null
 		});
 		
 		const url = new URL(window.location);
@@ -335,9 +339,9 @@ export default class MapContainer extends React.Component {
 					    }
 					    tripPatterns {
 					      duration
+					      distance
 					      legs {
 					        mode
-					        duration
 					        pointsOnLink {
 					          points
 					        }
@@ -348,12 +352,14 @@ export default class MapContainer extends React.Component {
 		})
 			.then(response => response.json())
 			.then(response => {
-				this.setState({
-					isBackdropOpen: false
-				})
 				const tripPatterns = response.data.trip.tripPatterns;
 				if(tripPatterns.length > 0) {
 					const polyline = response.data.trip.tripPatterns[0].legs.map(l => l.pointsOnLink.points);
+					this.setState({
+						isBackdropOpen: false,
+						routeDuration: response.data.trip.tripPatterns[0].duration,
+						routeDistance: response.data.trip.tripPatterns[0].distance
+					});
 					this.drawPolyline(polyline);
 				} else {
 					alert("Sorry, could not find a bicycle route.")
@@ -463,6 +469,8 @@ export default class MapContainer extends React.Component {
 					<RoutingSidebar chooseStart={this.onStartChoose}
 					                chooseDest={this.onDestChoose}
 					                hidden={!this.state.searchFieldsOpen}
+					                duration={this.state.routeDuration}
+					                distance={this.state.routeDistance}
 					/>
 					<Backdrop
 						sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
