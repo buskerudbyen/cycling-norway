@@ -476,7 +476,7 @@ export default class MapContainer extends React.Component {
 						showAccuracyCircle={true}
 						trackUserLocation={false}
 					/>
-					<NavigationControl position="bottom-left" showCompass showZoom />
+					<NavigationControl position="bottom-left" showCompass showZoom visualizePitch />
 					<AttributionControl position="bottom-right" compact={false}
 					                    customAttribution={this.getAttributionText()} />
 					{this.state.hasStart && (
