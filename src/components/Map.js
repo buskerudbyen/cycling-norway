@@ -30,7 +30,7 @@ const TARGETS = {
 	"poi-bicycle-repair-station": "Sykkelmekk-stasjon",
 	"poi-snow-plow-ok": "0-3 timer siden sist brøyting",
 	"poi-snow-plow-warn": "3 timer eller senere",
-	"poi-snow-plow-snow": "Det snør. Brøyting pågår. Det prioriteres etter kontrakt med veieier",
+	"poi-snow-plow-snow": "Det snør. Brøyting pågår",
 	"poi-bicycle-pump-station": "Sykkelpumpe",
 	"poi-bicycle-shop": "Sykkelbutikk",
 	"poi-pump-track": "Sykkelbaner"
@@ -136,7 +136,9 @@ export default class MapContainer extends React.Component {
 			// For when we do not have accurate snow plow data.
 			let data = require('../assets/snow-plow-example.json');
 			for (let feature of data.features) {
-				if (Math.floor(1 + Math.random() * (100 - 1)) % 2 === 0) {
+				if (data.isSnowing) {
+					roadSnow.push(feature);
+				} else if (Math.floor(1 + Math.random() * (100 - 1)) % 2 === 0) {
 					roadWarn.push(feature);
 				} else {
 					roadOk.push(feature);
@@ -216,7 +218,7 @@ export default class MapContainer extends React.Component {
 			layers: ["poi-bikely"]
 		});
 		const snowPlowFeatures = this.map.current.queryRenderedFeatures(event.point, {
-			layers: ["poi-snow-plow-warn", "poi-snow-plow-ok", "poi-snow-plow-snow"]
+			layers: ["poi-snow-plow-warn", "poi-snow-plow-ok", "poi-snow-plow-snow", "poi-snow-plow-snow-border"]
 		});
 		if (bikelyFeatures.length > 0) {
 			const feature = bikelyFeatures[0].properties;
@@ -467,6 +469,17 @@ export default class MapContainer extends React.Component {
 						"type": "FeatureCollection",
 						"features": []
 					}}/>
+					<Layer type="line" id="poi-snow-plow-snow-border" source="snow-plow-snow"
+					       layout={{
+						       'line-join': 'round',
+						       'line-cap': 'round'
+					       }}
+					       paint={{
+						       'line-color': '#000',
+						       'line-width': 0.5,
+						       'line-gap-width': 5,
+						       'line-opacity': 0.5
+					       }}/>
 					<Layer type="line" id="poi-snow-plow-snow" source="snow-plow-snow"
 					       layout={{
 						       'line-join': 'round',

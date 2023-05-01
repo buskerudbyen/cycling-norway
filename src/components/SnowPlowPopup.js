@@ -11,15 +11,15 @@ class SnowPlowPopup extends React.Component {
 				<table style={{ 'border-collapse': 'collapse'}}>
 					<tbody>
 						<tr>
-							<td><HorizontalRuleIcon htmlColor={'#00FF00'} sx={{ transform: 'rotate(-45deg)' }}/></td>
+							<td><HorizontalRuleIcon htmlColor={'#00FF00'} className="snow-plow-color"/></td>
 							<td>0-3 timer siden sist brøyting</td>
 						</tr>
 						<tr>
-							<td><HorizontalRuleIcon htmlColor={'#f69a20'} sx={{ transform: 'rotate(-45deg)' }}/></td>
+							<td><HorizontalRuleIcon htmlColor={'#f69a20'} className="snow-plow-color"/></td>
 							<td>3 timer eller senere siden sist brøyting</td>
 						</tr>
 						<tr>
-							<td><HorizontalRuleIcon htmlColor={'#fff'} sx={{ transform: 'rotate(-45deg)'}} /></td>
+							<td><HorizontalRuleIcon htmlColor={'#fff'} className="snow-plow-color" /></td>
 							<td>Det snør. Brøyting pågår. Det prioriteres etter kontrakt med veieier</td>
 						</tr>
 					</tbody>
