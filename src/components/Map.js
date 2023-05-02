@@ -30,6 +30,7 @@ const TARGETS = {
 	"poi-bicycle-repair-station": "Sykkelmekk-stasjon",
 	"poi-snow-plow-ok": "0-3 timer siden sist brøyting",
 	"poi-snow-plow-warn": "3 timer eller senere",
+	"poi-snow-plow-snow": "Det snør. Brøyting pågår",
 	"poi-bicycle-pump-station": "Sykkelpumpe",
 	"poi-bicycle-shop": "Sykkelbutikk",
 	"poi-pump-track": "Sykkelbaner",
@@ -115,37 +116,42 @@ export default class MapContainer extends React.Component {
 		const url = new URL(window.location);
 		const roadOk = [];
 		const roadWarn = [];
+		const roadSnow = [];
 		
 		if (url.searchParams.has("showSnowPlows")) {
 			fetch("https://cycling-norway.leonard.io/snow-plow-konnerudgata", {
 				"method": "GET"
 			}).then(response => response.json())
 				.then(jsonResponse => {
-					// Separate data into two arrays, depending on the age.
+					// Separate data into arrays.
 					for (let feature of jsonResponse.features) {
-						if (feature.properties.isOld === undefined || feature.properties.isOld) {
+						if (jsonResponse.isSnowing) {
+							roadSnow.push(feature);
+						} else if (feature.properties.isOld === undefined || feature.properties.isOld) {
 							roadWarn.push(feature);
 						} else {
 							roadOk.push(feature);
 						}
 					}
-					this.drawOnMap(roadOk, roadWarn);
+					this.drawOnMap(roadOk, roadWarn, roadSnow);
 				});
 		} else if (url.searchParams.has("simulateSnowPlows")) {
 			// For when we do not have accurate snow plow data.
 			let data = require('../assets/snow-plow-example.json');
 			for (let feature of data.features) {
-				if (Math.floor(1 + Math.random() * (100 - 1)) % 2 === 0) {
+				if (data.isSnowing) {
+					roadSnow.push(feature);
+				} else if (Math.floor(1 + Math.random() * (100 - 1)) % 2 === 0) {
 					roadWarn.push(feature);
 				} else {
 					roadOk.push(feature);
 				}
 			}
-			this.drawOnMap(roadOk, roadWarn);
+			this.drawOnMap(roadOk, roadWarn, roadSnow);
 		}
 	}
 
-	drawOnMap(roadOk, roadWarn) {
+	drawOnMap(roadOk, roadWarn, roadSnow) {
 		this.map.current.getSource('snow-plow-ok').setData({
 			type: "FeatureCollection",
 			features: roadOk
@@ -153,6 +159,10 @@ export default class MapContainer extends React.Component {
 		this.map.current.getSource('snow-plow-warn').setData({
 			type: "FeatureCollection",
 			features: roadWarn
+		});
+		this.map.current.getSource('snow-plow-snow').setData({
+			type: "FeatureCollection",
+			features: roadSnow
 		});
 	}
 
@@ -213,7 +223,7 @@ export default class MapContainer extends React.Component {
 			layers: ["poi-bikely"]
 		});
 		const snowPlowFeatures = this.map.current.queryRenderedFeatures(event.point, {
-			layers: ["poi-snow-plow-warn", "poi-snow-plow-ok"]
+			layers: ["poi-snow-plow-warn", "poi-snow-plow-ok", "poi-snow-plow-snow", "poi-snow-plow-snow-border"]
 		});
 		if (bikelyFeatures.length > 0) {
 			const feature = bikelyFeatures[0].properties;
@@ -460,6 +470,30 @@ export default class MapContainer extends React.Component {
 					       }}
 					       paint={{
 						       'line-color': '#00FF00',
+						       'line-width': 5
+					       }}/>
+					<Source type="geojson" id="snow-plow-snow" data={{
+						"type": "FeatureCollection",
+						"features": []
+					}}/>
+					<Layer type="line" id="poi-snow-plow-snow-border" source="snow-plow-snow"
+					       layout={{
+						       'line-join': 'round',
+						       'line-cap': 'round'
+					       }}
+					       paint={{
+						       'line-color': '#000',
+						       'line-width': 0.5,
+						       'line-gap-width': 5,
+						       'line-opacity': 0.5
+					       }}/>
+					<Layer type="line" id="poi-snow-plow-snow" source="snow-plow-snow"
+					       layout={{
+						       'line-join': 'round',
+						       'line-cap': 'round'
+					       }}
+					       paint={{
+						       'line-color': '#FFF',
 						       'line-width': 5
 					       }}/>
 					{this.state.isBikelyPopupOpen && (
