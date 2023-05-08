@@ -29,7 +29,7 @@ const TARGETS = {
 	"poi-bicycle-parking-covered": "Sykkelparkering m/tak",
 	"poi-bicycle-repair-station": "Sykkelmekk-stasjon",
 	"poi-snow-plow-ok": "0-3 timer siden sist brøyting",
-	"poi-snow-plow-warn": "3 timer eller senere",
+	"poi-snow-plow-warn": "Brøyting: 3 timer eller senere",
 	"poi-snow-plow-snow": "Det snør. Brøyting pågår",
 	"poi-bicycle-pump-station": "Sykkelpumpe",
 	"poi-bicycle-shop": "Sykkelbutikk",
