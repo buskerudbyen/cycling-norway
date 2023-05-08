@@ -53,7 +53,8 @@ export default class MapContainer extends React.Component {
 			isSnowPlowPopupOpen: false,
 			popupCoords: null,
 			popupPoint: null,
-			searchFieldsOpen: true,
+			searchFieldsOpen: window.innerWidth >= 450,
+			prevWidth: null,
 			routeDuration: null,
 			routeDistance: null
 		}
@@ -90,9 +91,12 @@ export default class MapContainer extends React.Component {
 	}
 	
 	updateBySize() {
-		this.setState({
-			searchFieldsOpen: window.innerWidth > 450
-		});
+		if (this.state.prevWidth !== window.innerWidth) {
+			this.setState({
+				searchFieldsOpen: window.innerWidth >= 450,
+				prevWidth: window.innerWidth
+			});
+		}
 	}
 	
 	getAttributionText() {
