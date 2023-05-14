@@ -32,7 +32,7 @@ class AttributionPanel extends React.Component {
 			<div className="maplibregl-ctrl maplibregl-ctrl-attrib mapboxgl-ctrl mapboxgl-ctrl-attrib">
 				<Button variant="text" size="small" onClick={this.togglePolicyPopup}>Personvern</Button>
 				<a href="https://www.maptiler.com/copyright/" target="_blank" rel="noreferrer">&copy; MapTiler </a>
-				<a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">&copy; OpenStreetMap bidragsytere</a>
+				<a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">&copy; OpenStreetMaps bidragsytere</a>
 				
 				<Modal id={"privacy-policy"} open={this.state.isPolicyPopup} onClose={this.togglePolicyPopup} aria-labelledby="modal-title">
 					<Box sx={this.style} className="modal-box">
