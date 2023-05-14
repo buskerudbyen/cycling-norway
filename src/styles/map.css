@@ -166,3 +166,12 @@
     stroke: gray;
     stroke-opacity: 0.5;
 }
+
+.maplibregl-ctrl-attrib a, .maplibregl-ctrl-attrib button {
+    color: rgba(0, 0, 0, .75);
+    text-decoration: none;
+    letter-spacing: normal;
+    text-transform: none;
+    font-size: 12px;
+    font-family: 'Helvetica Neue', 'Arial', serif;
+}

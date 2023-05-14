@@ -3,7 +3,7 @@ import maplibregl from "maplibre-gl";
 import '../styles/map.css';
 import 'maplibre-gl/dist/maplibre-gl.css'
 import Menu from './Menu';
-import Map, {AttributionControl, GeolocateControl, Layer, Marker, NavigationControl, Source} from "react-map-gl";
+import Map, {GeolocateControl, Layer, Marker, NavigationControl, Source} from "react-map-gl";
 import {Backdrop, CircularProgress} from "@mui/material";
 import polyline from '@mapbox/polyline';
 import BikelyPopup from "./BikelyPopup";
@@ -11,6 +11,7 @@ import {MaplibreLegendControl} from "@watergis/maplibre-gl-legend";
 import SportsScoreIcon from '@mui/icons-material/SportsScore';
 import SnowPlowPopup from "./SnowPlowPopup";
 import RoutingSidebar from "./RoutingSidebar";
+import AttributionPanel from "./AttributionPanel";
 
 const INITIAL_LAT = 59.7390;
 const INITIAL_LON = 10.1878;
@@ -93,14 +94,6 @@ export default class MapContainer extends React.Component {
 		this.setState({
 			searchFieldsOpen: window.innerWidth > 450
 		});
-	}
-	
-	getAttributionText() {
-		return "<p>" +
-			"<a href=\"https://www.maptiler.com/copyright/\" target=\"_blank\">&copy; MapTiler</a>" +
-			"&#32;&#32;&#32;" +
-			"<a href=\"https://www.openstreetmap.org/copyright\" target=\"_blank\">&copy; Map data from OpenStreetMap</a>" +
-			"</p>";
 	}
 	
 	addLegend() {
@@ -520,8 +513,9 @@ export default class MapContainer extends React.Component {
 						trackUserLocation={false}
 					/>
 					<NavigationControl position="bottom-left" showCompass showZoom visualizePitch />
-					<AttributionControl position="bottom-right" compact={false}
-					                    customAttribution={this.getAttributionText()} />
+					<div className="maplibregl-ctrl-bottom-right mapboxgl-ctrl-bottom-right">
+						<AttributionPanel />
+					</div>
 					{this.state.hasStart && (
 						<Marker
 							longitude={this.state.start?.lng}
