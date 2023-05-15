@@ -10,6 +10,7 @@ deploy: build
 	rsync -rCv \
 		-e "ssh" --rsync-path="sudo rsync" \
 		--exclude 'Makefile' \
+		--delete \
 		`pwd`/build/ \
 		lenni@leonard.io:${DEST}
 	ssh lenni@leonard.io 'sudo chown www-data:www-data -R ${DEST}'
