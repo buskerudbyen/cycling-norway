@@ -6,6 +6,7 @@
 @media only screen and (min-width: 450px) {
     .map-wrap {
         height: 100vh;
+        height: 100svh;
     }
 
     .menu {
