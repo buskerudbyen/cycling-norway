@@ -373,7 +373,10 @@ export default class MapContainer extends React.Component {
 					});
 					this.drawPolyline(polyline);
 				} else {
-					alert("Sorry, could not find a bicycle route.")
+					this.setState({
+						isBackdropOpen: false
+					});
+					alert("Beklager vi kunne ikke finne en god sykkelrute til deg. Vennligst prøv rute over kortere avstand eller fra/til et mer sentralt sted.");
 				}
 			});
 	}
