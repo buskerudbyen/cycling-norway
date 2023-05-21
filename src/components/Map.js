@@ -12,7 +12,7 @@ import SportsScoreIcon from '@mui/icons-material/SportsScore';
 import SnowPlowPopup from "./SnowPlowPopup";
 import RoutingSidebar from "./RoutingSidebar";
 import AttributionPanel from "./AttributionPanel";
-import BikeParkPopup from "./BikeParkPopup";
+import SykkelHotelPopup from "./SykkelHotelPopup";
 
 const INITIAL_LAT = 59.7390;
 const INITIAL_LON = 10.1878;
@@ -53,7 +53,7 @@ export default class MapContainer extends React.Component {
 			isBackdropOpen: false,
 			isBikelyPopupOpen: false,
 			isSnowPlowPopupOpen: false,
-			isBikeParkPopupOpen: false,
+			isSykkelhotelPopupOpen: false,
 			popupCoords: null,
 			popupPoint: null,
 			searchFieldsOpen: window.innerWidth >= 450,
@@ -221,7 +221,7 @@ export default class MapContainer extends React.Component {
 		const bikelyFeatures = this.map.current.queryRenderedFeatures(event.point, {
 			layers: ["poi-bikely"]
 		});
-		const bikeParkFeatures = this.map.current.queryRenderedFeatures(event.point, {
+		const sykkelHotelFeatures = this.map.current.queryRenderedFeatures(event.point, {
 			layers: ["poi-bicycle-parking-shed"]
 		});
 		const snowPlowFeatures = this.map.current.queryRenderedFeatures(event.point, {
@@ -232,16 +232,16 @@ export default class MapContainer extends React.Component {
 			this.setState({
 				isSnowPlowPopupOpen: false,
 				isBikelyPopupOpen: true,
-				isBikeParkPopupOpen: false,
+				isSykkelhotelPopupOpen: false,
 				popupCoords: event.lngLat,
 				popupPoint: feature
 			});
-		} else if (bikeParkFeatures.length > 0) {
-			const feature = bikeParkFeatures[0].properties;
+		} else if (sykkelHotelFeatures.length > 0) {
+			const feature = sykkelHotelFeatures[0].properties;
 			this.setState({
 				isSnowPlowPopupOpen: false,
 				isBikelyPopupOpen: false,
-				isBikeParkPopupOpen: true,
+				isSykkelhotelPopupOpen: true,
 				popupCoords: event.lngLat,
 				popupPoint: feature
 			});
@@ -250,7 +250,7 @@ export default class MapContainer extends React.Component {
 			this.setState({
 				isSnowPlowPopupOpen: true,
 				isBikelyPopupOpen: false,
-				isBikeParkPopupOpen: false,
+				isSykkelhotelPopupOpen: false,
 				popupCoords: event.lngLat,
 				popupPoint: feature
 			});
@@ -263,7 +263,7 @@ export default class MapContainer extends React.Component {
 		this.setState({
 			isBikelyPopupOpen: false,
 			isSnowPlowPopupOpen: false,
-			isBikeParkPopupOpen: false,
+			isSykkelhotelPopupOpen: false,
 			popupPoint: null
 		})
 	}
@@ -515,8 +515,8 @@ export default class MapContainer extends React.Component {
 					       }}/>
 					{this.state.isBikelyPopupOpen && (
 						<BikelyPopup lngLat={this.state.popupCoords} onClose={this.onPopupClose} point={this.state.popupPoint} />)}
-					{this.state.isBikeParkPopupOpen && (
-						<BikeParkPopup lngLat={this.state.popupCoords} onClose={this.onPopupClose} point={this.state.popupPoint} />)}
+					{this.state.isSykkelhotelPopupOpen && (
+						<SykkelHotelPopup lngLat={this.state.popupCoords} onClose={this.onPopupClose} point={this.state.popupPoint} />)}
 					{this.state.isSnowPlowPopupOpen && (
 						<SnowPlowPopup lngLat={this.state.popupCoords} onClose={this.onPopupClose} point={this.state.popupPoint} />)}
 					<Menu reset={this.resetRoute} toggleSearch={this.toggleSearchFields} />

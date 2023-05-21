@@ -1,7 +1,7 @@
 import React from "react";
 import {Popup} from "react-map-gl";
 
-class BikeParkPopup extends React.Component {
+class SykkelHotelPopup extends React.Component {
 	
 	render() {
 		return (
@@ -14,4 +14,4 @@ class BikeParkPopup extends React.Component {
 	
 }
 
-export default BikeParkPopup;
+export default SykkelHotelPopup;
