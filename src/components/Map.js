@@ -13,6 +13,7 @@ import SnowPlowPopup from "./SnowPlowPopup";
 import RoutingSidebar from "./RoutingSidebar";
 import AttributionPanel from "./AttributionPanel";
 import SykkelHotelPopup from "./SykkelHotelPopup";
+import TunnelPopup from "./TunnelPopup";
 
 const INITIAL_LAT = 59.7390;
 const INITIAL_LON = 10.1878;
@@ -54,6 +55,7 @@ export default class MapContainer extends React.Component {
 			isBikelyPopupOpen: false,
 			isSnowPlowPopupOpen: false,
 			isSykkelhotelPopupOpen: false,
+			isTunnelPopupOpen: false,
 			popupCoords: null,
 			popupPoint: null,
 			searchFieldsOpen: window.innerWidth >= 450,
@@ -227,6 +229,9 @@ export default class MapContainer extends React.Component {
 		const snowPlowFeatures = this.map.current.queryRenderedFeatures(event.point, {
 			layers: ["poi-snow-plow-warn", "poi-snow-plow-ok", "poi-snow-plow-snow", "poi-snow-plow-snow-border"]
 		});
+		const tunnelFeatures = this.map.current.queryRenderedFeatures(event.point, {
+			layers: ["tunnel-conditional"]
+		});
 		if (bikelyFeatures.length > 0) {
 			const feature = bikelyFeatures[0].properties;
 			this.setState({
@@ -242,6 +247,7 @@ export default class MapContainer extends React.Component {
 				isSnowPlowPopupOpen: false,
 				isBikelyPopupOpen: false,
 				isSykkelhotelPopupOpen: true,
+				isTunnelPopupOpen: false,
 				popupCoords: event.lngLat,
 				popupPoint: feature
 			});
@@ -251,6 +257,17 @@ export default class MapContainer extends React.Component {
 				isSnowPlowPopupOpen: true,
 				isBikelyPopupOpen: false,
 				isSykkelhotelPopupOpen: false,
+				isTunnelPopupOpen: false,
+				popupCoords: event.lngLat,
+				popupPoint: feature
+			});
+		} else if (tunnelFeatures.length > 0) {
+			const feature = tunnelFeatures[0].properties;
+			this.setState({
+				isSnowPlowPopupOpen: false,
+				isBikelyPopupOpen: false,
+				isSykkelhotelPopupOpen: false,
+				isTunnelPopupOpen: true,
 				popupCoords: event.lngLat,
 				popupPoint: feature
 			});
@@ -264,6 +281,7 @@ export default class MapContainer extends React.Component {
 			isBikelyPopupOpen: false,
 			isSnowPlowPopupOpen: false,
 			isSykkelhotelPopupOpen: false,
+			isTunnelPopupOpen: false,
 			popupPoint: null
 		})
 	}
@@ -519,6 +537,8 @@ export default class MapContainer extends React.Component {
 						<SykkelHotelPopup lngLat={this.state.popupCoords} onClose={this.onPopupClose} point={this.state.popupPoint} />)}
 					{this.state.isSnowPlowPopupOpen && (
 						<SnowPlowPopup lngLat={this.state.popupCoords} onClose={this.onPopupClose} point={this.state.popupPoint} />)}
+					{this.state.isTunnelPopupOpen && (
+						<TunnelPopup lngLat={this.state.popupCoords} onClose={this.onPopupClose} point={this.state.popupPoint} />)}
 					<Menu reset={this.resetRoute} toggleSearch={this.toggleSearchFields} />
 					<RoutingSidebar chooseStart={this.onStartChoose}
 					                chooseDest={this.onDestChoose}
