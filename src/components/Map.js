@@ -13,6 +13,7 @@ import SnowPlowPopup from "./SnowPlowPopup";
 import RoutingSidebar from "./RoutingSidebar";
 import AttributionPanel from "./AttributionPanel";
 import SykkelHotelPopup from "./SykkelHotelPopup";
+import data from "../assets/snow-plow-example.json";
 
 const INITIAL_LAT = 59.7390;
 const INITIAL_LON = 10.1878;
@@ -59,7 +60,8 @@ export default class MapContainer extends React.Component {
 			searchFieldsOpen: window.innerWidth >= 450,
 			prevWidth: null,
 			routeDuration: null,
-			routeDistance: null
+			routeDistance: null,
+			simulateLayer: null
 		}
 		this.map = React.createRef();
 		this.mapOnLoad = this.mapOnLoad.bind(this);
@@ -74,6 +76,7 @@ export default class MapContainer extends React.Component {
 		this.drawPolyline = this.drawPolyline.bind(this);
 		this.getQuery = this.getQuery.bind(this);
 		this.toggleSearchFields = this.toggleSearchFields.bind(this);
+		this.drawSimulation = this.drawSimulation.bind(this);
 	}
 	
 	componentDidMount() {
@@ -113,9 +116,6 @@ export default class MapContainer extends React.Component {
 	
 	loadSnowPlowData() {
 		const url = new URL(window.location);
-		const roadOk = [];
-		const roadWarn = [];
-		const roadSnow = [];
 		
 		if (url.searchParams.has("showSnowPlows")) {
 			fetch("https://cycling-norway.leonard.io/snow-plow-konnerudgata", {
@@ -123,6 +123,9 @@ export default class MapContainer extends React.Component {
 			}).then(response => response.json())
 				.then(jsonResponse => {
 					// Separate data into arrays.
+					const roadOk = [];
+					const roadWarn = [];
+					const roadSnow = [];
 					for (let feature of jsonResponse.features) {
 						if (jsonResponse.isSnowing) {
 							roadSnow.push(feature);
@@ -136,18 +139,39 @@ export default class MapContainer extends React.Component {
 				});
 		} else if (url.searchParams.has("simulateSnowPlows")) {
 			// For when we do not have accurate snow plow data.
-			let data = require('../assets/snow-plow-example.json');
-			for (let feature of data.features) {
-				if (data.isSnowing) {
-					roadSnow.push(feature);
-				} else if (Math.floor(1 + Math.random() * (100 - 1)) % 2 === 0) {
-					roadWarn.push(feature);
-				} else {
-					roadOk.push(feature);
-				}
-			}
-			this.drawOnMap(roadOk, roadWarn, roadSnow);
+			window.setInterval(this.drawSimulation, 10000);
 		}
+	}
+	
+	drawSimulation() {
+		let roadOk = [];
+		let roadWarn = [];
+		let roadSnow = [];
+		if (this.state.simulateLayer == null) {
+			// all white
+			roadSnow = data.features;
+			this.setState({
+				simulateLayer: 'snow-plow-snow'
+			})
+		} else if (this.state.simulateLayer === 'snow-plow-snow') {
+			// all orange
+			roadWarn = data.features;
+			this.setState({
+				simulateLayer: 'snow-plow-warn'
+			})
+		} else if (this.state.simulateLayer === 'snow-plow-warn') {
+			// all green
+			roadOk = data.features;
+			this.setState({
+				simulateLayer: 'snow-plow-ok'
+			})
+		} else {
+			// empty all
+			this.setState({
+				simulateLayer: null
+			})
+		}
+		this.drawOnMap(roadOk, roadWarn, roadSnow);
 	}
 
 	drawOnMap(roadOk, roadWarn, roadSnow) {
