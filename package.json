@@ -12,6 +12,7 @@
     "@watergis/maplibre-gl-legend": "1.2.8",
     "gl-matrix": "3.4.3",
     "maplibre-gl": "2.4.0",
+    "moment": "^2.29.4",
     "opening_hours": "^3.8.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
