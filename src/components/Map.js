@@ -398,7 +398,7 @@ export default class MapContainer extends React.Component {
 					    from: {coordinates: {latitude: ${start.lat}, longitude: ${start.lng} }},
 					    to: {coordinates: {latitude: ${ dest.lat }, longitude: ${dest.lng }}}
 					    bicycleOptimisationMethod: triangle,
-					    triangleFactors: {safety: 0.5, slope: 0.4, time: 0.1}
+					    triangleFactors: {safety: 0.6, slope: 0.2, time: 0.2}
 					  ) {
 					    dateTime
 					    fromPlace {
