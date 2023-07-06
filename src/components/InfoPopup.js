@@ -4,6 +4,7 @@ import SykkelHotelPopup from "./SykkelHotelPopup";
 import SnowPlowPopup from "./SnowPlowPopup";
 import TunnelPopup from "./TunnelPopup";
 import ClosedRoadPopup from "./ClosedRoadPopup";
+import ToiletPopup from "./ToiletPopup";
 
 export const BIKELY_POPUP = "bikely";
 export const SYKKELHOTEL_POPUP = "sykkelhotel";
@@ -11,6 +12,16 @@ export const SNOWPLOW_POPUP = "snowplow";
 export const TUNNEL_POPUP = "tunnel";
 export const CLOSED_ROAD_POPUP = "closed_road";
 export const TOILET_POPUP = "toilet";
+
+export const DAYS = new Map([
+	["mo", "mandag"],
+	["tu", "tirsdag"],
+	["we", "onsdag"],
+	["th", "torsdag"],
+	["fr", "fredag"],
+	["sa", "lørdag"],
+	["su", "søndag"]
+]);
 
 export default function InfoPopup({type, popupCoords, onPopupClose, popupPoint}) {
 	switch (type) {
@@ -25,6 +36,6 @@ export default function InfoPopup({type, popupCoords, onPopupClose, popupPoint})
 		case CLOSED_ROAD_POPUP:
 			return <ClosedRoadPopup lngLat={popupCoords} onClose={onPopupClose} point={popupPoint} />;
 		case TOILET_POPUP:
-			break;
+			return <ToiletPopup lngLat={popupCoords} onClose={onPopupClose} point={popupPoint} />;
 	}
 }

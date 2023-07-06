@@ -253,6 +253,9 @@ export default class MapContainer extends React.Component {
 		const closedRoadFeatures = this.map.current.queryRenderedFeatures(event.point, {
 			layers: ["no-snowplowing-winter_road"]
 		});
+		const toiletFeatures = this.map.current.queryRenderedFeatures(event.point, {
+			layers: ["poi-toilets"]
+		});
 		if (bikelyFeatures.length > 0) {
 			const feature = bikelyFeatures[0].properties;
 			this.setState({
@@ -285,6 +288,13 @@ export default class MapContainer extends React.Component {
 			const feature = closedRoadFeatures[0].properties;
 			this.setState({
 				popupType: CLOSED_ROAD_POPUP,
+				popupCoords: event.lngLat,
+				popupPoint: feature
+			});
+		} else if (toiletFeatures.length > 0) {
+			const feature = toiletFeatures[0].properties;
+			this.setState({
+				popupType: TOILET_POPUP,
 				popupCoords: event.lngLat,
 				popupPoint: feature
 			});

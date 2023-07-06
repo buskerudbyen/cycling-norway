@@ -5,16 +5,7 @@ import {SimpleOpeningHours} from "simple-opening-hours";
 import {Table, TableBody, TableCell, TableRow, Typography} from "@mui/material";
 import moment from "moment";
 import 'moment/locale/nb';
-
-const DAYS = new Map([
-	["mo", "mandag"],
-	["tu", "tirsdag"],
-	["we", "onsdag"],
-	["th", "torsdag"],
-	["fr", "fredag"],
-	["sa", "lørdag"],
-	["su", "søndag"]
-]);
+import {DAYS} from "./InfoPopup";
 
 class TunnelPopup extends React.Component {
 	
