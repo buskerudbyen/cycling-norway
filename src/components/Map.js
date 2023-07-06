@@ -6,16 +6,12 @@ import Menu from './Menu';
 import Map, {GeolocateControl, Layer, Marker, NavigationControl, Source} from "react-map-gl";
 import {Backdrop, CircularProgress} from "@mui/material";
 import polyline from '@mapbox/polyline';
-import BikelyPopup from "./BikelyPopup";
 import {MaplibreLegendControl} from "@watergis/maplibre-gl-legend";
 import SportsScoreIcon from '@mui/icons-material/SportsScore';
-import SnowPlowPopup from "./SnowPlowPopup";
 import RoutingSidebar from "./RoutingSidebar";
 import AttributionPanel from "./AttributionPanel";
-import SykkelHotelPopup from "./SykkelHotelPopup";
-import TunnelPopup from "./TunnelPopup";
 import data from "../assets/snow-plow-example.json";
-import ClosedRoadPopup from "./ClosedRoadPopup";
+import InfoPopup, {BIKELY_POPUP, CLOSED_ROAD_POPUP, SNOWPLOW_POPUP, SYKKELHOTEL_POPUP, TUNNEL_POPUP, TOILET_POPUP} from "./InfoPopup";
 
 const INITIAL_LAT = 59.7390;
 const INITIAL_LON = 10.1878;
@@ -54,11 +50,7 @@ export default class MapContainer extends React.Component {
 			hasEnd: false,
 			dest: null,
 			isBackdropOpen: false,
-			isBikelyPopupOpen: false,
-			isSnowPlowPopupOpen: false,
-			isSykkelhotelPopupOpen: false,
-			isTunnelPopupOpen: false,
-			isClosedRoadPopupOpen: false,
+			popupType: null,
 			popupCoords: null,
 			popupPoint: null,
 			searchFieldsOpen: window.innerWidth >= 450,
@@ -264,54 +256,35 @@ export default class MapContainer extends React.Component {
 		if (bikelyFeatures.length > 0) {
 			const feature = bikelyFeatures[0].properties;
 			this.setState({
-				isSnowPlowPopupOpen: false,
-				isBikelyPopupOpen: true,
-				isSykkelhotelPopupOpen: false,
-				isClosedRoadPopupOpen: false,
+				popupType: BIKELY_POPUP,
 				popupCoords: event.lngLat,
 				popupPoint: feature
 			});
 		} else if (sykkelHotelFeatures.length > 0) {
 			const feature = sykkelHotelFeatures[0].properties;
 			this.setState({
-				isSnowPlowPopupOpen: false,
-				isBikelyPopupOpen: false,
-				isSykkelhotelPopupOpen: true,
-				isTunnelPopupOpen: false,
-				isClosedRoadPopupOpen: false,
+				popupType: SYKKELHOTEL_POPUP,
 				popupCoords: event.lngLat,
 				popupPoint: feature
 			});
 		} else if (snowPlowFeatures.length > 0) {
 			const feature = snowPlowFeatures[0].properties;
 			this.setState({
-				isSnowPlowPopupOpen: true,
-				isBikelyPopupOpen: false,
-				isSykkelhotelPopupOpen: false,
-				isTunnelPopupOpen: false,
-				isClosedRoadPopupOpen: false,
+				popupType: SNOWPLOW_POPUP,
 				popupCoords: event.lngLat,
 				popupPoint: feature
 			});
 		} else if (tunnelFeatures.length > 0) {
 			const feature = tunnelFeatures[0].properties;
 			this.setState({
-				isSnowPlowPopupOpen: false,
-				isBikelyPopupOpen: false,
-				isSykkelhotelPopupOpen: false,
-				isTunnelPopupOpen: true,
-				isClosedRoadPopupOpen: false,
+				popupType: TUNNEL_POPUP,
 				popupCoords: event.lngLat,
 				popupPoint: feature
 			});
 		} else if (closedRoadFeatures.length > 0) {
 			const feature = closedRoadFeatures[0].properties;
 			this.setState({
-				isSnowPlowPopupOpen: false,
-				isBikelyPopupOpen: false,
-				isSykkelhotelPopupOpen: false,
-				isTunnelPopupOpen: false,
-				isClosedRoadPopupOpen: false,
+				popupType: CLOSED_ROAD_POPUP,
 				popupCoords: event.lngLat,
 				popupPoint: feature
 			});
@@ -322,10 +295,7 @@ export default class MapContainer extends React.Component {
 	
 	onPopupClose() {
 		this.setState({
-			isBikelyPopupOpen: false,
-			isSnowPlowPopupOpen: false,
-			isSykkelhotelPopupOpen: false,
-			isTunnelPopupOpen: false,
+			popupType: null,
 			popupPoint: null
 		})
 	}
@@ -575,16 +545,12 @@ export default class MapContainer extends React.Component {
 						       'line-color': '#FFF',
 						       'line-width': 5
 					       }}/>
-					{this.state.isBikelyPopupOpen && (
-						<BikelyPopup lngLat={this.state.popupCoords} onClose={this.onPopupClose} point={this.state.popupPoint} />)}
-					{this.state.isSykkelhotelPopupOpen && (
-						<SykkelHotelPopup lngLat={this.state.popupCoords} onClose={this.onPopupClose} point={this.state.popupPoint} />)}
-					{this.state.isSnowPlowPopupOpen && (
-						<SnowPlowPopup lngLat={this.state.popupCoords} onClose={this.onPopupClose} point={this.state.popupPoint} />)}
-					{this.state.isTunnelPopupOpen && (
-						<TunnelPopup lngLat={this.state.popupCoords} onClose={this.onPopupClose} point={this.state.popupPoint} />)}
-					{this.state.isClosedRoadPopupOpen && (
-						<ClosedRoadPopup lngLat={this.state.popupCoords} onClose={this.onPopupClose} point={this.state.popupPoint} />)}
+					{this.state.popupType != null && (
+						<InfoPopup type={this.state.popupType}
+					           popupCoords={this.state.popupCoords}
+					           onPopupClose={this.onPopupClose}
+					           popupPoint={this.state.popupPoint}/>
+					)}
 					<Menu reset={this.resetRoute} toggleSearch={this.toggleSearchFields} />
 					<RoutingSidebar chooseStart={this.onStartChoose}
 					                chooseDest={this.onDestChoose}
