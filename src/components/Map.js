@@ -65,6 +65,7 @@ export default class MapContainer extends React.Component {
 			prevWidth: null,
 			routeDuration: null,
 			routeDistance: null,
+			routeElevation: null,
 			simulateLayer: null
 		}
 		this.map = React.createRef();
@@ -200,7 +201,8 @@ export default class MapContainer extends React.Component {
 			hasEnd: false,
 			dest: null,
 			routeDuration: null,
-			routeDistance: null
+			routeDistance: null,
+			routeElevation: null
 		});
 		
 		const url = new URL(window.location);
@@ -432,6 +434,9 @@ export default class MapContainer extends React.Component {
 					        pointsOnLink {
 					          points
 					        }
+					        elevationProfile {
+					          elevation
+					        }
 					      }
 					    }
 					  }
@@ -441,11 +446,16 @@ export default class MapContainer extends React.Component {
 			.then(response => {
 				const tripPatterns = response.data.trip.tripPatterns;
 				if(tripPatterns.length > 0) {
-					const polyline = response.data.trip.tripPatterns[0].legs.map(l => l.pointsOnLink.points);
+					const tripPattern = response.data.trip.tripPatterns[0];
+					const polyline = tripPattern.legs.map(l => l.pointsOnLink.points);
+					const startElevation = tripPattern.legs[0].elevationProfile[0]?.elevation;
+					const lastLeg = tripPattern.legs[tripPattern.legs.length - 1];
+					const endElevation = lastLeg?.elevationProfile[lastLeg?.elevationProfile.length - 1].elevation;
 					this.setState({
 						isBackdropOpen: false,
 						routeDuration: response.data.trip.tripPatterns[0].duration,
-						routeDistance: response.data.trip.tripPatterns[0].distance
+						routeDistance: response.data.trip.tripPatterns[0].distance,
+						routeElevation: endElevation - startElevation
 					});
 					this.drawPolyline(polyline);
 				} else {
@@ -591,6 +601,7 @@ export default class MapContainer extends React.Component {
 					                hidden={!this.state.searchFieldsOpen}
 					                duration={this.state.routeDuration}
 					                distance={this.state.routeDistance}
+					                elevation={this.state.routeElevation}
 					/>
 					<Backdrop
 						sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
