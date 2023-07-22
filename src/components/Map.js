@@ -67,6 +67,7 @@ export default class MapContainer extends React.Component {
 			routeDistance: null,
 			simulateLayer: null
 		}
+		this.wrapper = React.createRef(null);
 		this.map = React.createRef();
 		this.mapOnLoad = this.mapOnLoad.bind(this);
 		this.addLegend = this.addLegend.bind(this);
@@ -98,6 +99,8 @@ export default class MapContainer extends React.Component {
 			})
 			this.getQuery(from, to);
 		}
+		
+		this.wrapper.current.addEventListener('click', e => this.updateQueryByLegend(e));
 	}
 	
 	updateBySize() {
@@ -465,12 +468,57 @@ export default class MapContainer extends React.Component {
 	
 	mapOnLoad() {
 		this.addLegend();
+		this.updateLegendByQuery(this.map.current);
 		this.loadSnowPlowData();
+	}
+	
+	updateLegendByQuery(map) {
+		const url = new URL(window.location);
+		const targets = Object.keys(TARGETS);
+		if (url.searchParams.has("layers")) {
+			const layerList = url.searchParams.get("layers").split(",");
+			targets.forEach(k => {
+				if (layerList.includes(k)) {
+					map.getLayer(k).setLayoutProperty('visibility', 'visible')
+				} else {
+					map.getLayer(k).setLayoutProperty('visibility', 'none')
+				}
+			});
+		} else {
+			url.searchParams.set("layers", targets.join(","));
+			window.history.pushState({}, '', url);
+		}
+	}
+	
+	updateQueryByLegend(event) {
+		let target = event.target;
+		let targets = Object.keys(TARGETS);
+		
+		if (target.type === 'checkbox' && targets.includes(target.name)) {
+			const url = new URL(window.location);
+			const layerList = url.searchParams.get("layers")?.split(",");
+		
+			let layerVisible = this.isVisible(this.map.current, target.name);
+			let layerWasVisible = layerList.includes(target.name);
+			if (!layerVisible && layerWasVisible) {
+				const index = layerList.indexOf(target.name);
+				layerList.splice(index, 1);
+			} else if (layerVisible && !layerWasVisible) {
+				layerList.push(target.name);
+			}
+			
+			url.searchParams.set("layers", layerList.join(","));
+			window.history.pushState({}, '', url);
+		}
+	}
+	
+	isVisible(map, layer) {
+		return map.getLayoutProperty(layer, 'visibility') === 'visible';
 	}
 	
 	render() {
 		return (
-			<div className="map-wrap">
+			<div className="map-wrap" ref={this.wrapper}>
 				<Map
 					id="map"
 					ref={this.map}
