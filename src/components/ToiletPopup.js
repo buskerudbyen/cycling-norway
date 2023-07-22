@@ -43,7 +43,7 @@ class ToiletPopup extends React.Component {
 		return (
 			<Popup latitude={this.props.lngLat.lat} longitude={this.props.lngLat.lng} onClose={this.props.onClose}>
 				<Typography>Alle toaletter kan ha åpingstider, der for eksempel bygget ellers er stengt, eller være stengt i perioder (fellesferie, vinteren, for vedlikehold, etc.).</Typography>
-				<Typography>Fee: {this.props.point["fee"] === "yes" ? "ja" : "nei"}</Typography>
+				<Typography>Betaling: {this.props.point["fee"] === "yes" ? "ja" : "nei"}</Typography>
 				{this.getOpeningHoursTable()}
 			</Popup>
 		);
