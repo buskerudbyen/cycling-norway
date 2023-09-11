@@ -400,8 +400,9 @@ export default class MapContainer extends React.Component {
 					    modes: { directMode: bicycle, accessMode: bicycle, egressMode: bicycle, transportModes: { transportMode: water }},
 					    from: {coordinates: {latitude: ${start.lat}, longitude: ${start.lng} }},
 					    to: {coordinates: {latitude: ${ dest.lat }, longitude: ${dest.lng }}}
-					    bicycleOptimisationMethod: safe,
-					    triangleFactors: {safety: 0.6, slope: 0.2, time: 0.2}
+					    bicycleOptimisationMethod: triangle
+					    triangleFactors: {safety: 0.5, slope: 0.2, time: 0.3}
+					    bikeSpeed: 7
 					  ) {
 					    dateTime
 					    fromPlace {
