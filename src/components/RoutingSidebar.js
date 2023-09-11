@@ -2,6 +2,7 @@ import React from 'react';
 import SearchField from "./SearchField";
 import TimerIcon from '@mui/icons-material/Timer';
 import HeightIcon from '@mui/icons-material/Height';
+import ExpandIcon from '@mui/icons-material/Expand';
 
 class Menu extends React.Component {
 	constructor(props) {
@@ -21,6 +22,10 @@ class Menu extends React.Component {
 	render() {
 		let duration = new Date(this.props.duration * 1000).toISOString().slice(11, 19);
 		let distance = (this.props.distance / 1000).toFixed(2);
+		let elevation = 0;
+		if (this.props.elevation != null) {
+			elevation = this.props.elevation.toFixed(2);
+		}
 		
 		return (
 			<div id="routing" hidden={this.props.hidden}>
@@ -31,6 +36,7 @@ class Menu extends React.Component {
 				<div id="routingResults" hidden={!this.props.duration}>
 					<TimerIcon htmlColor={"gray"} fontSize={"small"} /><span>{duration}</span>
 					<HeightIcon htmlColor={"gray"} sx={{ transform: 'rotate(90deg)' }} /><span>{distance} km</span>
+					<ExpandIcon htmlColor={"gray"} /><span>{elevation} m</span>
 				</div>
 			</div>
 		);

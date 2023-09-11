@@ -20,6 +20,10 @@
     #searchFieldsButton {
         display: none;
     }
+
+    #routingResults {
+        height: 40px;
+    }
 }
 
 @media only screen and (max-width: 450px) {
@@ -30,6 +34,11 @@
 
     #searchFields {
         width: 220px;
+    }
+
+    #routingResults {
+        width: 100px;
+        padding: 5px;
     }
 
     .menu button {
@@ -79,7 +88,6 @@
 }
 
 #routingResults {
-    height: 40px;
     background-color: #fff;
     border-radius: 4px;
     border: 1px solid rgba(0, 0, 0, 0.23);
@@ -95,7 +103,7 @@
     height: inherit;
     vertical-align: middle;
     margin-left: 5px;
-    margin-right: 10px;
+    margin-right: 5px;
 }
 
 .menu button {
