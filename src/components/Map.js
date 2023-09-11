@@ -61,6 +61,7 @@ export default class MapContainer extends React.Component {
 		}
 		this.wrapper = React.createRef(null);
 		this.map = React.createRef();
+		
 		this.mapOnLoad = this.mapOnLoad.bind(this);
 		this.addLegend = this.addLegend.bind(this);
 		this.loadSnowPlowData = this.loadSnowPlowData.bind(this);
@@ -69,9 +70,6 @@ export default class MapContainer extends React.Component {
 		this.onDestChoose = this.onDestChoose.bind(this);
 		this.onPopupClose = this.onPopupClose.bind(this);
 		this.onMapClick = this.onMapClick.bind(this);
-		this.addMarker = this.addMarker.bind(this);
-		this.drawPolyline = this.drawPolyline.bind(this);
-		this.getQuery = this.getQuery.bind(this);
 		this.toggleSearchFields = this.toggleSearchFields.bind(this);
 		this.drawSimulation = this.drawSimulation.bind(this);
 	}
@@ -83,13 +81,10 @@ export default class MapContainer extends React.Component {
 		if (url.searchParams.has("from") && url.searchParams.has("to")) {
 			const from = this.parseLngLat(url.searchParams.get("from"));
 			const to = this.parseLngLat(url.searchParams.get("to"));
-			this.setState({
-				hasStart: true,
-				start: from,
-				hasEnd: true,
-				dest: to
-			})
 			this.getQuery(from, to);
+		} else if (url.searchParams.has("from")) {
+			const from = this.parseLngLat(url.searchParams.get("from"));
+			this.updateQueryFromParam(from);
 		}
 		
 		this.wrapper.current.addEventListener('click', e => this.updateQueryByLegend(e));
@@ -210,10 +205,7 @@ export default class MapContainer extends React.Component {
 		if (value != null && this.map.current != null) {
 			let coords = new maplibregl.LngLat(value.geometry.coordinates[0], value.geometry.coordinates[1]);
 			this.map.current.setCenter(value.geometry.coordinates);
-			this.setState({
-				hasStart: true,
-				start: coords
-			});
+			this.updateQueryFromParam(coords);
 			if (this.state.hasEnd) {
 				this.getQuery(coords, this.state.dest);
 			}
@@ -223,10 +215,7 @@ export default class MapContainer extends React.Component {
 	onDestChoose(event, value) {
 		if (value != null && this.map.current != null) {
 			let coords = new maplibregl.LngLat(value.geometry.coordinates[0], value.geometry.coordinates[1]);
-			this.setState({
-				hasEnd: true,
-				dest: coords
-			});
+			this.updateQueryToParam(coords);
 			if (this.state.hasStart) {
 				this.getQuery(this.state.start, coords);
 			}
@@ -318,30 +307,17 @@ export default class MapContainer extends React.Component {
 			return;
 		}
 		if (!this.state.hasStart) {
-			this.setState({
-				hasStart: true,
-				start: event.lngLat
-			})
+			this.updateQueryFromParam(event.lngLat);
 		} else {
-			this.setState({
-				hasEnd: true,
-				dest: event.lngLat
-			});
 			this.getQuery(this.state.start, event.lngLat);
 		}
 	}
 	
 	updateStartCoord = (event) => {
-		this.setState({
-			start: event.lngLat
-		});
 		this.getQuery(event.lngLat, this.state.dest);
 	}
 	
 	updateDestCoord = (event) => {
-		this.setState({
-			dest: event.lngLat
-		});
 		this.getQuery(this.state.start, event.lngLat);
 	}
 	
@@ -381,11 +357,31 @@ export default class MapContainer extends React.Component {
 		}
 	};
 	
-	getQuery(start, dest) {
+	updateQueryFromParam(start) {
 		const url = new URL(window.location);
 		url.searchParams.set("from", this.lngLatToString(start))
+		window.history.pushState({}, '', url);
+		
+		this.setState({
+			hasStart: true,
+			start: start
+		});
+	}
+	
+	updateQueryToParam(dest) {
+		const url = new URL(window.location);
 		url.searchParams.set("to", this.lngLatToString(dest))
 		window.history.pushState({}, '', url);
+		
+		this.setState({
+			hasEnd: true,
+			dest: dest
+		});
+	}
+	
+	getQuery(start, dest) {
+		this.updateQueryFromParam(start);
+		this.updateQueryToParam(dest);
 		this.setState({
 			isBackdropOpen: true
 		})

@@ -3,6 +3,10 @@
     width: 100vw;
 }
 
+.mapboxgl-ctrl button:disabled, .maplibregl-ctrl button:disabled {
+    display: none;
+}
+
 @media only screen and (min-width: 450px) {
     .map-wrap {
         height: 100vh;
