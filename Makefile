@@ -1,5 +1,5 @@
 SHELL := /bin/bash
-DEST := /home/lenni/www/cycling-norway/
+DEST := /var/www/
 
 .PHONY: build
 
@@ -12,8 +12,8 @@ deploy: build
 		--exclude 'Makefile' \
 		--delete \
 		`pwd`/build/ \
-		lenni@leonard.io:${DEST}
-	ssh lenni@leonard.io 'sudo chown www-data:www-data -R ${DEST}'
+		cycling-norway.leonard.io:${DEST}
+	ssh cycling-norway.leonard.io 'sudo chown caddy:caddy -R ${DEST}'
 
 SVGS:=$(shell find img/svg)
 pngs: $(patsubst img/svg/%.svg, img/png/%.png, $(SVGS))

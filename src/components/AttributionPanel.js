@@ -40,7 +40,7 @@ class AttributionPanel extends React.Component {
 							Personopplysninger og personvern
 						</Typography>
 						<Typography className="modal-description" sx={{ mt: 2 }} align="justify" >
-							Buskerudbyen og Drammen kommune er ansvarlig for tjenesten som leveres her på Sykkelveier.no (og <a href="https://leonard.io/cycling-norway/">leonard.io/cycling-norway/</a>). Se websiden <a href="https://www.drammen.kommune.no/">drammen.kommune.no</a> for mer informasjon om personvern og personvernombud. Du kan også ta kontakt med oss på post @ buskerudbyen.no.
+							Buskerudbyen og Drammen kommune er ansvarlig for tjenesten som leveres her på Sykkelveier.no (og <a href="https://sykkelveier.no/">sykkelveier.no</a>). Se websiden <a href="https://www.drammen.kommune.no/">drammen.kommune.no</a> for mer informasjon om personvern og personvernombud. Du kan også ta kontakt med oss på post @ buskerudbyen.no.
 						</Typography>
 						<Typography variant="h6" component="h2" sx={{ mt: 2 }}>
 							Hvilken informasjon lagres?

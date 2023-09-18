@@ -2,7 +2,7 @@
   "name": "cycling-norway",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://leonard.io/cycling-norway/",
+  "homepage": "https://sykkelveier.no/",
   "dependencies": {
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
