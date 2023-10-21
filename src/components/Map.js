@@ -521,6 +521,18 @@ export default class MapContainer extends React.Component {
 					onClick={this.onMapClick}
 					onLoad={this.mapOnLoad}
 					hash={true}
+					locale={{
+						"FullscreenControl.Enter": "Enter fullscreen",
+						"FullscreenControl.Exit": "Exit fullscreen",
+						"GeolocateControl.FindMyLocation": "Finn min possisjon",
+						"GeolocateControl.LocationNotAvailable": "Location not available",
+						"NavigationControl.ResetBearing": "Roter nord opp og kartet flatt",
+						"NavigationControl.ZoomIn": "Zoom inn",
+						"NavigationControl.ZoomOut": "Zoom ut",
+						"ScrollZoomBlocker.CtrlMessage": "Use ctrl + scroll to zoom the map",
+						"ScrollZoomBlocker.CmdMessage": "Use ⌘ + scroll to zoom the map",
+						"TouchPanBlocker.Message": "Use two fingers to move the map",
+					}}
 				>
 					<Source type="geojson" id="route"
 					        data={{
