@@ -38,6 +38,27 @@ const TARGETS = {
 	"poi-bike-track": "Markastier"
 };
 
+const TARGET_URLS = {
+	"bicycle-lane": "anlegg",
+	"bicycle-route-national-background": "rute-nb",
+	"bicycle-route-local-background": "rute-lb",
+	"bicycle-route-national-overlay": "rute-no",
+	"bicycle-route-local-overlay": "rute-lo",
+	"poi-bicycle-parking-public": "poffentlig",
+	"poi-bicycle-parking-private": "pprivat",
+	"poi-bicycle-parking-lockers": "pskap",
+	"poi-bicycle-parking-shed": "photell",
+	"poi-bicycle-parking-covered": "ptak",
+	"poi-bicycle-repair-station": "rep",
+	"poi-snow-plow-ok": "brøyting-ok",
+	"poi-snow-plow-warn": "brøyting-senere",
+	"poi-snow-plow-snow": "snør",
+	"poi-bicycle-pump-station": "pumpe",
+	"poi-bicycle-shop": "butikk",
+	"poi-pump-track": "pumptrack",
+	"poi-bike-track": "loype"
+}
+
 export default class MapContainer extends React.Component {
 	constructor(props) {
 		super(props);
@@ -461,14 +482,14 @@ export default class MapContainer extends React.Component {
 	
 	updateLegendByQuery(map) {
 		const url = new URL(window.location);
-		const targets = Object.keys(TARGETS);
+		const targets = Object.values(TARGET_URLS);
 		if (url.searchParams.has("layers")) {
 			const layerList = url.searchParams.get("layers").split(",");
-			targets.forEach(k => {
-				if (layerList.includes(k)) {
-					map.getLayer(k).setLayoutProperty('visibility', 'visible')
+			TARGET_URLS.forEach(t => {
+				if (layerList.includes(t.value)) {
+					map.getLayer(t.name).setLayoutProperty('visibility', 'visible')
 				} else {
-					map.getLayer(k).setLayoutProperty('visibility', 'none')
+					map.getLayer(t.name).setLayoutProperty('visibility', 'none')
 				}
 			});
 		} else {
@@ -479,19 +500,20 @@ export default class MapContainer extends React.Component {
 	
 	updateQueryByLegend(event) {
 		let target = event.target;
-		let targets = Object.keys(TARGETS);
+		let targets = Object.keys(TARGET_URLS);
 		
 		if (target.type === 'checkbox' && targets.includes(target.name)) {
 			const url = new URL(window.location);
 			const layerList = url.searchParams.get("layers")?.split(",");
+			const urlTag = TARGET_URLS[target.name];
 		
 			let layerVisible = this.isVisible(this.map.current, target.name);
-			let layerWasVisible = layerList.includes(target.name);
+			let layerWasVisible = layerList.includes(urlTag);
 			if (!layerVisible && layerWasVisible) {
-				const index = layerList.indexOf(target.name);
+				const index = layerList.indexOf(urlTag);
 				layerList.splice(index, 1);
 			} else if (layerVisible && !layerWasVisible) {
-				layerList.push(target.name);
+				layerList.push(urlTag);
 			}
 			
 			url.searchParams.set("layers", layerList.join(","));
