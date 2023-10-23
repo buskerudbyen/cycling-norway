@@ -188,3 +188,10 @@
     font-size: 12px;
     font-family: 'Helvetica Neue', 'Arial', serif;
 }
+
+.mapboxgl-ctrl-bottom-left, .maplibregl-ctrl-bottom-left {
+    bottom: 0;
+    left: 0;
+    display: flex;
+    align-items: flex-end;
+}

@@ -3,7 +3,7 @@ import maplibregl from "maplibre-gl";
 import '../styles/map.css';
 import 'maplibre-gl/dist/maplibre-gl.css'
 import Menu from './Menu';
-import Map, {GeolocateControl, Layer, Marker, NavigationControl, Source} from "react-map-gl";
+import Map, {GeolocateControl, Layer, Marker, NavigationControl, ScaleControl, Source} from "react-map-gl";
 import {Backdrop, CircularProgress} from "@mui/material";
 import polyline from '@mapbox/polyline';
 import {MaplibreLegendControl} from "@watergis/maplibre-gl-legend";
@@ -636,6 +636,7 @@ export default class MapContainer extends React.Component {
 						showAccuracyCircle={true}
 						trackUserLocation={false}
 					/>
+					<ScaleControl unit="metric" position="bottom-left" style={{"padding-left": "20px"}} />
 					<NavigationControl position="bottom-left" showCompass showZoom visualizePitch />
 					<div className="maplibregl-ctrl-bottom-right mapboxgl-ctrl-bottom-right">
 						<AttributionPanel />
