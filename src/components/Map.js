@@ -92,6 +92,7 @@ export default class MapContainer extends React.Component {
 		const latitude = position.coords.latitude;
 		const longitude = position.coords.longitude;
 		this.map.current.setCenter(new maplibregl.LngLat(longitude, latitude));
+		this.map.current.setZoom(15);
 	}
 	
 	getRandomCityLocation() {
