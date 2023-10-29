@@ -97,13 +97,17 @@ export default class MapContainer extends React.Component {
 	
 	getRandomCityLocation() {
 		setTimeout(() => {
-			const cityNum = cities.features.length;
-			let rndIndex = Math.floor(Math.random() * (cityNum - 2));
-			let city = cities.features.at(rndIndex);
-			const latitude = city.geometry.coordinates[0];
-			const longitude = city.geometry.coordinates[1];
-			this.map.current.setCenter(new maplibregl.LngLat(longitude, latitude));
-			this.map.current.setZoom(13);
+			try {
+				const cityNum = cities.features.length;
+				let rndIndex = Math.floor(Math.random() * (cityNum - 2));
+				let city = cities.features.at(rndIndex);
+				const latitude = city.geometry.coordinates[0];
+				const longitude = city.geometry.coordinates[1];
+				this.map.current.setCenter(new maplibregl.LngLat(longitude, latitude));
+				this.map.current.setZoom(13);
+			} catch (e) {
+				console.error(e);
+			}
 		}, 1200);
 	}
 	
