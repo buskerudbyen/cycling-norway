@@ -94,6 +94,8 @@ export default class MapContainer extends React.Component {
 		this.onMapClick = this.onMapClick.bind(this);
 		this.toggleSearchFields = this.toggleSearchFields.bind(this);
 		this.drawSimulation = this.drawSimulation.bind(this);
+		this.getLocation = this.getLocation.bind(this);
+		this.getRandomCityLocation = this.getRandomCityLocation.bind(this);
 	}
 	
 	componentDidMount() {
@@ -107,6 +109,12 @@ export default class MapContainer extends React.Component {
 		} else if (url.searchParams.has("from")) {
 			const from = this.parseLngLat(url.searchParams.get("from"));
 			this.updateQueryFromParam(from);
+		} else {
+			if (navigator.geolocation) {
+				navigator.geolocation.getCurrentPosition(this.getLocation, this.getRandomCityLocation);
+			} else {
+				this.getRandomCityLocation();
+			}
 		}
 		
 		this.wrapper.current.addEventListener('click', e => this.updateQueryByLegend(e));
@@ -119,6 +127,17 @@ export default class MapContainer extends React.Component {
 				prevWidth: window.innerWidth
 			});
 		}
+	}
+	
+	getLocation(position) {
+		const latitude = position.coords.latitude;
+		const longitude = position.coords.longitude;
+		this.map.current.setCenter(new maplibregl.LngLat(longitude, latitude));
+	}
+	
+	getRandomCityLocation() {
+		console.log("Unable to retrieve the location of device");
+		
 	}
 	
 	addLegend() {
