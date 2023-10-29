@@ -13,9 +13,9 @@ import AttributionPanel from "./AttributionPanel";
 import data from "../assets/snow-plow-example.json";
 import InfoPopup, {BIKELY_POPUP, CLOSED_ROAD_POPUP, SNOWPLOW_POPUP, SYKKELHOTEL_POPUP, TUNNEL_POPUP, TOILET_POPUP} from "./InfoPopup";
 
-const INITIAL_LAT = 59.7390;
-const INITIAL_LON = 10.1878;
-const INITIAL_ZOOM = 14;
+const INITIAL_LAT = 59.868;
+const INITIAL_LON = 10.322;
+const INITIAL_ZOOM = 8;
 
 const TARGETS = {
 	"bicycle-lane": "Sykkelveier",
