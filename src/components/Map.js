@@ -522,16 +522,16 @@ export default class MapContainer extends React.Component {
 					onLoad={this.mapOnLoad}
 					hash={true}
 					locale={{
-						"FullscreenControl.Enter": "Enter fullscreen",
-						"FullscreenControl.Exit": "Exit fullscreen",
-						"GeolocateControl.FindMyLocation": "Finn min possisjon",
-						"GeolocateControl.LocationNotAvailable": "Location not available",
+						"FullscreenControl.Enter": "Fullskjerm",
+						"FullscreenControl.Exit": "Avslutt fullskjerm",
+						"GeolocateControl.FindMyLocation": "Finn min posisjon",
+						"GeolocateControl.LocationNotAvailable": "Posisjon ikke tilgengelig",
 						"NavigationControl.ResetBearing": "Roter nord opp og kartet flatt",
 						"NavigationControl.ZoomIn": "Zoom inn",
 						"NavigationControl.ZoomOut": "Zoom ut",
-						"ScrollZoomBlocker.CtrlMessage": "Use ctrl + scroll to zoom the map",
-						"ScrollZoomBlocker.CmdMessage": "Use ⌘ + scroll to zoom the map",
-						"TouchPanBlocker.Message": "Use two fingers to move the map",
+						"ScrollZoomBlocker.CtrlMessage": "Bruk Ctrl + rull for zoom",
+						"ScrollZoomBlocker.CmdMessage": "Bruk ⌘ + rull for zoom",
+						"TouchPanBlocker.Message": "Bruk to fingre for å bevege kartet",
 					}}
 				>
 					<Source type="geojson" id="route"

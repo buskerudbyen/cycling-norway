@@ -65,7 +65,7 @@ class AttributionPanel extends React.Component {
 							Din posisjon
 						</Typography>
 						<Typography className="modal-description" sx={{ mt: 2 }} align="justify" >
-							Søket med «Finn min possisjon» skjer kun i nettleseren, så posisjonen blir ikke sendt til serveren før man søker på en rute med GPS-posisjon aktiv. Posisjonen finner man ved hjelp av telefonens GPS-funksjon, WiFi-tilkoblinger, IP-adresser, RFID, Bluetooth, MAC-adresser og GSM/CDMA-celle-ID. Om nettleseren vil vite hvor man er, spør den om lov først. Du kan alltid regulere denne tilgangen i nettleserens innstillinger.
+							Søket med «Finn min posisjon» skjer kun i nettleseren, så posisjonen blir ikke sendt til serveren før man søker på en rute med GPS-posisjon aktiv. Posisjonen finner man ved hjelp av telefonens GPS-funksjon, WiFi-tilkoblinger, IP-adresser, RFID, Bluetooth, MAC-adresser og GSM/CDMA-celle-ID. Om nettleseren vil vite hvor man er, spør den om lov først. Du kan alltid regulere denne tilgangen i nettleserens innstillinger.
 						</Typography>
 						<Typography className="modal-description" sx={{ mt: 2 }} align="justify" >
 							Personvernerklæringen ble senest oppdatert 3. mai 2023.
