@@ -516,8 +516,6 @@ export default class MapContainer extends React.Component {
 	}
 	
 	render() {
-		console.error("render")
-		console.error(this.map.current)
 		return (
 			<div className="map-wrap" ref={this.wrapper}>
 				<Map
