@@ -12,52 +12,11 @@ import RoutingSidebar from "./RoutingSidebar";
 import AttributionPanel from "./AttributionPanel";
 import data from "../assets/snow-plow-example.json";
 import InfoPopup, {BIKELY_POPUP, CLOSED_ROAD_POPUP, SNOWPLOW_POPUP, SYKKELHOTEL_POPUP, TUNNEL_POPUP, TOILET_POPUP} from "./InfoPopup";
+import {cities, TARGET_URLS, TARGETS} from "../assets/constants";
 
 const INITIAL_LAT = 59.868;
 const INITIAL_LON = 10.322;
 const INITIAL_ZOOM = 8;
-
-const TARGETS = {
-	"bicycle-lane": "Sykkelveier",
-	"bicycle-route-national-background": "Nasjonale sykkelruter",
-	"bicycle-route-local-background": "Lokale sykkelruter",
-	"bicycle-route-national-overlay": "Nasjonale sykkelruter",
-	"bicycle-route-local-overlay": "Lokale sykkelruter",
-	"poi-bicycle-parking-public": "Sykkelparkering",
-	"poi-bicycle-parking-private": "Privat sykkelparkering",
-	"poi-bicycle-parking-lockers": "Sykkelskap",
-	"poi-bicycle-parking-shed": "Sykkelhotel",
-	"poi-bicycle-parking-covered": "Sykkelparkering m/tak",
-	"poi-bicycle-repair-station": "Sykkelmekk-stasjon",
-	"poi-snow-plow-ok": "0-3 timer siden sist brøyting",
-	"poi-snow-plow-warn": "Brøyting: 3 timer eller senere",
-	"poi-snow-plow-snow": "Det snør. Brøyting pågår",
-	"poi-bicycle-pump-station": "Sykkelpumpe",
-	"poi-bicycle-shop": "Sykkelbutikk",
-	"poi-pump-track": "Sykkelbaner",
-	"poi-bike-track": "Markastier"
-};
-
-const TARGET_URLS = {
-	"bicycle-lane": "anlegg",
-	"bicycle-route-national-background": "rute-nb",
-	"bicycle-route-local-background": "rute-lb",
-	"bicycle-route-national-overlay": "rute-no",
-	"bicycle-route-local-overlay": "rute-lo",
-	"poi-bicycle-parking-public": "poffentlig",
-	"poi-bicycle-parking-private": "pprivat",
-	"poi-bicycle-parking-lockers": "pskap",
-	"poi-bicycle-parking-shed": "photell",
-	"poi-bicycle-parking-covered": "ptak",
-	"poi-bicycle-repair-station": "rep",
-	"poi-snow-plow-ok": "brøyting-ok",
-	"poi-snow-plow-warn": "brøyting-senere",
-	"poi-snow-plow-snow": "snør",
-	"poi-bicycle-pump-station": "pumpe",
-	"poi-bicycle-shop": "butikk",
-	"poi-pump-track": "pumptrack",
-	"poi-bike-track": "loype"
-}
 
 export default class MapContainer extends React.Component {
 	constructor(props) {
@@ -94,6 +53,8 @@ export default class MapContainer extends React.Component {
 		this.onMapClick = this.onMapClick.bind(this);
 		this.toggleSearchFields = this.toggleSearchFields.bind(this);
 		this.drawSimulation = this.drawSimulation.bind(this);
+		this.getLocation = this.getLocation.bind(this);
+		this.getRandomCityLocation = this.getRandomCityLocation.bind(this);
 	}
 	
 	componentDidMount() {
@@ -107,6 +68,12 @@ export default class MapContainer extends React.Component {
 		} else if (url.searchParams.has("from")) {
 			const from = this.parseLngLat(url.searchParams.get("from"));
 			this.updateQueryFromParam(from);
+		} else {
+			if (navigator.geolocation) {
+				navigator.geolocation.getCurrentPosition(this.getLocation, this.getRandomCityLocation);
+			} else {
+				this.getRandomCityLocation();
+			}
 		}
 		
 		this.wrapper.current.addEventListener('click', e => this.updateQueryByLegend(e));
@@ -119,6 +86,29 @@ export default class MapContainer extends React.Component {
 				prevWidth: window.innerWidth
 			});
 		}
+	}
+	
+	getLocation(position) {
+		const latitude = position.coords.latitude;
+		const longitude = position.coords.longitude;
+		this.map.current.setCenter(new maplibregl.LngLat(longitude, latitude));
+		this.map.current.setZoom(15);
+	}
+	
+	getRandomCityLocation() {
+		setTimeout(() => {
+			try {
+				const cityNum = cities.features.length;
+				let rndIndex = Math.floor(Math.random() * (cityNum - 2));
+				let city = cities.features.at(rndIndex);
+				const latitude = city.geometry.coordinates[0];
+				const longitude = city.geometry.coordinates[1];
+				this.map.current.setCenter(new maplibregl.LngLat(longitude, latitude));
+				this.map.current.setZoom(13);
+			} catch (e) {
+				console.error(e);
+			}
+		}, 1200);
 	}
 	
 	addLegend() {
