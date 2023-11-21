@@ -16,7 +16,8 @@ export const TARGETS = {
 	"poi-bicycle-pump-station": "Sykkelpumpe",
 	"poi-bicycle-shop": "Sykkelbutikk",
 	"poi-pump-track": "Sykkelbaner",
-	"poi-bike-track": "Markastier"
+	"poi-bike-track": "Markastier",
+	"poi-bikely": "Bikely parkering"
 };
 
 export const TARGET_URLS = {
@@ -37,7 +38,8 @@ export const TARGET_URLS = {
 	"poi-bicycle-pump-station": "pumpe",
 	"poi-bicycle-shop": "butikk",
 	"poi-pump-track": "pumptrack",
-	"poi-bike-track": "loype"
+	"poi-bike-track": "loype",
+	"poi-bikely": "bikely"
 }
 
 export const cities = {
