@@ -24,6 +24,10 @@
     #routingResults {
         height: 40px;
     }
+
+    .elevation-details-modal {
+        width: 400px;
+    }
 }
 
 @media only screen and (max-width: 450px) {
@@ -53,7 +57,7 @@
         width: 220px !important;
     }
 
-    .modal-box {
+    .modal-box, .elevation-details-modal {
         width: 250px;
     }
 

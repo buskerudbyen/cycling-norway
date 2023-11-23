@@ -3,7 +3,7 @@ import SearchField from "./SearchField";
 import TimerIcon from '@mui/icons-material/Timer';
 import HeightIcon from '@mui/icons-material/Height';
 import ExpandIcon from '@mui/icons-material/Expand';
-import {Box, Modal, Typography} from "@mui/material";
+import {Box, Modal} from "@mui/material";
 import {Chart as ChartJS, registerables} from "chart.js";
 import {Line} from "react-chartjs-2";
 
@@ -78,32 +78,36 @@ class Menu extends React.Component {
 				</div>
 				<Modal id={"elevationInfo"} aria-labelledby="modal-title" open={this.state.showElevationPopup} onClose={this.hideElevationPopup}>
 					<Box sx={this.style} className="modal-box">
-						<Typography id="modal-title" variant="h6" component="h2">
-							Elevation info
-						</Typography>
 						<Line
 							type="line"
 							datasetIdKey='id'
+							className="elevation-details-modal"
 							data={{
 								labels: this.props.elevationProfile,
 								datasets: [
 									{
 										id: 1,
-										label: '',
 										data: this.props.elevationProfile,
 										fill: 'origin'
 									}
 								],
 							}}
 							options={{
-								legend: {
-									display: false
+								events: [],
+								plugins: {
+									legend: {
+										display: false,
+									},
+									subtitle: {
+										display: true,
+										text: 'Elevation info'
+									}
 								},
 								scales: {
 									x: {
 										display: false
 									}
-								},
+								}
 							}}
 						/>
 					</Box>
