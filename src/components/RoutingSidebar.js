@@ -68,10 +68,10 @@ class Menu extends React.Component {
 						<SearchField onChoose={this.chooseDest} labelText="Til" />
 					</div>
 					<div id="routingResults" hidden={!this.props.duration}>
-						<TimerIcon htmlColor={"gray"} fontSize={"small"} /><span>{duration}</span>
-						<HeightIcon htmlColor={"gray"} sx={{ transform: 'rotate(90deg)' }} /><span>{distance} km</span>
-						<span className="elevation-details-trigger" onMouseOver={this.showElevationPopup}>
-							<ExpandIcon htmlColor={"white"} />
+						<TimerIcon htmlColor={"gray"} fontSize={"small"} sx={{'margin-left': '5px'}} /><span style={{'margin': '5px'}}>{duration}</span>
+						<HeightIcon htmlColor={"gray"} sx={{ transform: 'rotate(90deg)', 'margin-left': '5px' }} /><span style={{'margin': '5px'}}>{distance} km</span>
+						<span className="elevation-details-trigger" style={{'margin-left': '5px'}} onMouseOver={this.showElevationPopup}>
+							<ExpandIcon htmlColor={"white"} sx={{'margin-right': '5px'}} />
 							{elevation} m
 						</span>
 					</div>

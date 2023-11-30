@@ -100,20 +100,17 @@
 #routingResults svg {
     height: inherit;
     vertical-align: middle;
-    margin-left: 10px;
 }
 
 #routingResults span {
     height: inherit;
     vertical-align: middle;
-    margin-left: 5px;
-    margin-right: 5px;
 }
 
 .elevation-details-trigger {
     background-color: #1976d2;
     color: white;
-    padding: 10px 10px 10px 0;
+    padding: 10px 5px 10px 0;
     border-radius: 5px;
 }
 
