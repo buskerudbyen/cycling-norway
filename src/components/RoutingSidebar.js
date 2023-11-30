@@ -70,8 +70,8 @@ class Menu extends React.Component {
 					<div id="routingResults" hidden={!this.props.duration}>
 						<TimerIcon htmlColor={"gray"} fontSize={"small"} /><span>{duration}</span>
 						<HeightIcon htmlColor={"gray"} sx={{ transform: 'rotate(90deg)' }} /><span>{distance} km</span>
-						<span onMouseOver={this.showElevationPopup}>
-							<ExpandIcon htmlColor={"gray"} />
+						<span className="elevation-details-trigger" onMouseOver={this.showElevationPopup}>
+							<ExpandIcon htmlColor={"white"} />
 							{elevation} m
 						</span>
 					</div>
@@ -88,7 +88,9 @@ class Menu extends React.Component {
 									{
 										id: 1,
 										data: this.props.elevationProfile,
-										fill: 'origin'
+										fill: 'origin',
+										borderColor: '#162da0',
+										backgroundColor: 'rgba(22,45,160,0.5)'
 									}
 								],
 							}}
@@ -100,14 +102,15 @@ class Menu extends React.Component {
 									},
 									subtitle: {
 										display: true,
-										text: 'Elevation info'
+										text: 'Høydeprofil (meter)'
 									}
 								},
 								scales: {
 									x: {
 										display: false
 									}
-								}
+								},
+								pointStyle: false
 							}}
 						/>
 					</Box>

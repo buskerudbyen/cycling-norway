@@ -110,6 +110,13 @@
     margin-right: 5px;
 }
 
+.elevation-details-trigger {
+    background-color: #1976d2;
+    color: white;
+    padding: 10px 10px 10px 0;
+    border-radius: 5px;
+}
+
 .menu button {
     margin-right: 5px;
 }
