@@ -38,6 +38,7 @@ export default class MapContainer extends React.Component {
 			routeDuration: null,
 			routeDistance: null,
 			routeElevation: null,
+			routeElevationProfile: null,
 			simulateLayer: null
 		}
 		this.wrapper = React.createRef(null);
@@ -442,11 +443,13 @@ export default class MapContainer extends React.Component {
 					const startElevation = tripPattern.legs[0].elevationProfile[0]?.elevation;
 					const lastLeg = tripPattern.legs[tripPattern.legs.length - 1];
 					const endElevation = lastLeg?.elevationProfile[lastLeg?.elevationProfile.length - 1].elevation;
+					
 					this.setState({
 						isBackdropOpen: false,
 						routeDuration: response.data.trip.tripPatterns[0].duration,
 						routeDistance: response.data.trip.tripPatterns[0].distance,
-						routeElevation: endElevation - startElevation
+						routeElevation: endElevation - startElevation,
+						routeElevationProfile: tripPattern.legs[0].elevationProfile.map(e => e.elevation)
 					});
 					this.drawPolyline(polyline);
 				} else {
@@ -647,6 +650,7 @@ export default class MapContainer extends React.Component {
 					                duration={this.state.routeDuration}
 					                distance={this.state.routeDistance}
 					                elevation={this.state.routeElevation}
+					                elevationProfile={this.state.routeElevationProfile}
 					/>
 					<Backdrop
 						sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
