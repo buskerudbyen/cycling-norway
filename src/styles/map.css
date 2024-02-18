@@ -7,7 +7,7 @@
     display: none;
 }
 
-@media only screen and (min-width: 450px) {
+@media only screen and (min-width: 460px) {
     .map-wrap {
         height: 100vh;
         height: 100svh;
@@ -30,7 +30,7 @@
     }
 }
 
-@media only screen and (max-width: 450px) {
+@media only screen and (max-width: 459px) {
     .map-wrap {
         height: 95vh;
         height: 100svh;
@@ -65,6 +65,12 @@
         position: absolute;
         top: 40px !important;
         right: 0;
+    }
+
+    .maplibregl-ctrl-scale {
+        position: absolute;
+        bottom: 20px;
+        left: 35px;
     }
 }
 
