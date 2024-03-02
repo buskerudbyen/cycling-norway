@@ -475,30 +475,28 @@ export default class MapContainer extends React.Component {
 	
 	updateLegendByQuery(map) {
 		const url = new URL(window.location);
-		const targets = Object.values(TARGET_URLS);
 		if (url.searchParams.has("layers")) {
 			const layerList = url.searchParams.get("layers").split(",");
-			TARGET_URLS.forEach(t => {
-				if (layerList.includes(t.value)) {
-					map.getLayer(t.name).setLayoutProperty('visibility', 'visible')
+			TARGET_URLS.forEach((key, value) => {
+				if (layerList.includes(value)) {
+					map.getLayer(key)?.setLayoutProperty('visibility', 'visible')
 				} else {
-					map.getLayer(t.name).setLayoutProperty('visibility', 'none')
+					map.getLayer(key)?.setLayoutProperty('visibility', 'none')
 				}
 			});
 		} else {
-			url.searchParams.set("layers", targets.join(","));
+			url.searchParams.set("layers", [...TARGET_URLS.values()].flat().join(','));
 			window.history.pushState({}, '', url);
 		}
 	}
 	
 	updateQueryByLegend(event) {
 		let target = event.target;
-		let targets = Object.keys(TARGET_URLS);
-		
-		if (target.type === 'checkbox' && targets.includes(target.name)) {
+
+		if (target.type === 'checkbox' && TARGET_URLS.has(target.name)) {
 			const url = new URL(window.location);
 			const layerList = url.searchParams.get("layers")?.split(",");
-			const urlTag = TARGET_URLS[target.name];
+			const urlTag = TARGET_URLS.get(target.name);
 		
 			let layerVisible = this.isVisible(this.map.current, target.name);
 			let layerWasVisible = layerList.includes(urlTag);

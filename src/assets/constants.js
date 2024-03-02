@@ -41,6 +41,27 @@ export const TARGET_URLS = {
 	"poi-bike-track": "loype",
 	"poi-bikely": "bikely"
 }
+export const TARGET_URLS =  new Map([
+	["bicycle-lane", "anlegg"],
+	["bicycle-route-national-background", "rute-nb"],
+	["bicycle-route-local-background", "rute-lb"],
+	["bicycle-route-national-overlay", "rute-no"],
+	["bicycle-route-local-overlay", "rute-lo"],
+	["poi-bicycle-parking-public", "poffentlig"],
+	["poi-bicycle-parking-private", "pprivat"],
+	["poi-bicycle-parking-lockers", "pskap"],
+	["poi-bicycle-parking-shed", "photell"],
+	["poi-bicycle-parking-covered", "ptak"],
+	["poi-bicycle-repair-station", "rep"],
+	["poi-snow-plow-ok", "brøyting-ok"],
+	["poi-snow-plow-warn", "brøyting-senere"],
+	["poi-snow-plow-snow", "snør"],
+	["poi-bicycle-pump-station", "pumpe"],
+	["poi-bicycle-shop", "butikk"],
+	["poi-pump-track", "pumptrack"],
+	["poi-bike-track", "loype"],
+	["poi-bikely", "bikely"],
+]);
 
 export const cities = {
 	'type': 'FeatureCollection',
