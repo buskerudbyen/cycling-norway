@@ -22,8 +22,8 @@ export default class MapContainer extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			lat: INITIAL_LAT,
-			lon: INITIAL_LON,
+			lat: window.location.hash ? window.location.hash.split('/')[1] : INITIAL_LAT,
+			lon: window.location.hash ? window.location.hash.split('/')[2] : INITIAL_LON,
 			zoom: INITIAL_ZOOM,
 			hasStart: false,
 			start: null,
@@ -97,6 +97,11 @@ export default class MapContainer extends React.Component {
 	}
 	
 	getRandomCityLocation() {
+	    // if a location is requested by URL, do not change it
+	    if (window.location.hash !== '#' + INITIAL_ZOOM + '/' + INITIAL_LAT + '/' + INITIAL_LON) {
+	        return;
+	    }
+
 		setTimeout(() => {
 			try {
 				const cityNum = cities.features.length;
