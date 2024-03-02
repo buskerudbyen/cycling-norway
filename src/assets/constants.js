@@ -7,7 +7,7 @@ export const TARGETS = {
 	"poi-bicycle-parking-public": "Sykkelparkering",
 	"poi-bicycle-parking-private": "Privat sykkelparkering",
 	"poi-bicycle-parking-lockers": "Sykkelskap",
-	"poi-bicycle-parking-shed": "Sykkelhotel",
+	"poi-bicycle-parking-shed": "Sykkelhotell",
 	"poi-bicycle-parking-covered": "Sykkelparkering m/tak",
 	"poi-bicycle-repair-station": "Sykkelmekk-stasjon",
 	"poi-snow-plow-ok": "0-3 timer siden sist brøyting",
