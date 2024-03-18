@@ -1,7 +1,7 @@
 import {Autocomplete, debounce, TextField} from "@mui/material";
 import React, {useState} from "react";
 
-export default function SearchField({ onChoose, labelText }) {
+export default function SearchField({ onChoose, labelText, rerender }){
 	let [options, setOptions] = useState([]);
 	
 	const inputChanged = (event, value) => {
@@ -31,6 +31,7 @@ export default function SearchField({ onChoose, labelText }) {
 	
 	return (
 		<Autocomplete className="autocomplete"
+		              key={labelText + "-" + rerender}
 		              freeSolo
 		              options={options}
 		              getOptionLabel={(option) => option.properties.label || ""}

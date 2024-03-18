@@ -15,6 +15,7 @@ class Menu extends React.Component {
             prevWidth: null,
 			searchFieldsOpen: window.innerWidth >= 450,
             showElevationPopup: false,
+			renderFormKeys: true
 		};
 		this.toggleHelpPopup = this.toggleHelpPopup.bind(this);
 		this.closeHelpPopup = this.closeHelpPopup.bind(this);
@@ -58,6 +59,9 @@ class Menu extends React.Component {
 	
 	resetRoute() {
 		this.props.reset();
+		this.setState(prevState => ({
+            renderFormKeys: !prevState.renderFormKeys,
+        }));
 	}
 	
 	toggleHelpPopup() {
@@ -128,6 +132,8 @@ class Menu extends React.Component {
                 <div id="routing" hidden={!this.state.searchFieldsOpen}>
                     <div>
                         <div id="searchFields">
+                            <SearchField onChoose={this.props.chooseStart} labelText="Fra" rerender={this.state.renderFormKeys} />
+                            <SearchField onChoose={this.props.chooseDest} labelText="Til" rerender={this.state.renderFormKeys} />
                         </div>
                         <div id="routingResults" hidden={!this.props.duration}>
                             <TimerIcon htmlColor={"gray"} fontSize={"small"} sx={{'marginLeft': '5px'}} /><span style={{'margin': '5px'}}>{duration}</span>
