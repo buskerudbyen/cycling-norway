@@ -8,7 +8,6 @@ import {Backdrop, CircularProgress} from "@mui/material";
 import polyline from '@mapbox/polyline';
 import {MaplibreLegendControl} from "@watergis/maplibre-gl-legend";
 import SportsScoreIcon from '@mui/icons-material/SportsScore';
-import RoutingSidebar from "./RoutingSidebar";
 import AttributionPanel from "./AttributionPanel";
 import data from "../assets/snow-plow-example.json";
 import InfoPopup, {BIKELY_POPUP, CLOSED_ROAD_POPUP, SNOWPLOW_POPUP, SYKKELHOTEL_POPUP, TUNNEL_POPUP, TOILET_POPUP} from "./InfoPopup";
@@ -33,8 +32,6 @@ export default class MapContainer extends React.Component {
 			popupType: null,
 			popupCoords: null,
 			popupPoint: null,
-			searchFieldsOpen: window.innerWidth >= 450,
-			prevWidth: null,
 			routeDuration: null,
 			routeDistance: null,
 			routeElevation: null,
@@ -52,15 +49,12 @@ export default class MapContainer extends React.Component {
 		this.onDestChoose = this.onDestChoose.bind(this);
 		this.onPopupClose = this.onPopupClose.bind(this);
 		this.onMapClick = this.onMapClick.bind(this);
-		this.toggleSearchFields = this.toggleSearchFields.bind(this);
 		this.drawSimulation = this.drawSimulation.bind(this);
 		this.getLocation = this.getLocation.bind(this);
 		this.getRandomCityLocation = this.getRandomCityLocation.bind(this);
 	}
 	
 	componentDidMount() {
-		window.addEventListener("resize", this.updateBySize.bind(this));
-		
 		const url = new URL(window.location);
 		if (url.searchParams.has("from") && url.searchParams.has("to")) {
 			const from = this.parseLngLat(url.searchParams.get("from"));
@@ -78,15 +72,6 @@ export default class MapContainer extends React.Component {
 		}
 		
 		this.wrapper.current.addEventListener('click', e => this.updateQueryByLegend(e));
-	}
-	
-	updateBySize() {
-		if (this.state.prevWidth !== window.innerWidth) {
-			this.setState({
-				searchFieldsOpen: window.innerWidth >= 450,
-				prevWidth: window.innerWidth
-			});
-		}
 	}
 	
 	getLocation(position) {
@@ -228,6 +213,8 @@ export default class MapContainer extends React.Component {
 			if (this.state.hasEnd) {
 				this.getQuery(coords, this.state.dest);
 			}
+		} else {
+		    this.resetRoute();
 		}
 	}
 	
@@ -238,7 +225,9 @@ export default class MapContainer extends React.Component {
 			if (this.state.hasStart) {
 				this.getQuery(this.state.start, coords);
 			}
-		}
+		} else {
+            this.resetRoute();
+        }
 	}
 	
 	parseLngLat = (s) => {
@@ -465,12 +454,7 @@ export default class MapContainer extends React.Component {
 				}
 			});
 	}
-	
-	toggleSearchFields() {
-		this.setState(prevState => ({
-			searchFieldsOpen: !prevState.searchFieldsOpen
-		}));
-	}
+
 	
 	mapOnLoad() {
 		this.addLegend();
@@ -646,15 +630,14 @@ export default class MapContainer extends React.Component {
 					           onPopupClose={this.onPopupClose}
 					           popupPoint={this.state.popupPoint}/>
 					)}
-					<Menu reset={this.resetRoute} toggleSearch={this.toggleSearchFields} />
-					<RoutingSidebar chooseStart={this.onStartChoose}
-					                chooseDest={this.onDestChoose}
-					                hidden={!this.state.searchFieldsOpen}
-					                duration={this.state.routeDuration}
-					                distance={this.state.routeDistance}
-					                elevation={this.state.routeElevation}
-					                elevationProfile={this.state.routeElevationProfile}
-					/>
+					<Menu
+					    reset={this.resetRoute}
+                        chooseStart={this.onStartChoose}
+                        chooseDest={this.onDestChoose}
+                        duration={this.state.routeDuration}
+                        distance={this.state.routeDistance}
+                        elevation={this.state.routeElevation}
+                        elevationProfile={this.state.routeElevationProfile} />
 					<Backdrop
 						sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
 						open={this.state.isBackdropOpen}
