@@ -263,7 +263,7 @@ export default class MapContainer extends React.Component {
 			layers: ["poi-toilets"]
 		});
 		const bikeRouteFeatures = this.map.current.queryRenderedFeatures(event.point, {
-            layers: ["bicycle-route-name-local", "bicycle-route-name-national"]
+            layers: ["bicycle-route-local-overlay", "bicycle-route-national-overlay", "bicycle-route-local-background", "bicycle-route-national-background"]
         });
 		if (bikelyFeatures.length > 0) {
 			const feature = bikelyFeatures[0].properties;
@@ -308,11 +308,10 @@ export default class MapContainer extends React.Component {
 				popupPoint: feature
 			});
 		} else if (bikeRouteFeatures.length > 0) {
-		    const feature = bikeRouteFeatures[0].properties;
         	this.setState({
                 popupType: BIKE_ROUTE_POPUP,
                 popupCoords: event.lngLat,
-                popupPoint: feature
+                popupPoint: bikeRouteFeatures
         	});
 		} else {
 			this.addMarker(event);
@@ -542,7 +541,7 @@ export default class MapContainer extends React.Component {
 					}}
 					scrollZoom
 					interactive
-					mapStyle='https://byvekstavtale.leonard.io/tiles/bicycle/v1/style.json'
+					mapStyle='http://localhost:8123/style.json'
 					onClick={this.onMapClick}
 					onLoad={this.mapOnLoad}
 					hash={true}
