@@ -12,7 +12,7 @@ class Menu extends React.Component {
 		super(props);
 		this.state = {
 			isHelpOpen: false,
-            prevWidth: null,
+            prevWidth: window.innerWidth,
 			searchFieldsOpen: window.innerWidth >= 450,
             showElevationPopup: false,
 			renderFormKeys: true
