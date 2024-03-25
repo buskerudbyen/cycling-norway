@@ -541,7 +541,7 @@ export default class MapContainer extends React.Component {
 					}}
 					scrollZoom
 					interactive
-					mapStyle='http://localhost:8123/style.json'
+					mapStyle='https://byvekstavtale.leonard.io/tiles/bicycle/v1/style.json'
 					onClick={this.onMapClick}
 					onLoad={this.mapOnLoad}
 					hash={true}
