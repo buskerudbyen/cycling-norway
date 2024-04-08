@@ -209,3 +209,10 @@
     display: flex;
     align-items: flex-end;
 }
+
+.routeChoice {
+    width: 100%;
+    text-transform: none!important;
+    line-height: 1!important;
+    margin-top: 5px!important;
+}

@@ -10,7 +10,7 @@ import {MaplibreLegendControl} from "@watergis/maplibre-gl-legend";
 import SportsScoreIcon from '@mui/icons-material/SportsScore';
 import AttributionPanel from "./AttributionPanel";
 import data from "../assets/snow-plow-example.json";
-import InfoPopup, {BIKELY_POPUP, CLOSED_ROAD_POPUP, SNOWPLOW_POPUP, SYKKELHOTEL_POPUP, TUNNEL_POPUP, TOILET_POPUP} from "./InfoPopup";
+import InfoPopup, {BIKELY_POPUP, CLOSED_ROAD_POPUP, SNOWPLOW_POPUP, SYKKELHOTEL_POPUP, TUNNEL_POPUP, TOILET_POPUP, BIKE_ROUTE_POPUP} from "./InfoPopup";
 import {cities, TARGET_URLS, TARGETS} from "../assets/constants";
 
 const INITIAL_LAT = 59.868;
@@ -256,6 +256,9 @@ export default class MapContainer extends React.Component {
 		const toiletFeatures = this.map.current.queryRenderedFeatures(event.point, {
 			layers: ["poi-toilets"]
 		});
+		const bikeRouteFeatures = this.map.current.queryRenderedFeatures(event.point, {
+            layers: ["bicycle-route-local-overlay", "bicycle-route-national-overlay", "bicycle-route-local-background", "bicycle-route-national-background"]
+        });
 		if (bikelyFeatures.length > 0) {
 			const feature = bikelyFeatures[0].properties;
 			this.setState({
@@ -298,6 +301,12 @@ export default class MapContainer extends React.Component {
 				popupCoords: event.lngLat,
 				popupPoint: feature
 			});
+		} else if (bikeRouteFeatures.length > 0) {
+        	this.setState({
+                popupType: BIKE_ROUTE_POPUP,
+                popupCoords: event.lngLat,
+                popupPoint: bikeRouteFeatures
+        	});
 		} else {
 			this.addMarker(event);
 		}
