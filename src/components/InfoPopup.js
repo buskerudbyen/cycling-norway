@@ -37,5 +37,9 @@ export default function InfoPopup({type, popupCoords, onPopupClose, popupPoint})
 			return <ClosedRoadPopup lngLat={popupCoords} onClose={onPopupClose} point={popupPoint} />;
 		case TOILET_POPUP:
 			return <ToiletPopup lngLat={popupCoords} onClose={onPopupClose} point={popupPoint} />;
+		default: {
+			console.error('unknown popup type:', type);
+			return null;
+		}
 	}
 }
