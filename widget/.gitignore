@@ -1,6 +1,8 @@
-# Node modules and bundle
+# Node modules
 node_modules/
-bundle.js
+
+# Output of build
+dist/
 
 # Finder (MacOS) folder config
 .DS_Store

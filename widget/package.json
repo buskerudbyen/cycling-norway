@@ -3,8 +3,8 @@
   "module": "index.ts",
   "type": "module",
   "scripts": {
-    "//": "FIXME: Add build script with minification, and maybe even install with --production first?",
-    "build": "bun build index.tsx --target=browser --outfile=bundle.js",
+    "build:dev": "bun build index.tsx --target=browser --outdir=dist --watch",
+    "build:prod": "bun build index.tsx --target=browser --outdir=dist --minify",
     "dev": "vite"
   },
   "devDependencies": {
