@@ -1,0 +1,6 @@
+# Node modules and bundle
+node_modules/
+bundle.js
+
+# Finder (MacOS) folder config
+.DS_Store
