@@ -1,5 +1,4 @@
 import React from 'react';
-import './App.css';
 import MapContainer from "./components/Map.js";
 
 function App() {
