@@ -1,13 +1,10 @@
-import React from 'react';
-import './App.css';
+import React from "react";
 import MapContainer from "./components/Map.js";
 
-function App() {
-    return(
-        <div>
-            <MapContainer />
-        </div>
-    )
-}
+const App = () => (
+  <div>
+    <MapContainer />
+  </div>
+);
 
 export default App;
