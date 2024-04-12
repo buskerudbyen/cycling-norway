@@ -16,15 +16,16 @@ export const TOILET_POPUP = "toilet";
 export const BIKE_ROUTE_POPUP = "bike_route";
 
 export const DAYS = new Map([
-	["mo", "mandag"],
-	["tu", "tirsdag"],
-	["we", "onsdag"],
-	["th", "torsdag"],
-	["fr", "fredag"],
-	["sa", "lørdag"],
-	["su", "søndag"]
+  ["mo", "mandag"],
+  ["tu", "tirsdag"],
+  ["we", "onsdag"],
+  ["th", "torsdag"],
+  ["fr", "fredag"],
+  ["sa", "lørdag"],
+  ["su", "søndag"],
 ]);
 
+// prettier-ignore
 export default function InfoPopup({type, popupCoords, onPopupClose, popupPoint}) {
 	switch (type) {
 		case BIKELY_POPUP:
