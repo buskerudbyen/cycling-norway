@@ -66,6 +66,12 @@ export type PopupProps = {
   point: Point;
 };
 
+export type PopupPropsForBikeRoute = {
+  lngLat: Coords;
+  onClose: () => void;
+  point: Route[]; // TODO: Should be renamed "routes"
+};
+
 export type Route = {
   properties: {
     name: string;

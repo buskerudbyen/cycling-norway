@@ -6,7 +6,7 @@ import TunnelPopup from "./TunnelPopup";
 import ClosedRoadPopup from "./ClosedRoadPopup";
 import ToiletPopup from "./ToiletPopup";
 import BikeRoutePopup from "./BikeRoutePopup";
-import { Coords, InfoPopupType, Point, Route } from "./types";
+import { Coords, Point, Route } from "./types";
 
 export const BIKELY_POPUP = "bikely";
 export const SYKKELHOTEL_POPUP = "sykkelhotel";
@@ -27,7 +27,13 @@ export const DAYS = new Map([
 ]);
 
 type PropsWithPoint = {
-  type: Omit<InfoPopupType, "bike_route">;
+  type:
+    | "bikely"
+    | "sykkelhotel"
+    | "snowplow"
+    | "tunnel"
+    | "closed_road"
+    | "toilet";
   popupCoords: Coords;
   onPopupClose: () => void;
   popupPoint: Point;
@@ -37,13 +43,11 @@ type PropsWithRoutes = {
   type: "bike_route";
   popupCoords: Coords;
   onPopupClose: () => void;
-  popupPoint: Route[];
+  popupPoint: Route[]; // TODO: Should be named popupRoute since it is not a Point?
 };
 
 // prettier-ignore
-export default function InfoPopup({type, popupCoords, onPopupClose, popupPoint}: any) {
-  // TODO: Fix type discrimination to ensure that props is correctly identified
-  //       as (PropsWithPoint | PropsWithRoutes)
+export default function InfoPopup({type, popupCoords, onPopupClose, popupPoint}: PropsWithPoint | PropsWithRoutes) {
 	switch (type) {
 		case BIKELY_POPUP: {
 			return <BikelyPopup lngLat={popupCoords} onClose={onPopupClose} point={popupPoint} />;

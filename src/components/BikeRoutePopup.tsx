@@ -1,17 +1,13 @@
 import React, { useState } from "react";
 import { Popup } from "react-map-gl";
 import { Button } from "@mui/material";
-import { Network, PopupProps, Route } from "./types";
-
-type BikeRoutePopupProps = PopupProps & {
-  point: Route[];
-};
+import { Network, PopupPropsForBikeRoute, Route } from "./types";
 
 /**
  * The props.point can have multiple points (is a list). If there are multiple
  * elements, the user has to choose one to see its details.
  */
-const BikeRoutePopup = (props: BikeRoutePopupProps) => {
+const BikeRoutePopup = (props: PopupPropsForBikeRoute) => {
   const [multiple, setMultiple] = useState(props.point.length > 1);
   const [chosenRoute, setChosenRoute] = useState<Route | null>(
     props.point.length === 1 ? props.point[0] : null
