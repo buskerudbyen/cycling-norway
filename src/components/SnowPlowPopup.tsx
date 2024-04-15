@@ -1,8 +1,9 @@
 import React from "react";
 import { Popup } from "react-map-gl";
 import HorizontalRuleIcon from "@mui/icons-material/HorizontalRule";
+import { PopupProps } from "./types";
 
-const SnowPlowPopup = (props) => (
+const SnowPlowPopup = (props: PopupProps) => (
   <Popup
     maxWidth="280px"
     latitude={props.lngLat.lat}
@@ -40,7 +41,7 @@ const SnowPlowPopup = (props) => (
         </tr>
       </tbody>
     </table>
-    <div align="justify">
+    <div style={{ textAlign: "justify" }}>
       Vinterdriftsinformasjon i sykkelkartet er en test i prosjektet: «Smart
       Drift» i samarbeid mellom Statens vegvesen, Viken fylkeskommune, Drammen
       kommune og Buskerudbyen i 2023. Har du spørsmål, ta kontakt med

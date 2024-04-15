@@ -1,7 +1,8 @@
 import React from "react";
 import { Popup } from "react-map-gl";
+import { PopupProps } from "./types";
 
-const BikelyPopup = (props) => (
+const BikelyPopup = (props: PopupProps) => (
   <Popup
     latitude={props.lngLat.lat}
     longitude={props.lngLat.lng}
