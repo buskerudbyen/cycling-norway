@@ -1,3 +1,4 @@
+// TODO: Use this instead: https://visgl.github.io/react-map-gl/docs/api-reference/types#lnglat
 export type Coords = {
   lat: number;
   lng: number;
@@ -5,7 +6,11 @@ export type Coords = {
 
 export type DayShortName = "mo" | "tu" | "we" | "th" | "fr" | "sa" | "su";
 
-// TODO: Could maybe use a Feature type from a library instead?
+export type Elevation = { elevation: number };
+
+// TODO: Note: This is just home-made. The type is not compatible with Feature
+//       from maplibre-gl, should look into the specification and different type
+//       implementations to see what makes the most sense for our use case.
 export type Feature = {
   type: "feature";
   geometry: {
@@ -72,6 +77,24 @@ export type PopupPropsForBikeRoute = {
   point: Route[]; // TODO: Should be renamed "routes"
 };
 
+export type PopupPoint = {
+  id: string;
+  bicyclePlaces: boolean;
+  anyCarPlaces: boolean;
+  carPlaces: boolean;
+  wheelchairAccessibleCarPlaces: boolean;
+  name: string;
+  realTimeData: boolean;
+  tags: string;
+  state: string;
+  note: string;
+  capacity: '{"bicyclePlaces":10,"carPlaces":null,"wheelchairAccessibleCarPlaces":null}';
+  "capacity.bicyclePlaces": 10;
+  availability: '{"bicyclePlaces":5,"carPlaces":null,"wheelchairAccessibleCarPlaces":null}';
+  "availability.bicyclePlaces": 5;
+};
+
+// TODO: Perhaps avoid wrapping in `properties`?
 export type Route = {
   properties: {
     name: string;

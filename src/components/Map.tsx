@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { SyntheticEvent, useEffect, useRef, useState } from "react";
 import maplibregl from "maplibre-gl";
 import "../styles/map.css";
 import "maplibre-gl/dist/maplibre-gl.css";
@@ -6,11 +6,14 @@ import Menu from "./Menu";
 import Map, {
   GeolocateControl,
   Layer,
+  MapRef,
+  MapLayerMouseEvent,
   Marker,
   NavigationControl,
   ScaleControl,
   Source,
-} from "react-map-gl";
+} from "react-map-gl/maplibre"; // Note: Important to use the MapLibre version of react-map-gl, otherwise we get a lot of incompatible types and weird errors
+// TODO: Try to remove mapbox-gl as a dependency again and see if it works
 import { Backdrop, CircularProgress } from "@mui/material";
 import polyline from "@mapbox/polyline";
 import { MaplibreLegendControl } from "@watergis/maplibre-gl-legend";
@@ -27,44 +30,51 @@ import InfoPopup, {
   BIKE_ROUTE_POPUP,
 } from "./InfoPopup";
 import { cities, TARGET_URLS, TARGETS } from "../assets/constants";
+import { Coords, Elevation, Feature, InfoPopupType, SnowPlow } from "./types";
 
 const INITIAL_LAT = 59.868;
 const INITIAL_LON = 10.322;
 const INITIAL_ZOOM = 8;
 
-const MapContainer = (props) => {
-  const [lat, setLat] = useState(
-    window.location.hash ? window.location.hash.split("/")[1] : INITIAL_LAT
-  );
-  const [lon, setLon] = useState(
-    window.location.hash ? window.location.hash.split("/")[2] : INITIAL_LON
-  );
-  const [zoom, setZoom] = useState(INITIAL_ZOOM);
-  const [hasStart, setHasStart] = useState(false);
-  const [start, setStart] = useState(null);
-  const [hasEnd, setHasEnd] = useState(false);
-  const [dest, setDest] = useState(null);
-  const [isBackdropOpen, setIsBackdropOpen] = useState(false);
-  const [popupType, setPopupType] = useState(null);
-  const [popupCoords, setPopupCoords] = useState(null);
-  const [popupPoint, setPopupPoint] = useState(null);
-  const [routeDuration, setRouteDuration] = useState(null);
-  const [routeDistance, setRouteDistance] = useState(null);
-  const [routeElevation, setRouteElevation] = useState(null);
-  const [routeElevationProfile, setRouteElevationProfile] = useState(null);
-  const [simulateLayer, setSimulateLayer] = useState(null);
+const MapContainer = () => {
+  const lat = window.location.hash
+    ? Number(window.location.hash.split("/")[1])
+    : INITIAL_LAT;
+  const lon = window.location.hash
+    ? Number(window.location.hash.split("/")[2])
+    : INITIAL_LON;
 
-  const wrapper = useRef(null);
-  const map = useRef();
+  // TODO: Remove hasStart, instead just check if start !== null
+  const [hasStart, setHasStart] = useState(false);
+  const [start, setStart] = useState<Coords | null>(null);
+  // TODO: Remove hasEnd, instead just check if dest !== null
+  const [hasEnd, setHasEnd] = useState(false);
+  const [dest, setDest] = useState<Coords | null>(null);
+  const [isBackdropOpen, setIsBackdropOpen] = useState(false);
+  const [popupType, setPopupType] = useState<InfoPopupType | null>(null);
+  const [popupCoords, setPopupCoords] = useState<Coords | null>(null);
+  const [popupPoint, setPopupPoint] = useState<any | null>(null); // TODO: Use a type instead of any
+  // TODO: These four route states are related and can be combined into one
+  //       state object like `const [trip, setTrip] = useState<Trip|null>(null)`
+  const [routeDuration, setRouteDuration] = useState<number | null>(null);
+  const [routeDistance, setRouteDistance] = useState<number | null>(null);
+  const [routeElevation, setRouteElevation] = useState<number | null>(null);
+  const [routeElevationProfile, setRouteElevationProfile] = useState<
+    number[] | null
+  >(null);
+  const [simulateLayer, setSimulateLayer] = useState<SnowPlow | null>(null);
+
+  const wrapper = useRef<HTMLDivElement | null>(null);
+  const map = useRef<MapRef | null>(null);
 
   useEffect(() => {
-    const url = new URL(window.location);
+    const url = new URL(window.location.href);
     if (url.searchParams.has("from") && url.searchParams.has("to")) {
-      const from = parseLngLat(url.searchParams.get("from"));
-      const to = parseLngLat(url.searchParams.get("to"));
+      const from = parseLngLat(url.searchParams.get("from")!);
+      const to = parseLngLat(url.searchParams.get("to")!);
       getQuery(from, to);
     } else if (url.searchParams.has("from")) {
-      const from = parseLngLat(url.searchParams.get("from"));
+      const from = parseLngLat(url.searchParams.get("from")!);
       updateQueryFromParam(from);
     } else {
       if (navigator.geolocation) {
@@ -77,14 +87,17 @@ const MapContainer = (props) => {
       }
     }
 
-    wrapper.current.addEventListener("click", (e) => updateQueryByLegend(e));
+    wrapper.current?.addEventListener("click", (e) => updateQueryByLegend(e));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const getLocation = (position) => {
+  const getLocation = (position: {
+    coords: { latitude: number; longitude: number };
+  }) => {
     const latitude = position.coords.latitude;
     const longitude = position.coords.longitude;
-    map.current.setCenter(new maplibregl.LngLat(longitude, latitude));
-    map.current.setZoom(15);
+    map.current?.setCenter(new maplibregl.LngLat(longitude, latitude));
+    map.current?.setZoom(15);
   };
 
   const getRandomCityLocation = () => {
@@ -99,12 +112,16 @@ const MapContainer = (props) => {
     setTimeout(() => {
       try {
         const cityNum = cities.features.length;
-        let rndIndex = Math.floor(Math.random() * (cityNum - 2));
-        let city = cities.features.at(rndIndex);
-        const latitude = city.geometry.coordinates[0];
-        const longitude = city.geometry.coordinates[1];
-        map.current.setCenter(new maplibregl.LngLat(longitude, latitude));
-        map.current.setZoom(13);
+        const rndIndex = Math.floor(Math.random() * (cityNum - 2));
+        const city = cities.features.at(rndIndex);
+        if (city !== undefined) {
+          const latitude = city.geometry.coordinates[0];
+          const longitude = city.geometry.coordinates[1];
+          map.current?.setCenter(new maplibregl.LngLat(longitude, latitude));
+          map.current?.setZoom(13);
+        } else {
+          console.warn("City not found");
+        }
       } catch (e) {
         console.error(e);
       }
@@ -112,10 +129,11 @@ const MapContainer = (props) => {
   };
 
   const addLegend = () => {
-    map.current.addControl(
+    map.current?.addControl(
       new MaplibreLegendControl(TARGETS, {
         showDefault: true,
         showCheckbox: true,
+        reverseOrder: false,
         onlyRendered: true,
         title: "Tegnforklaring",
       }),
@@ -124,7 +142,7 @@ const MapContainer = (props) => {
   };
 
   const loadSnowPlowData = () => {
-    const url = new URL(window.location);
+    const url = new URL(window.location.href);
 
     if (url.searchParams.has("showSnowPlows")) {
       fetch("https://cycling-norway.leonard.io/snow-plow-konnerudgata", {
@@ -156,11 +174,19 @@ const MapContainer = (props) => {
     }
   };
 
+  // Simulate snow plow data
+  type SimulationFeature = {
+    type: string;
+    geometry: {
+      type: string;
+      coordinates: number[][];
+    };
+  };
   const drawSimulation = () => {
-    let roadOk = [];
-    let roadWarn = [];
-    let roadSnow = [];
-    if (simulateLayer == null) {
+    let roadOk: SimulationFeature[] = [];
+    let roadWarn: SimulationFeature[] = [];
+    let roadSnow: SimulationFeature[] = [];
+    if (simulateLayer === null) {
       // all white
       roadSnow = data.features;
       setSimulateLayer("snow-plow-snow");
@@ -178,20 +204,28 @@ const MapContainer = (props) => {
     }
     drawOnMap(roadOk, roadWarn, roadSnow);
   };
-
-  const drawOnMap = (roadOk, roadWarn, roadSnow) => {
-    map.current.getSource("snow-plow-ok").setData({
-      type: "FeatureCollection",
-      features: roadOk,
-    });
-    map.current.getSource("snow-plow-warn").setData({
-      type: "FeatureCollection",
-      features: roadWarn,
-    });
-    map.current.getSource("snow-plow-snow").setData({
-      type: "FeatureCollection",
-      features: roadSnow,
-    });
+  const drawOnMap = (
+    roadOk: SimulationFeature[],
+    roadWarn: SimulationFeature[],
+    roadSnow: SimulationFeature[]
+  ) => {
+    if (map.current !== null) {
+      // @ts-expect-error TODO: Are we sure setData works here?
+      map.current.getSource("snow-plow-ok")?.setData({
+        type: "FeatureCollection",
+        features: roadOk,
+      });
+      // @ts-expect-error TODO: Are we sure setData works here?
+      map.current.getSource("snow-plow-warn")?.setData({
+        type: "FeatureCollection",
+        features: roadWarn,
+      });
+      // @ts-expect-error TODO: Are we sure setData works here?
+      map.current.getSource("snow-plow-snow")?.setData({
+        type: "FeatureCollection",
+        features: roadSnow,
+      });
+    }
   };
 
   const resetRoute = () => {
@@ -203,7 +237,7 @@ const MapContainer = (props) => {
     setRouteDistance(null);
     setRouteElevation(null);
 
-    const url = new URL(window.location);
+    const url = new URL(window.location.href);
     url.searchParams.delete("from");
     url.searchParams.delete("to");
     window.history.pushState({}, "", url);
@@ -211,8 +245,15 @@ const MapContainer = (props) => {
     drawPolyline([]);
   };
 
-  const onStartChoose = (event, value) => {
-    if (value != null && map.current != null) {
+  const onStartChoose = (
+    event: SyntheticEvent,
+    value: Feature | string | null
+  ) => {
+    if (typeof value === "string") {
+      console.error("string param not supported yet");
+      return;
+    }
+    if (value !== null && map.current !== null) {
       let coords = new maplibregl.LngLat(
         value.geometry.coordinates[0],
         value.geometry.coordinates[1]
@@ -227,8 +268,15 @@ const MapContainer = (props) => {
     }
   };
 
-  const onDestChoose = (event, value) => {
-    if (value != null && map.current != null) {
+  const onDestChoose = (
+    event: SyntheticEvent,
+    value: Feature | string | null
+  ) => {
+    if (typeof value === "string") {
+      console.error("string param not supported yet");
+      return;
+    }
+    if (value !== null && map.current !== null) {
       let coords = new maplibregl.LngLat(
         value.geometry.coordinates[0],
         value.geometry.coordinates[1]
@@ -242,82 +290,90 @@ const MapContainer = (props) => {
     }
   };
 
-  const parseLngLat = (s) => {
+  const parseLngLat = (s: string) => {
     const [lat, lng] = s.split(",").map((n) => Number(n));
     return { lng, lat };
   };
 
-  const lngLatToString = (lngLat) =>
+  const lngLatToString = (lngLat: { lat: number; lng: number }) =>
     `${lngLat.lat.toFixed(5)},${lngLat.lng.toFixed(5)}`;
 
-  const onMapClick = (event) => {
-    const bikelyFeatures = map.current.queryRenderedFeatures(event.point, {
-      layers: ["poi-bikely"],
-    });
-    const sykkelHotelFeatures = map.current.queryRenderedFeatures(event.point, {
-      layers: ["poi-bicycle-parking-shed"],
-    });
-    const snowPlowFeatures = map.current.queryRenderedFeatures(event.point, {
-      layers: [
-        "poi-snow-plow-warn",
-        "poi-snow-plow-ok",
-        "poi-snow-plow-snow",
-        "poi-snow-plow-snow-border",
-      ],
-    });
-    const tunnelFeatures = map.current.queryRenderedFeatures(event.point, {
-      layers: ["tunnel-conditional", "no-snowplowing-winter_road"],
-    });
-    const closedRoadFeatures = map.current.queryRenderedFeatures(event.point, {
-      layers: ["no-snowplowing-winter_road"],
-    });
-    const toiletFeatures = map.current.queryRenderedFeatures(event.point, {
-      layers: ["poi-toilets"],
-    });
-    const bikeRouteFeatures = map.current.queryRenderedFeatures(event.point, {
-      layers: [
-        "bicycle-route-local-overlay",
-        "bicycle-route-national-overlay",
-        "bicycle-route-local-background",
-        "bicycle-route-national-background",
-      ],
-    });
-    if (bikelyFeatures.length > 0) {
-      const feature = bikelyFeatures[0].properties;
-      setPopupType(BIKELY_POPUP);
-      setPopupCoords(event.lngLat);
-      setPopupPoint(feature);
-    } else if (sykkelHotelFeatures.length > 0) {
-      const feature = sykkelHotelFeatures[0].properties;
-      setPopupType(SYKKELHOTEL_POPUP);
-      setPopupCoords(event.lngLat);
-      setPopupPoint(feature);
-    } else if (snowPlowFeatures.length > 0) {
-      const feature = snowPlowFeatures[0].properties;
-      setPopupType(SNOWPLOW_POPUP);
-      setPopupCoords(event.lngLat);
-      setPopupPoint(feature);
-    } else if (tunnelFeatures.length > 0) {
-      const feature = tunnelFeatures[0].properties;
-      setPopupType(TUNNEL_POPUP);
-      setPopupCoords(event.lngLat);
-      setPopupPoint(feature);
-    } else if (closedRoadFeatures.length > 0) {
-      const feature = closedRoadFeatures[0].properties;
-      setPopupType(CLOSED_ROAD_POPUP);
-      setPopupCoords(event.lngLat);
-      setPopupPoint(feature);
-    } else if (toiletFeatures.length > 0) {
-      const feature = toiletFeatures[0].properties;
-      setPopupType(TOILET_POPUP);
-      setPopupCoords(event.lngLat);
-      setPopupPoint(feature);
-    } else if (bikeRouteFeatures.length > 0) {
-      setPopupType(BIKE_ROUTE_POPUP);
-      setPopupCoords(event.lngLat);
-      setPopupPoint(bikeRouteFeatures);
-    } else {
-      addMarker(event);
+  const onMapClick = (event: MapLayerMouseEvent) => {
+    if (map.current !== null) {
+      const bikelyFeatures = map.current.queryRenderedFeatures(event.point, {
+        layers: ["poi-bikely"],
+      });
+      const sykkelHotelFeatures = map.current.queryRenderedFeatures(
+        event.point,
+        {
+          layers: ["poi-bicycle-parking-shed"],
+        }
+      );
+      const snowPlowFeatures = map.current.queryRenderedFeatures(event.point, {
+        layers: [
+          "poi-snow-plow-warn",
+          "poi-snow-plow-ok",
+          "poi-snow-plow-snow",
+          "poi-snow-plow-snow-border",
+        ],
+      });
+      const tunnelFeatures = map.current.queryRenderedFeatures(event.point, {
+        layers: ["tunnel-conditional", "no-snowplowing-winter_road"],
+      });
+      const closedRoadFeatures = map.current.queryRenderedFeatures(
+        event.point,
+        {
+          layers: ["no-snowplowing-winter_road"],
+        }
+      );
+      const toiletFeatures = map.current.queryRenderedFeatures(event.point, {
+        layers: ["poi-toilets"],
+      });
+      const bikeRouteFeatures = map.current.queryRenderedFeatures(event.point, {
+        layers: [
+          "bicycle-route-local-overlay",
+          "bicycle-route-national-overlay",
+          "bicycle-route-local-background",
+          "bicycle-route-national-background",
+        ],
+      });
+      if (bikelyFeatures.length > 0) {
+        const feature = bikelyFeatures[0].properties;
+        setPopupType(BIKELY_POPUP);
+        setPopupCoords(event.lngLat);
+        setPopupPoint(feature);
+      } else if (sykkelHotelFeatures.length > 0) {
+        const feature = sykkelHotelFeatures[0].properties;
+        setPopupType(SYKKELHOTEL_POPUP);
+        setPopupCoords(event.lngLat);
+        setPopupPoint(feature);
+      } else if (snowPlowFeatures.length > 0) {
+        const feature = snowPlowFeatures[0].properties;
+        setPopupType(SNOWPLOW_POPUP);
+        setPopupCoords(event.lngLat);
+        setPopupPoint(feature);
+      } else if (tunnelFeatures.length > 0) {
+        const feature = tunnelFeatures[0].properties;
+        setPopupType(TUNNEL_POPUP);
+        setPopupCoords(event.lngLat);
+        setPopupPoint(feature);
+      } else if (closedRoadFeatures.length > 0) {
+        const feature = closedRoadFeatures[0].properties;
+        setPopupType(CLOSED_ROAD_POPUP);
+        setPopupCoords(event.lngLat);
+        setPopupPoint(feature);
+      } else if (toiletFeatures.length > 0) {
+        const feature = toiletFeatures[0].properties;
+        setPopupType(TOILET_POPUP);
+        setPopupCoords(event.lngLat);
+        setPopupPoint(feature);
+      } else if (bikeRouteFeatures.length > 0) {
+        setPopupType(BIKE_ROUTE_POPUP);
+        setPopupCoords(event.lngLat);
+        setPopupPoint(bikeRouteFeatures);
+      } else {
+        addMarker(event);
+      }
     }
   };
 
@@ -326,7 +382,7 @@ const MapContainer = (props) => {
     setPopupPoint(null);
   };
 
-  const addMarker = (event) => {
+  const addMarker = (event: MapLayerMouseEvent) => {
     if (hasStart && hasEnd) {
       return;
     }
@@ -337,15 +393,15 @@ const MapContainer = (props) => {
     }
   };
 
-  const updateStartCoord = (event) => {
+  const updateStartCoord = (event: { lngLat: Coords }) => {
     getQuery(event.lngLat, dest);
   };
 
-  const updateDestCoord = (event) => {
+  const updateDestCoord = (event: { lngLat: Coords }) => {
     getQuery(start, event.lngLat);
   };
 
-  const drawPolyline = (lines) => {
+  const drawPolyline = (lines: string[]) => {
     const features = lines.map((l) => {
       const geojson = polyline.toGeoJSON(l);
       return {
@@ -359,9 +415,10 @@ const MapContainer = (props) => {
       type: "FeatureCollection",
       features,
     };
-    map.current.getSource("route").setData(geojson);
+    // @ts-expect-error TODO: Are we sure setData works here?
+    map.current?.getSource("route")?.setData(geojson);
 
-    let coordinates = features.map((f) => f.geometry.coordinates).flat();
+    const coordinates = features.map((f) => f.geometry.coordinates).flat();
 
     /* Pass the first coordinates in the LineString to `lngLatBounds`,
 		then wrap each coordinate pair in `extend` to include them
@@ -370,19 +427,22 @@ const MapContainer = (props) => {
 		Polygon geometries, which would require wrapping all
 		the coordinates with the extend method. */
 
-    let bounds = coordinates.reduce(function (bounds, coord) {
-      return bounds.extend(coord);
-    }, new maplibregl.LngLatBounds(coordinates[0], coordinates[0]));
+    const bounds = coordinates.reduce(
+      // @ts-expect-error TODO: Figure out these types
+      (bounds, coord) => bounds.extend(coord),
+      // @ts-expect-error TODO: Figure out these types
+      new maplibregl.LngLatBounds(coordinates[0], coordinates[0])
+    );
 
     if (lines.length) {
-      map.current.fitBounds(bounds, {
+      map.current?.fitBounds(bounds, {
         padding: 100,
       });
     }
   };
 
-  const updateQueryFromParam = (start) => {
-    const url = new URL(window.location);
+  const updateQueryFromParam = (start: Coords) => {
+    const url = new URL(window.location.href);
     url.searchParams.set("from", lngLatToString(start));
     window.history.pushState({}, "", url);
 
@@ -390,8 +450,8 @@ const MapContainer = (props) => {
     setStart(start);
   };
 
-  const updateQueryToParam = (dest) => {
-    const url = new URL(window.location);
+  const updateQueryToParam = (dest: Coords) => {
+    const url = new URL(window.location.href);
     url.searchParams.set("to", lngLatToString(dest));
     window.history.pushState({}, "", url);
 
@@ -399,7 +459,10 @@ const MapContainer = (props) => {
     setDest(dest);
   };
 
-  const getQuery = (start, dest) => {
+  const getQuery = (start: Coords | null, dest: Coords | null) => {
+    if (start === null || dest === null) {
+      return;
+    }
     updateQueryFromParam(start);
     updateQueryToParam(dest);
     setIsBackdropOpen(true);
@@ -439,11 +502,14 @@ const MapContainer = (props) => {
 					}`,
     })
       .then((response) => response.json())
+      // @ts-ignore TODO: Make a type for the response, remember to see if response can contain errors
       .then((response) => {
         const tripPatterns = response.data.trip.tripPatterns;
         if (tripPatterns.length > 0) {
           const tripPattern = response.data.trip.tripPatterns[0];
-          const polyline = tripPattern.legs.map((l) => l.pointsOnLink.points);
+          const polyline = tripPattern.legs.map(
+            (l: any) => l.pointsOnLink.points
+          ) as [string];
           const startElevation =
             tripPattern.legs[0].elevationProfile[0]?.elevation;
           const lastLeg = tripPattern.legs[tripPattern.legs.length - 1];
@@ -455,7 +521,9 @@ const MapContainer = (props) => {
           setRouteDistance(response.data.trip.tripPatterns[0].distance);
           setRouteElevation(endElevation - startElevation);
           setRouteElevationProfile(
-            tripPattern.legs[0].elevationProfile.map((e) => e.elevation)
+            tripPattern.legs[0].elevationProfile.map(
+              (e: Elevation) => e.elevation
+            )
           );
           drawPolyline(polyline);
         } else {
@@ -469,19 +537,21 @@ const MapContainer = (props) => {
 
   const mapOnLoad = () => {
     addLegend();
-    updateLegendByQuery(map.current);
+    updateLegendByQuery();
     loadSnowPlowData();
   };
 
-  const updateLegendByQuery = (map) => {
-    const url = new URL(window.location);
+  const updateLegendByQuery = () => {
+    const url = new URL(window.location.href);
     if (url.searchParams.has("layers")) {
-      const layerList = url.searchParams.get("layers").split(",");
+      const layerList = url.searchParams.get("layers")!.split(",");
       TARGET_URLS.forEach((key, value) => {
         if (layerList.includes(value)) {
-          map.getLayer(key)?.setLayoutProperty("visibility", "visible");
+          map.current
+            ?.getLayer(key)
+            ?.setLayoutProperty("visibility", "visible");
         } else {
-          map.getLayer(key)?.setLayoutProperty("visibility", "none");
+          map.current?.getLayer(key)?.setLayoutProperty("visibility", "none");
         }
       });
     } else {
@@ -493,21 +563,24 @@ const MapContainer = (props) => {
     }
   };
 
-  const updateQueryByLegend = (event) => {
-    let target = event.target;
+  const updateQueryByLegend = (event: MouseEvent) => {
+    let target = event.target as HTMLInputElement;
 
     if (target.type === "checkbox" && TARGET_URLS.has(target.name)) {
-      const url = new URL(window.location);
-      const layerList = url.searchParams.get("layers")?.split(",");
+      const url = new URL(window.location.href);
+      const layerList: string[] =
+        url.searchParams.get("layers")?.split(",") ?? [];
       const urlTag = TARGET_URLS.get(target.name);
 
       let layerVisible = isVisible(map.current, target.name);
-      let layerWasVisible = layerList.includes(urlTag);
-      if (!layerVisible && layerWasVisible) {
-        const index = layerList.indexOf(urlTag);
-        layerList.splice(index, 1);
-      } else if (layerVisible && !layerWasVisible) {
-        layerList.push(urlTag);
+      let layerWasVisible = urlTag !== undefined && layerList.includes(urlTag);
+      if (urlTag !== undefined) {
+        if (!layerVisible && layerWasVisible) {
+          const index = layerList.indexOf(urlTag);
+          layerList.splice(index, 1);
+        } else if (layerVisible && !layerWasVisible) {
+          layerList.push(urlTag);
+        }
       }
 
       url.searchParams.set("layers", layerList.join(","));
@@ -515,8 +588,8 @@ const MapContainer = (props) => {
     }
   };
 
-  const isVisible = (map, layer) => {
-    return map.getLayoutProperty(layer, "visibility") === "visible";
+  const isVisible = (map: MapRef | null, layer: string) => {
+    return map?.getLayoutProperty(layer, "visibility") === "visible" ?? false;
   };
 
   return (
@@ -528,7 +601,7 @@ const MapContainer = (props) => {
         initialViewState={{
           longitude: lon,
           latitude: lat,
-          zoom: zoom,
+          zoom: INITIAL_ZOOM,
         }}
         scrollZoom
         interactive
@@ -580,7 +653,7 @@ const MapContainer = (props) => {
           id="poi-bikely"
           source="bikely"
           source-layer="bikely"
-          minZoom={7}
+          minzoom={7}
           layout={{
             "icon-image": "bicycle_parking_lockers_bikely_11",
             "icon-size": 1.2,
@@ -677,7 +750,7 @@ const MapContainer = (props) => {
             "line-width": 5,
           }}
         />
-        {popupType != null && (
+        {popupType !== null && popupCoords !== null && (
           <InfoPopup
             type={popupType}
             popupCoords={popupCoords}
@@ -709,7 +782,7 @@ const MapContainer = (props) => {
         <ScaleControl
           unit="metric"
           position="bottom-left"
-          style={{ "padding-left": "20px" }}
+          style={{ paddingLeft: "20px" }}
         />
         <NavigationControl
           position="bottom-left"
@@ -720,7 +793,7 @@ const MapContainer = (props) => {
         <div className="maplibregl-ctrl-bottom-right mapboxgl-ctrl-bottom-right">
           <AttributionPanel />
         </div>
-        {hasStart && (
+        {hasStart && start && (
           <Marker
             longitude={start?.lng}
             latitude={start?.lat}
@@ -730,7 +803,7 @@ const MapContainer = (props) => {
             onDragEnd={updateStartCoord}
           />
         )}
-        {hasEnd && (
+        {hasEnd && dest && (
           <Marker
             longitude={dest?.lng}
             latitude={dest?.lat}
