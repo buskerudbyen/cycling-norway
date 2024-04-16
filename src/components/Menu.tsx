@@ -29,10 +29,10 @@ type Props = {
     value: Feature | string | null
   ) => void;
   reset: () => void;
-  duration: number;
-  distance: number;
-  elevation: number;
-  elevationProfile: number[];
+  duration: number | null;
+  distance: number | null;
+  elevation: number | null;
+  elevationProfile: number[] | null;
 };
 
 const Menu = (props: Props) => {
@@ -62,12 +62,13 @@ const Menu = (props: Props) => {
     setRenderFormKeys(!renderFormKeys);
   };
 
-  let duration = new Date(props.duration * 1000).toISOString().slice(11, 19);
-  let distance = (props.distance / 1000).toFixed(2);
-  let elevation = "0";
-  if (props.elevation !== null) {
-    elevation = props.elevation.toFixed(2);
-  }
+  const duration =
+    props.duration !== null
+      ? new Date(props.duration * 1000).toISOString().slice(11, 19)
+      : "0:00:00";
+  const distance =
+    props.distance !== null ? (props.distance / 1000).toFixed(2) : "0";
+  const elevation = props.elevation !== null ? props.elevation.toFixed(2) : "0";
 
   return (
     <>
@@ -171,27 +172,29 @@ const Menu = (props: Props) => {
               rerender={renderFormKeys}
             />
           </div>
-          <div id="routingResults" hidden={!props.duration}>
-            <TimerIcon
-              htmlColor={"gray"}
-              fontSize={"small"}
-              sx={{ marginLeft: "5px" }}
-            />
-            <span style={{ margin: "5px" }}>{duration}</span>
-            <HeightIcon
-              htmlColor={"gray"}
-              sx={{ transform: "rotate(90deg)", marginLeft: "5px" }}
-            />
-            <span style={{ margin: "5px" }}>{distance} km</span>
-            <span
-              className="elevation-details-trigger"
-              style={{ marginLeft: "5px" }}
-              onMouseOver={() => setShowElevationPopup(true)}
-            >
-              <ExpandIcon htmlColor={"white"} sx={{ marginRight: "5px" }} />
-              {elevation} m
-            </span>
-          </div>
+          {props.duration !== null && props.distance !== null && (
+            <div id="routingResults">
+              <TimerIcon
+                htmlColor="gray"
+                fontSize="small"
+                sx={{ marginLeft: "5px" }}
+              />
+              <span style={{ margin: "5px" }}>{duration}</span>
+              <HeightIcon
+                htmlColor="gray"
+                sx={{ transform: "rotate(90deg)", marginLeft: "5px" }}
+              />
+              <span style={{ margin: "5px" }}>{distance} km</span>
+              <span
+                className="elevation-details-trigger"
+                style={{ marginLeft: "5px" }}
+                onMouseOver={() => setShowElevationPopup(true)}
+              >
+                <ExpandIcon htmlColor="white" sx={{ marginRight: "5px" }} />
+                {elevation} m
+              </span>
+            </div>
+          )}
         </div>
         <Modal
           id={"elevationInfo"}
@@ -204,7 +207,7 @@ const Menu = (props: Props) => {
               datasetIdKey="id"
               className="elevation-details-modal"
               data={{
-                labels: props.elevationProfile,
+                labels: props.elevationProfile ?? [],
                 datasets: [
                   {
                     data: props.elevationProfile,
