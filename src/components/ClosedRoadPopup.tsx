@@ -1,8 +1,9 @@
 import React from "react";
 import { Popup } from "react-map-gl";
 import { Typography } from "@mui/material";
+import { PopupProps } from "./types";
 
-const ClosedRoadPopup = (props) => (
+const ClosedRoadPopup = (props: PopupProps) => (
   <Popup
     latitude={props.lngLat.lat}
     longitude={props.lngLat.lng}

@@ -12,10 +12,11 @@ import {
 import moment from "moment";
 import "moment/locale/nb";
 import { DAYS } from "./InfoPopup";
+import { DayShortName, Point, PopupProps } from "./types";
 
-const TunnelPopup = (props) => {
-  const parseOpeningHours = (oh, startString) => {
-    if (oh === undefined) {
+const TunnelPopup = (props: PopupProps) => {
+  const parseOpeningHours = (oh?: string, startString?: string) => {
+    if (oh === undefined || startString === undefined) {
       return;
     }
 
@@ -24,7 +25,7 @@ const TunnelPopup = (props) => {
     }
 
     if (oh === "24/7") {
-      return startString + DAYS["mo"] + " til " + DAYS["su"] + ".";
+      return startString + DAYS.get("mo") + " til " + DAYS.get("su") + ".";
     }
 
     // display opening hours for the next 24 hours
@@ -44,54 +45,56 @@ const TunnelPopup = (props) => {
     );
   };
 
-  const getTime = (fullDate) => {
+  const getTime = (fullDate: Date) => {
     moment.locale("nb");
     return moment(fullDate).format("LT");
   };
 
-  const getMessage = (point) => {
+  const getMessage = (point: Point) => {
     if (point.hasOwnProperty("opening_hours")) {
-      return parseOpeningHours(point["opening_hours"], "Tunnel åpen ");
+      return parseOpeningHours(point.opening_hours, "Tunnel åpen ");
     }
 
     if (point.hasOwnProperty("lit")) {
-      if (point["lit"] === "no") {
+      if (point.lit === "no") {
         return "Tunnel uten lys.";
-      } else if (point["lit"] === "24/7") {
+      } else if (point.lit === "24/7") {
         return "Tunnel med lys.";
       } else {
-        return parseOpeningHours(point["lit"], "Tunnel med lys kun ");
+        return parseOpeningHours(point.lit, "Tunnel med lys kun ");
       }
     }
 
     if (point.hasOwnProperty("conditional_bike")) {
-      return parseOpeningHours(point["conditional_bike"], "Anlegg stengt kl. ");
+      return parseOpeningHours(point.conditional_bike, "Anlegg stengt kl. ");
     }
   };
 
-  const getOpeningHoursValue = (point) => {
+  const getOpeningHoursValue = (point: Point) => {
     if (point.hasOwnProperty("opening_hours")) {
-      return point["opening_hours"];
+      return point.opening_hours;
     }
 
     if (point.hasOwnProperty("lit")) {
-      return point["lit"];
+      return point.lit;
     }
 
     if (point.hasOwnProperty("conditional_bike")) {
-      return point["conditional_bike"];
+      return point.conditional_bike;
     }
   };
 
-  const getOpeningHoursTable = (point) => {
+  const getOpeningHoursTable = (point: Point) => {
     const oh = getOpeningHoursValue(point);
 
     // If there are multiple rules.
-    if (oh.split(";").length - 1 > 1) {
+    if (oh !== undefined && oh.split(";").length - 1 > 1) {
       const ohObject = new SimpleOpeningHours(oh);
-      const openingHours = ohObject.getTable();
+      const openingHours = ohObject.getTable() as {
+        [key in DayShortName]: string;
+      };
 
-      let rows = [];
+      const rows: JSX.Element[] = [];
       DAYS.forEach((value, key) => {
         rows.push(
           <TableRow>

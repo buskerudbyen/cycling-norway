@@ -9,21 +9,20 @@ import {
 } from "@mui/material";
 import { SimpleOpeningHours } from "simple-opening-hours";
 import { DAYS } from "./InfoPopup";
+import { OpeningHourTable, PopupProps } from "./types";
 
-const ToiletPopup = (props) => {
+const ToiletPopup = (props: PopupProps) => {
   const getOpeningHoursTable = () => {
-    if (!props.point.hasOwnProperty("opening_hours")) {
-      return null;
-    }
+    if (props.point.opening_hours === undefined) return null;
 
-    const oh = props.point["opening_hours"];
+    const oh = props.point.opening_hours;
 
     // If there are multiple rules.
     if (oh.split(";").length - 1 > 1) {
       const ohObject = new SimpleOpeningHours(oh);
-      const openingHours = ohObject.getTable();
+      const openingHours = ohObject.getTable() as OpeningHourTable;
 
-      let rows = [];
+      const rows: JSX.Element[] = [];
       DAYS.forEach((value, key) => {
         rows.push(
           <TableRow>
@@ -54,7 +53,7 @@ const ToiletPopup = (props) => {
         vedlikehold, etc.).
       </Typography>
       <Typography>
-        Betaling: {props.point["fee"] === "yes" ? "ja" : "nei"}
+        Betaling: {props.point.fee === "yes" ? "ja" : "nei"}
       </Typography>
       {getOpeningHoursTable()}
     </Popup>

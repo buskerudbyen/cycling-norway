@@ -6,6 +6,7 @@ import HeightIcon from "@mui/icons-material/Height";
 import ExpandIcon from "@mui/icons-material/Expand";
 import { Chart as ChartJS, registerables } from "chart.js";
 import { Line } from "react-chartjs-2";
+import { Feature } from "./types";
 
 const style = {
   position: "absolute",
@@ -18,8 +19,23 @@ const style = {
   p: 2,
 };
 
-// When unmounted, run garbage collection in all useEffects
-const Menu = (props) => {
+type Props = {
+  chooseStart: (
+    event: React.SyntheticEvent,
+    value: Feature | string | null
+  ) => void;
+  chooseDest: (
+    event: React.SyntheticEvent,
+    value: Feature | string | null
+  ) => void;
+  reset: () => void;
+  duration: number | null;
+  distance: number | null;
+  elevation: number | null;
+  elevationProfile: number[] | null;
+};
+
+const Menu = (props: Props) => {
   const [isHelpOpen, setIsHelpOpen] = useState(false);
   const [prevWidth, setPrevWidth] = useState(window.innerWidth);
   const [searchFieldsOpen, setSearchFieldsOpen] = useState(
@@ -41,33 +57,18 @@ const Menu = (props) => {
     return () => window.removeEventListener("resize", updateBySize);
   }, [prevWidth]);
 
-  const toggleSearch = () => {
-    setSearchFieldsOpen(!searchFieldsOpen);
-  };
-
   const resetRoute = () => {
     props.reset();
     setRenderFormKeys(!renderFormKeys);
   };
 
-  const toggleHelpPopup = () => {
-    setIsHelpOpen(!isHelpOpen);
-  };
-
-  const closeHelpPopup = () => {
-    setIsHelpOpen(!isHelpOpen);
-  };
-
-  const hideElevationPopup = () => {
-    setShowElevationPopup(false);
-  };
-
-  let duration = new Date(props.duration * 1000).toISOString().slice(11, 19);
-  let distance = (props.distance / 1000).toFixed(2);
-  let elevation = 0;
-  if (props.elevation != null) {
-    elevation = props.elevation.toFixed(2);
-  }
+  const duration =
+    props.duration !== null
+      ? new Date(props.duration * 1000).toISOString().slice(11, 19)
+      : "0:00:00";
+  const distance =
+    props.distance !== null ? (props.distance / 1000).toFixed(2) : "0";
+  const elevation = props.elevation !== null ? props.elevation.toFixed(2) : "0";
 
   return (
     <>
@@ -76,7 +77,7 @@ const Menu = (props) => {
           id="searchFieldsButton"
           variant="contained"
           size="small"
-          onClick={toggleSearch}
+          onClick={() => setSearchFieldsOpen(!searchFieldsOpen)}
         >
           Tekstsøk
         </Button>
@@ -92,7 +93,7 @@ const Menu = (props) => {
           id="show-help"
           variant="contained"
           size="small"
-          onClick={toggleHelpPopup}
+          onClick={() => setIsHelpOpen(!isHelpOpen)}
         >
           Hjelp
         </Button>
@@ -101,7 +102,7 @@ const Menu = (props) => {
           id="help"
           open={isHelpOpen}
           aria-labelledby="modal-title"
-          onClose={closeHelpPopup}
+          onClose={() => setIsHelpOpen(!isHelpOpen)}
         >
           <Box sx={style} className="modal-box">
             <Typography id="modal-title" variant="h6" component="h2">
@@ -171,44 +172,44 @@ const Menu = (props) => {
               rerender={renderFormKeys}
             />
           </div>
-          <div id="routingResults" hidden={!props.duration}>
-            <TimerIcon
-              htmlColor={"gray"}
-              fontSize={"small"}
-              sx={{ marginLeft: "5px" }}
-            />
-            <span style={{ margin: "5px" }}>{duration}</span>
-            <HeightIcon
-              htmlColor={"gray"}
-              sx={{ transform: "rotate(90deg)", marginLeft: "5px" }}
-            />
-            <span style={{ margin: "5px" }}>{distance} km</span>
-            <span
-              className="elevation-details-trigger"
-              style={{ marginLeft: "5px" }}
-              onMouseOver={() => setShowElevationPopup(true)}
-            >
-              <ExpandIcon htmlColor={"white"} sx={{ marginRight: "5px" }} />
-              {elevation} m
-            </span>
-          </div>
+          {props.duration !== null && props.distance !== null && (
+            <div id="routingResults">
+              <TimerIcon
+                htmlColor="gray"
+                fontSize="small"
+                sx={{ marginLeft: "5px" }}
+              />
+              <span style={{ margin: "5px" }}>{duration}</span>
+              <HeightIcon
+                htmlColor="gray"
+                sx={{ transform: "rotate(90deg)", marginLeft: "5px" }}
+              />
+              <span style={{ margin: "5px" }}>{distance} km</span>
+              <span
+                className="elevation-details-trigger"
+                style={{ marginLeft: "5px" }}
+                onMouseOver={() => setShowElevationPopup(true)}
+              >
+                <ExpandIcon htmlColor="white" sx={{ marginRight: "5px" }} />
+                {elevation} m
+              </span>
+            </div>
+          )}
         </div>
         <Modal
           id={"elevationInfo"}
           aria-labelledby="modal-title"
           open={showElevationPopup}
-          onClose={hideElevationPopup}
+          onClose={() => setShowElevationPopup(false)}
         >
           <Box sx={style} className="modal-box">
             <Line
-              type="line"
               datasetIdKey="id"
               className="elevation-details-modal"
               data={{
-                labels: props.elevationProfile,
+                labels: props.elevationProfile ?? [],
                 datasets: [
                   {
-                    id: 1,
                     data: props.elevationProfile,
                     fill: "origin",
                     borderColor: "#162da0",
@@ -232,7 +233,6 @@ const Menu = (props) => {
                     display: false,
                   },
                 },
-                pointStyle: false,
               }}
             />
           </Box>

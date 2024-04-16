@@ -1,14 +1,15 @@
 import React from "react";
 import { Popup } from "react-map-gl";
+import { PopupProps } from "./types";
 
-const SykkelHotelPopup = (props) => (
+const SykkelHotelPopup = (props: PopupProps) => (
   <Popup
     latitude={props.lngLat.lat}
     longitude={props.lngLat.lng}
     onClose={props.onClose}
   >
     <h3>{props.point["name:latin"]}</h3>
-    <div align={"justify"}>
+    <div style={{ textAlign: "justify" }}>
       Parkeringsløsningen i et bygg og bak låste dører er tilgjengelig for alle
       som betaler abonnement, også de som ikke reiser med tog. Bruk appen{" "}
       <a href="https://www.banenor.no/Jernbanen/Sykle-til-stasjonen-/">
