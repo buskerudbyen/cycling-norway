@@ -4,6 +4,7 @@
   "private": true,
   "homepage": "https://sykkelveier.no/",
   "devDependencies": {
+    "@types/mapbox__polyline": "^1.0.5",
     "@types/react": "^18.2.77",
     "@types/react-dom": "^18.2.25",
     "typescript": "^5.4.5"
@@ -15,7 +16,6 @@
     "@mapbox/polyline": "1.1.1",
     "@mui/icons-material": "^5.11.9",
     "@mui/material": "^5.11.6",
-    "@types/mapbox__polyline": "^1.0.5",
     "@watergis/maplibre-gl-legend": "2.0.4",
     "chart.js": "4.4.0",
     "mapbox-gl": "^3.2.0",
