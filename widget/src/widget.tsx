@@ -13,34 +13,53 @@ declare global {
   }
 }
 
-// FIXME: This is just a demo, must be split into <Demo> and <CyclingWidget>
+/**
+ * This is the actual Widget component.
+ */
 export const CyclingWidget = (props: WidgetOptions) => {
   return (
-    <div>
-      <h1>Biking Widget</h1>
-      <p>The map is now wrapped in the widget component.</p>
-      <div style={{ width: props.width ?? 700, height: props.height ?? 450 }}>
-        <Map isWidget />
-      </div>
+    <div style={{ width: props.width ?? 700, height: props.height ?? 450 }}>
+      <Map isWidget />
     </div>
   );
 };
-
 window.CyclingWidget = (options?: WidgetOptions) => {
-  const domNode = document.getElementById("cycling-widget");
-  if (domNode !== null) {
-    const root = createRoot(domNode);
-    root.render(
-      <CyclingWidget width={options?.width} height={options?.height} />
-    );
+  const cyclingWidgetDomNode = document.getElementById("cycling-widget");
+  if (cyclingWidgetDomNode !== null) {
+    const root = createRoot(cyclingWidgetDomNode);
+    root.render(<CyclingWidget {...options} />);
   } else {
     console.error(
       'Did you remember to add a <div id="cycling-widget"></div> to your HTML?'
     );
   }
 };
-
 console.log(
   "Run CyclingWidget({ …options… }) to render the Sykkelveier.no Widget."
 );
-window.CyclingWidget({ width: "100%", height: "100%" });
+
+/**
+ * This is a demo to show that the widget actually works.
+ *
+ * The demo will automatically render a button that will load the widget when
+ * clicked, as long as a <div id="cycling-demo-exists"> exists.
+ */
+export const Demo = () => {
+  const demoProps = { width: 800, height: 600 };
+  return (
+    <div>
+      <h1>Widget Demo</h1>
+      <p>Here you can see the widget in action.</p>
+      <button onClick={() => window.CyclingWidget(demoProps)}>
+        Load Widget
+      </button>
+      <br />
+      <br />
+    </div>
+  );
+};
+const rootNode = document.getElementById("cycling-widget-demo");
+if (rootNode !== null) {
+  const root = createRoot(rootNode);
+  root.render(<Demo />);
+}

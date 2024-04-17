@@ -12,12 +12,15 @@ To build the widget:
 
 ```bash
 bun run build
-# bundle.js is the widget that one can use via a <script> tag
-# FIXME: Document how to use when the widget API is ready
+# dist/widget.js is the widget that one can use via a <script> tag
 ```
 
-To run devserver:
+To open the demo page for the widget:
 
 ```bash
+bun run build
 bun run dev
+# Note: Hot reloading is not fixed yet, so any changes require running these two commands again
 ```
+
+FIXME: Document how to use when the widget API is ready, also make a note about the automatic demo div
