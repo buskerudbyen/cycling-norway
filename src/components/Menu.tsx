@@ -1,11 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Box, Button, Modal, Typography } from "@mui/material";
 import SearchField from "./SearchField";
-import TimerIcon from "@mui/icons-material/Timer";
-import HeightIcon from "@mui/icons-material/Height";
-import ExpandIcon from "@mui/icons-material/Expand";
+import RoutingResults from "./RoutingResults";
 import { Chart as ChartJS, registerables } from "chart.js";
-import { Line } from "react-chartjs-2";
 import { Feature } from "./types";
 
 const style = {
@@ -41,7 +38,6 @@ const Menu = (props: Props) => {
   const [searchFieldsOpen, setSearchFieldsOpen] = useState(
     window.innerWidth >= 450
   );
-  const [showElevationPopup, setShowElevationPopup] = useState(false);
   const [renderFormKeys, setRenderFormKeys] = useState(true);
 
   ChartJS.register(...registerables);
@@ -61,14 +57,6 @@ const Menu = (props: Props) => {
     props.reset();
     setRenderFormKeys(!renderFormKeys);
   };
-
-  const duration =
-    props.duration !== null
-      ? new Date(props.duration * 1000).toISOString().slice(11, 19)
-      : "0:00:00";
-  const distance =
-    props.distance !== null ? (props.distance / 1000).toFixed(2) : "0";
-  const elevation = props.elevation !== null ? props.elevation.toFixed(2) : "0";
 
   return (
     <>
@@ -159,84 +147,24 @@ const Menu = (props: Props) => {
         </Modal>
       </div>
       <div id="routing" hidden={!searchFieldsOpen}>
-        <div>
-          <div id="searchFields">
-            <SearchField
-              onChoose={props.chooseStart}
-              labelText="Fra"
-              rerender={renderFormKeys}
-            />
-            <SearchField
-              onChoose={props.chooseDest}
-              labelText="Til"
-              rerender={renderFormKeys}
-            />
-          </div>
-          {props.duration !== null && props.distance !== null && (
-            <div id="routingResults">
-              <TimerIcon
-                htmlColor="gray"
-                fontSize="small"
-                sx={{ marginLeft: "5px" }}
-              />
-              <span style={{ margin: "5px" }}>{duration}</span>
-              <HeightIcon
-                htmlColor="gray"
-                sx={{ transform: "rotate(90deg)", marginLeft: "5px" }}
-              />
-              <span style={{ margin: "5px" }}>{distance} km</span>
-              <span
-                className="elevation-details-trigger"
-                style={{ marginLeft: "5px" }}
-                onMouseOver={() => setShowElevationPopup(true)}
-              >
-                <ExpandIcon htmlColor="white" sx={{ marginRight: "5px" }} />
-                {elevation} m
-              </span>
-            </div>
-          )}
+        <div id="searchFields">
+          <SearchField
+            onChoose={props.chooseStart}
+            labelText="Fra"
+            rerender={renderFormKeys}
+          />
+          <SearchField
+            onChoose={props.chooseDest}
+            labelText="Til"
+            rerender={renderFormKeys}
+          />
         </div>
-        <Modal
-          id={"elevationInfo"}
-          aria-labelledby="modal-title"
-          open={showElevationPopup}
-          onClose={() => setShowElevationPopup(false)}
-        >
-          <Box sx={style} className="modal-box">
-            <Line
-              datasetIdKey="id"
-              className="elevation-details-modal"
-              data={{
-                labels: props.elevationProfile ?? [],
-                datasets: [
-                  {
-                    data: props.elevationProfile,
-                    fill: "origin",
-                    borderColor: "#162da0",
-                    backgroundColor: "rgba(22,45,160,0.5)",
-                  },
-                ],
-              }}
-              options={{
-                events: [],
-                plugins: {
-                  legend: {
-                    display: false,
-                  },
-                  subtitle: {
-                    display: true,
-                    text: "Høydeprofil (meter)",
-                  },
-                },
-                scales: {
-                  x: {
-                    display: false,
-                  },
-                },
-              }}
-            />
-          </Box>
-        </Modal>
+        <RoutingResults
+          distance={props.distance}
+          duration={props.duration}
+          elevation={props.elevation}
+          elevationProfile={props.elevationProfile}
+        />
       </div>
     </>
   );
