@@ -1,5 +1,7 @@
 # Sykkelveier.no Widget
 
+Based on a minimal setup to get React working in Vite with hot module reloading and some ESLint rules.
+
 To install dependencies:
 
 ```bash
