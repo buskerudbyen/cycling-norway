@@ -36,7 +36,11 @@ const INITIAL_LAT = 59.868;
 const INITIAL_LON = 10.322;
 const INITIAL_ZOOM = 8;
 
-const MapContainer = () => {
+type Props = {
+  isWidget?: boolean;
+};
+
+const MapContainer = (props: Props) => {
   const lat = window.location.hash
     ? Number(window.location.hash.split("/")[1])
     : INITIAL_LAT;
@@ -593,7 +597,7 @@ const MapContainer = () => {
   };
 
   return (
-    <div className="map-wrap" ref={wrapper}>
+    <div className={`map-wrap ${props.isWidget ? "widget" : ""}`} ref={wrapper}>
       <Map
         id="map"
         ref={map}
