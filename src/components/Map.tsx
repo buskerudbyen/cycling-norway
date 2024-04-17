@@ -572,9 +572,9 @@ const MapContainer = () => {
         url.searchParams.get("layers")?.split(",") ?? [];
       const urlTag = TARGET_URLS.get(target.name);
 
-      let layerVisible = isVisible(map.current, target.name);
-      let layerWasVisible = urlTag !== undefined && layerList.includes(urlTag);
+      const layerVisible = isVisible(map.current, target.name);
       if (urlTag !== undefined) {
+        const layerWasVisible = layerList.includes(urlTag);
         if (!layerVisible && layerWasVisible) {
           const index = layerList.indexOf(urlTag);
           layerList.splice(index, 1);
@@ -589,7 +589,7 @@ const MapContainer = () => {
   };
 
   const isVisible = (map: MapRef | null, layer: string) => {
-    return map?.getLayoutProperty(layer, "visibility") === "visible" ?? false;
+    return map?.getLayoutProperty(layer, "visibility") === "visible";
   };
 
   return (
