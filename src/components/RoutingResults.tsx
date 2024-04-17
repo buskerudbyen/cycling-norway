@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { Box, Modal } from "@mui/material";
+import { Chart as ChartJS, registerables } from "chart.js";
 import { Line } from "react-chartjs-2";
+import { Box, Modal } from "@mui/material";
 import TimerIcon from "@mui/icons-material/Timer";
 import HeightIcon from "@mui/icons-material/Height";
 import ExpandIcon from "@mui/icons-material/Expand";
@@ -25,6 +26,8 @@ type Props = {
 
 const RoutingResults = (props: Props) => {
   const [showElevationPopup, setShowElevationPopup] = useState(false);
+
+  ChartJS.register(...registerables);
 
   if (props.duration === null || props.distance === null) return null;
 
