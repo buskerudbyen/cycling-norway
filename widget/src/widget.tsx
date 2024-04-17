@@ -1,6 +1,7 @@
-import { CSSProperties } from "react";
+import { CSSProperties, useState } from "react";
 import { createRoot } from "react-dom/client";
 import Map from "../../src/components/Map";
+import "./widget.css";
 
 type WidgetOptions = {
   width?: CSSProperties["width"];
@@ -45,16 +46,33 @@ console.log(
  * clicked, as long as a <div id="cycling-demo-exists"> exists.
  */
 export const Demo = () => {
-  const demoProps = { width: 800, height: 600 };
+  const [width, setWidth] = useState(800);
+  const [height, setHeight] = useState(600);
   return (
-    <div>
-      <h1>Widget Demo</h1>
+    <div className="cycling-demo-container">
+      <h2 className="cycling-demo-heading">Widget Demo</h2>
       <p>Here you can see the widget in action.</p>
-      <button onClick={() => window.CyclingWidget(demoProps)}>
+      <div className="cycling-demo-menu">
+        <label className="cycling-demo-label">
+          Width
+          <input
+            type="number"
+            value={width}
+            onChange={(e) => setWidth(+e.target.value)}
+          />
+        </label>
+        <label className="cycling-demo-label">
+          Height
+          <input
+            type="number"
+            value={height}
+            onChange={(e) => setHeight(+e.target.value)}
+          />
+        </label>
+      </div>
+      <button className="cycling-demo-load-widget" onClick={() => window.CyclingWidget({ width, height })}>
         Load Widget
       </button>
-      <br />
-      <br />
     </div>
   );
 };

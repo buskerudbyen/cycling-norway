@@ -1,0 +1,29 @@
+.cycling-demo-container {
+  font-family: "Arial", sans-serif;
+}
+
+.cycling-demo-heading {
+  font-size: 24px;
+  margin-bottom: 5px;
+}
+
+.cycling-demo-menu {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+
+label.cycling-demo-label {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin-bottom: 10px;
+}
+
+label.cycling-demo-label input {
+  width: 70px;
+}
+
+button.cycling-demo-load-widget {
+  margin-bottom: 20px;
+}
