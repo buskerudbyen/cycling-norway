@@ -87,13 +87,13 @@ const MapContainer = (props: Props) => {
     } else if (url.searchParams.has("from")) {
       const from = parseLngLat(url.searchParams.get("from")!);
       updateQueryFromParam(from);
-    // } else if (navigator.geolocation) {
-    //   navigator.geolocation.getCurrentPosition(
-    //     getLocation,
-    //     getRandomCityLocation
-    //   );
-    // } else {
-    //   getRandomCityLocation();
+      // } else if (navigator.geolocation) {
+      //   navigator.geolocation.getCurrentPosition(
+      //     getLocation,
+      //     getRandomCityLocation
+      //   );
+    } else {
+      getRandomCityLocation();
     }
     // TODO: This click listener for the legend should be moved to the legend
     //       itself instead of being on the wrapper for the whole map.
@@ -109,32 +109,32 @@ const MapContainer = (props: Props) => {
     map.current?.setZoom(15);
   };
 
-  // const getRandomCityLocation = () => {
-  //   // if a location is requested by URL, do not change it
-  //   if (
-  //     window.location.hash !==
-  //     "#" + INITIAL_ZOOM + "/" + INITIAL_LAT + "/" + INITIAL_LON
-  //   ) {
-  //     return;
-  //   }
-  //   setTimeout(() => {
-  //     try {
-  //       const cityNum = cities.features.length;
-  //       const rndIndex = Math.floor(Math.random() * (cityNum - 2));
-  //       const city = cities.features.at(rndIndex);
-  //       if (city !== undefined) {
-  //         const latitude = city.geometry.coordinates[0];
-  //         const longitude = city.geometry.coordinates[1];
-  //         map.current?.setCenter(new maplibregl.LngLat(longitude, latitude));
-  //         map.current?.setZoom(13);
-  //       } else {
-  //         console.warn("City not found");
-  //       }
-  //     } catch (e) {
-  //       console.error(e);
-  //     }
-  //   }, 1200);
-  // };
+  const getRandomCityLocation = () => {
+    // if a location is requested by URL, do not change it
+    if (
+      window.location.hash !==
+      "#" + INITIAL_ZOOM + "/" + INITIAL_LAT + "/" + INITIAL_LON
+    ) {
+      return;
+    }
+    setTimeout(() => {
+      try {
+        const cityNum = cities.features.length;
+        const rndIndex = Math.floor(Math.random() * (cityNum - 2));
+        const city = cities.features.at(rndIndex);
+        if (city !== undefined) {
+          const latitude = city.geometry.coordinates[0];
+          const longitude = city.geometry.coordinates[1];
+          map.current?.setCenter(new maplibregl.LngLat(longitude, latitude));
+          map.current?.setZoom(13);
+        } else {
+          console.warn("City not found");
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    }, 1200);
+  };
 
   const addLegend = () => {
     map.current?.addControl(
@@ -254,7 +254,7 @@ const MapContainer = (props: Props) => {
   };
 
   const onStartChoose = (
-    event: SyntheticEvent,
+    event: SyntheticEvent | null,
     value: Feature | string | null
   ) => {
     if (typeof value === "string") {
@@ -262,7 +262,7 @@ const MapContainer = (props: Props) => {
       return;
     }
     if (value !== null && map.current !== null) {
-      let coords = new maplibregl.LngLat(
+      const coords = new maplibregl.LngLat(
         value.geometry.coordinates[0],
         value.geometry.coordinates[1]
       );
