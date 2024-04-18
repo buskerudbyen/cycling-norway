@@ -1,9 +1,10 @@
-import { Autocomplete, debounce, TextField } from "@mui/material";
 import React, { useState } from "react";
+import { Autocomplete, debounce, TextField } from "@mui/material";
 import { Feature } from "../types";
 
 type Props = {
   disableClearable?: boolean;
+  endAdornment?: JSX.Element;
   onChoose: (
     event: React.SyntheticEvent,
     value: Feature | string | null
@@ -16,12 +17,7 @@ type Data = {
   features: Feature[];
 };
 
-const SearchField = ({
-  disableClearable,
-  onChoose,
-  labelText,
-  rerender,
-}: Props) => {
+const SearchField = (props: Props) => {
   const [options, setOptions] = useState<Feature[]>([]);
 
   const inputChanged = (event: React.SyntheticEvent, value: string) => {
@@ -52,16 +48,30 @@ const SearchField = ({
   return (
     <Autocomplete
       className="autocomplete"
-      disableClearable={disableClearable}
-      key={labelText + "-" + rerender}
+      disableClearable={props.disableClearable}
+      key={props.labelText + "-" + props.rerender}
       freeSolo
       options={options}
       getOptionLabel={(option) => (option as Feature).properties?.label ?? ""}
       onInputChange={debounce(inputChanged, 200)}
       sx={{ width: 300 }}
-      renderInput={(params) => <TextField {...params} label={labelText} />}
-      onChange={onChoose}
-      size="small"
+      onChange={props.onChoose}
+      size={props.endAdornment ? "medium" : "small"}
+      renderInput={(params) => (
+        <TextField
+          {...params}
+          label={props.labelText}
+          InputProps={{
+            ...params.InputProps,
+            endAdornment: (
+              <>
+                {props.endAdornment}
+                {params.InputProps.endAdornment}
+              </>
+            ),
+          }}
+        />
+      )}
     />
   );
 };

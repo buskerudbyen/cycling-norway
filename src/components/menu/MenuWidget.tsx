@@ -1,13 +1,14 @@
-import React, { useEffect, useState } from "react";
-import { Button, IconButton } from "@mui/material";
-import MyLocationIcon from "@mui/icons-material/MyLocation";
+import React, { MouseEvent, useEffect, useState } from "react";
+import { Button } from "@mui/material";
 import ButtonHelp from "./ButtonHelp";
 import SearchField from "./SearchField";
 import RoutingResults from "./RoutingResults";
 import { Feature } from "../types";
 import useResponsiveness from "./useResponsiveness";
+import MyLocation from "./MyLocation";
 
 const geoLocationOptions: PositionOptions = {
+  // TODO: Experiment with these options to see if we can speed up geolocation
   enableHighAccuracy: true,
   timeout: 5000,
   maximumAge: 0,
@@ -85,19 +86,14 @@ const MenuWidget = (props: Props) => {
         <ButtonHelp />
       </div>
       <div id="routing" hidden={!searchFieldsOpen}>
-        <div>
-          <SearchField
-            disableClearable
-            onChoose={props.chooseStart}
-            labelText={isYourLocation ? "Din posisjon" : "Fra"}
-            rerender={renderFormKeys}
-          />
-          <div style={{ position: "absolute" }}>
-            <IconButton
-              disabled={
-                navigator.geolocation === undefined || waitingForGeolocation
-              }
-              onClick={() => {
+        <SearchField
+          disableClearable
+          endAdornment={
+            <MyLocation
+              waitingForGeolocation={waitingForGeolocation}
+              setWaitingForGeolocation={setWaitingForGeolocation}
+              clickHandler={(e: MouseEvent<HTMLButtonElement>) => {
+                e.stopPropagation();
                 setWaitingForGeolocation(true);
                 navigator.geolocation.getCurrentPosition(
                   successCallback,
@@ -105,18 +101,12 @@ const MenuWidget = (props: Props) => {
                   geoLocationOptions
                 );
               }}
-              style={{
-                // TODO: Relative positioning here is not great, consider fixing.
-                position: "relative",
-                left: prevWidth < 460 ? "172px" : "252px",
-                top: "-53px",
-              }}
-              title="Naviger fra din posisjon"
-            >
-              <MyLocationIcon />
-            </IconButton>
-          </div>
-        </div>
+            />
+          }
+          onChoose={props.chooseStart}
+          labelText={isYourLocation ? "Din posisjon" : "Fra"}
+          rerender={renderFormKeys}
+        />
         <RoutingResults
           distance={props.distance}
           duration={props.duration}
