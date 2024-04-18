@@ -1,13 +1,20 @@
 import React, { useEffect, useState } from "react";
-import { Button } from "@mui/material";
+import { Button, IconButton } from "@mui/material";
+import MyLocationIcon from "@mui/icons-material/MyLocation";
 import ButtonHelp from "./ButtonHelp";
 import SearchField from "./SearchField";
 import RoutingResults from "./RoutingResults";
 import { Feature } from "./types";
 
+const geoLocationOptions: PositionOptions = {
+  enableHighAccuracy: true,
+  timeout: 5000,
+  maximumAge: 0,
+};
+
 type Props = {
   chooseStart: (
-    event: React.SyntheticEvent,
+    event: React.SyntheticEvent | null,
     value: Feature | string | null
   ) => void;
   reset: () => void;
@@ -26,6 +33,7 @@ const MenuWidget = (props: Props) => {
     window.innerWidth >= 450
   );
   const [renderFormKeys, setRenderFormKeys] = useState(true);
+  const [waitingForGeolocation, setWaitingForGeolocation] = useState(false);
 
   useEffect(() => {
     const updateBySize = () => {
@@ -41,6 +49,23 @@ const MenuWidget = (props: Props) => {
   const resetRoute = () => {
     props.reset();
     setRenderFormKeys(!renderFormKeys);
+  };
+
+  const successCallback: PositionCallback = (position: GeolocationPosition) => {
+    setWaitingForGeolocation(false);
+    const { latitude, longitude } = position.coords;
+    props.chooseStart(null, {
+      type: "feature",
+      geometry: { type: "Point", coordinates: [longitude, latitude] },
+    });
+  };
+
+  const errorCallback: PositionErrorCallback = (
+    error: GeolocationPositionError
+  ) => {
+    setWaitingForGeolocation(false);
+    // TODO: Show the user that we failed to get geolocation
+    console.error(error);
   };
 
   return (
@@ -71,6 +96,27 @@ const MenuWidget = (props: Props) => {
             labelText="Fra"
             rerender={renderFormKeys}
           />
+          <IconButton
+            disabled={
+              navigator.geolocation === undefined || waitingForGeolocation
+            }
+            onClick={() => {
+              setWaitingForGeolocation(true);
+              navigator.geolocation.getCurrentPosition(
+                successCallback,
+                errorCallback,
+                geoLocationOptions
+              );
+            }}
+            style={{
+              // TODO: Relative positioning here is not great, consider fixing.
+              position: "relative",
+              left: prevWidth < 460 ? "172px" : "252px",
+              top: "-53px",
+            }}
+          >
+            <MyLocationIcon />
+          </IconButton>
         </div>
         <RoutingResults
           distance={props.distance}
