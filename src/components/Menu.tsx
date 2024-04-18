@@ -32,7 +32,7 @@ const Menu = (props: Props) => {
     const updateBySize = () => {
       if (prevWidth !== window.innerWidth) {
         setPrevWidth(window.innerWidth);
-        setSearchFieldsOpen(window.innerWidth >= 450);
+        setSearchFieldsOpen(window.innerWidth >= 460);
       }
     };
     window.addEventListener("resize", updateBySize);
