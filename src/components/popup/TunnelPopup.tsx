@@ -12,7 +12,7 @@ import {
 import moment from "moment";
 import "moment/locale/nb";
 import { DAYS } from "./InfoPopup";
-import { DayShortName, Point, PopupProps } from "./types";
+import { DayShortName, Point, PopupProps } from "../types";
 
 const TunnelPopup = (props: PopupProps) => {
   const parseOpeningHours = (oh?: string, startString?: string) => {

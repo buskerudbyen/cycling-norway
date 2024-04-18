@@ -3,7 +3,7 @@ import { Button } from "@mui/material";
 import ButtonHelp from "./ButtonHelp";
 import SearchField from "./SearchField";
 import RoutingResults from "./RoutingResults";
-import { Feature } from "./types";
+import { Feature } from "../types";
 
 type Props = {
   chooseStart: (

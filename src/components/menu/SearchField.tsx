@@ -1,6 +1,6 @@
 import { Autocomplete, debounce, TextField } from "@mui/material";
 import React, { useState } from "react";
-import { Feature } from "./types";
+import { Feature } from "../types";
 
 type Props = {
   onChoose: (

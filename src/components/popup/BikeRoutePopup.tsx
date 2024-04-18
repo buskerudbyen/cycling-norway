@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Popup } from "react-map-gl";
 import { Button } from "@mui/material";
-import { Network, PopupPropsForBikeRoute, Route } from "./types";
+import { Network, PopupPropsForBikeRoute, Route } from "../types";
 
 /**
  * The props.point can have multiple points (is a list). If there are multiple

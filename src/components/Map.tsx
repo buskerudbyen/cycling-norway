@@ -2,8 +2,8 @@ import React, { SyntheticEvent, useEffect, useRef, useState } from "react";
 import maplibregl from "maplibre-gl";
 import "../styles/map.css";
 import "maplibre-gl/dist/maplibre-gl.css";
-import Menu from "./Menu";
-import MenuWidget from "./MenuWidget";
+import Menu from "./menu/Menu";
+import MenuWidget from "./menu/MenuWidget";
 import Map, {
   GeolocateControl,
   Layer,
@@ -29,7 +29,7 @@ import InfoPopup, {
   TUNNEL_POPUP,
   TOILET_POPUP,
   BIKE_ROUTE_POPUP,
-} from "./InfoPopup";
+} from "./popup/InfoPopup";
 import { cities, TARGET_URLS, TARGETS } from "../assets/constants";
 import { Coords, Elevation, Feature, InfoPopupType, SnowPlow } from "./types";
 
