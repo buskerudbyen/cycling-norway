@@ -846,7 +846,7 @@ const MapContainer = (props: Props) => {
             longitude={dest?.lng}
             latitude={dest?.lat}
             anchor="center"
-            draggable
+            draggable={!props.isWidget} // Disable dragging in widget mode, destination is fixed
             onDragEnd={updateDestCoord}
           >
             <SportsScoreIcon fontSize="large" />
