@@ -49,12 +49,10 @@ console.log(
 export const Demo = () => {
   const [lat, setLat] = useState(59.868);
   const [lng, setLng] = useState(10.322);
-  const [width, setWidth] = useState(800);
-  const [height, setHeight] = useState(600);
   return (
     <div className="cycling-demo-container">
-      <h2 className="cycling-demo-heading">Widget Demo</h2>
-      <p>Here you can see the widget in action.</p>
+      <h2 className="cycling-demo-heading">Sykkelveier.no Widget Demo</h2>
+      <p>This is a simple demo page for the Sykkelveier.no Widget.</p>
       <div className="cycling-demo-menu">
         <label className="cycling-demo-label">
           Dest Lat
@@ -72,27 +70,15 @@ export const Demo = () => {
             onChange={(e) => setLng(+e.target.value)}
           />
         </label>
-        <label className="cycling-demo-label">
-          Width
-          <input
-            type="number"
-            value={width}
-            onChange={(e) => setWidth(+e.target.value)}
-          />
-        </label>
-        <label className="cycling-demo-label">
-          Height
-          <input
-            type="number"
-            value={height}
-            onChange={(e) => setHeight(+e.target.value)}
-          />
-        </label>
       </div>
       <button
         className="cycling-demo-load-widget"
         onClick={() =>
-          window.CyclingWidget({ dest: { lat, lng }, width, height })
+          window.CyclingWidget({
+            dest: { lat, lng },
+            width: "100%",
+            height: "100%",
+          })
         }
       >
         Load Widget

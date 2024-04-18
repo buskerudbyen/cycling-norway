@@ -1,13 +1,40 @@
-.cycling-demo-container {
+/*
+IMPORTANT! This CSS is will affect the parent page. Prefix everything with
+`cycling-demo-` to make our IDs and classnames unlikely to interfere with the
+parent page.
+*/
+
+body#cycling-demo-body {
+  margin: 0;
+  padding: 0;
   font-family: "Arial", sans-serif;
+  display: flex;
+  justify-content: center;
 }
 
-.cycling-demo-heading {
+main#cycling-demo-main {
+  background-color: #fafafa;
+  border-radius: 5px;
+  display: grid;
+  grid-template-rows: min-content auto;
+  min-width: 800px;
+  max-width: 1000px;
+  min-height: 700px;
+  padding: 50px;
+  gap: 20px;
+}
+
+div.cycling-demo-container {
+  /* nothing here yet */
+}
+
+h2.cycling-demo-heading {
   font-size: 24px;
+  font-weight: 400;
   margin-bottom: 5px;
 }
 
-.cycling-demo-menu {
+div.cycling-demo-menu {
   display: flex;
   flex-direction: row;
   gap: 10px;

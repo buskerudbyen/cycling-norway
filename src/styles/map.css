@@ -15,7 +15,6 @@
   }
 
   .map-wrap.widget {
-    border: 10px solid red; /* FIXME: Remove when done */
     height: 100%;
     width: 100%;
   }
