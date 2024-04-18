@@ -3,6 +3,7 @@ import maplibregl from "maplibre-gl";
 import "../styles/map.css";
 import "maplibre-gl/dist/maplibre-gl.css";
 import Menu from "./Menu";
+import MenuWidget from "./MenuWidget";
 import Map, {
   GeolocateControl,
   Layer,
@@ -762,15 +763,26 @@ const MapContainer = (props: Props) => {
             popupPoint={popupPoint}
           />
         )}
-        <Menu
-          reset={resetRoute}
-          chooseStart={onStartChoose}
-          chooseDest={onDestChoose}
-          duration={routeDuration}
-          distance={routeDistance}
-          elevation={routeElevation}
-          elevationProfile={routeElevationProfile}
-        />
+        {props.isWidget ? (
+          <MenuWidget
+            reset={resetRoute}
+            chooseStart={onStartChoose}
+            duration={routeDuration}
+            distance={routeDistance}
+            elevation={routeElevation}
+            elevationProfile={routeElevationProfile}
+          />
+        ) : (
+          <Menu
+            reset={resetRoute}
+            chooseStart={onStartChoose}
+            chooseDest={onDestChoose}
+            duration={routeDuration}
+            distance={routeDistance}
+            elevation={routeElevation}
+            elevationProfile={routeElevationProfile}
+          />
+        )}
         <Backdrop
           sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
           open={isBackdropOpen}

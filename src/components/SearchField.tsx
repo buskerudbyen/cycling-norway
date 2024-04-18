@@ -16,7 +16,7 @@ type Data = {
 };
 
 const SearchField = ({ onChoose, labelText, rerender }: Props) => {
-  let [options, setOptions] = useState<Feature[]>([]);
+  const [options, setOptions] = useState<Feature[]>([]);
 
   const inputChanged = (event: React.SyntheticEvent, value: string) => {
     const url = `https://api.entur.io/geocoder/v1/autocomplete?text=${value}&lang=en`;
@@ -49,7 +49,7 @@ const SearchField = ({ onChoose, labelText, rerender }: Props) => {
       key={labelText + "-" + rerender}
       freeSolo
       options={options}
-      getOptionLabel={(option) => (option as Feature).properties.label ?? ""}
+      getOptionLabel={(option) => (option as Feature).properties?.label ?? ""}
       onInputChange={debounce(inputChanged, 200)}
       sx={{ width: 300 }}
       renderInput={(params) => <TextField {...params} label={labelText} />}

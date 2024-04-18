@@ -17,7 +17,7 @@ export type Feature = {
     type: "Point";
     coordinates: [number, number];
   };
-  properties: {
+  properties?: {
     id?: string;
     gid?: string;
     layer?: string;
