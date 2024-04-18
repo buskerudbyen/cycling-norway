@@ -50,11 +50,7 @@ const MapContainer = (props: Props) => {
     ? Number(window.location.hash.split("/")[2])
     : INITIAL_LON;
 
-  // TODO: Remove hasStart, instead just check if start !== null
-  const [hasStart, setHasStart] = useState(false);
   const [start, setStart] = useState<Coords | null>(null);
-  // TODO: Remove hasEnd, instead just check if dest !== null
-  const [hasEnd, setHasEnd] = useState(props.dest ? true : false);
   const [dest, setDest] = useState<Coords | null>(props.dest ?? null);
   const [isBackdropOpen, setIsBackdropOpen] = useState(false);
   // TODO: These three popup states are related and can be combined into one
@@ -241,10 +237,8 @@ const MapContainer = (props: Props) => {
   };
 
   const resetRoute = () => {
-    setHasStart(false);
     setStart(null);
     if (!props.isWidget) {
-      setHasEnd(false);
       setDest(null);
     }
     setRouteDuration(null);
@@ -274,7 +268,7 @@ const MapContainer = (props: Props) => {
       );
       map.current.setCenter(value.geometry.coordinates);
       updateQueryFromParam(coords);
-      if (hasEnd) {
+      if (dest !== null) {
         getQuery(coords, dest);
       }
     } else {
@@ -296,26 +290,13 @@ const MapContainer = (props: Props) => {
         value.geometry.coordinates[1]
       );
       updateQueryToParam(coords);
-      if (hasStart) {
+      if (start !== null) {
         getQuery(start, coords);
       }
-    } /*if (!props.isWidget)*/ else {
+    } else {
       resetRoute();
     }
   };
-  // useEffect(() => {
-  //   // Load initial destination, if any. Mostly for when app is used as a widget.
-  //   if (props.dest) {
-  //     onDestChoose(null, {
-  //       type: "feature",
-  //       geometry: {
-  //         type: "Point",
-  //         coordinates: [props.dest.lat, props.dest.lng],
-  //       },
-  //     });
-  //   }
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, []); // Empty dependency array means work like "componentDidMount".
 
   const parseLngLat = (s: string) => {
     const [lat, lng] = s.split(",").map((n) => Number(n));
@@ -410,10 +391,10 @@ const MapContainer = (props: Props) => {
   };
 
   const addMarker = (event: MapLayerMouseEvent) => {
-    if (hasStart && hasEnd) {
+    if (start !== null && dest !== null) {
       return;
     }
-    if (!hasStart) {
+    if (start === null) {
       updateQueryFromParam(event.lngLat);
     } else {
       getQuery(start, event.lngLat);
@@ -472,7 +453,6 @@ const MapContainer = (props: Props) => {
     const url = new URL(window.location.href);
     url.searchParams.set("from", lngLatToString(start));
     window.history.pushState({}, "", url);
-    setHasStart(true);
     setStart(start);
   };
 
@@ -481,7 +461,6 @@ const MapContainer = (props: Props) => {
       const url = new URL(window.location.href);
       url.searchParams.set("to", lngLatToString(dest));
       window.history.pushState({}, "", url);
-      setHasEnd(true);
       setDest(dest);
     }
   };
@@ -831,7 +810,7 @@ const MapContainer = (props: Props) => {
         <div className="maplibregl-ctrl-bottom-right mapboxgl-ctrl-bottom-right">
           <AttributionPanel />
         </div>
-        {hasStart && start && (
+        {start && (
           <Marker
             longitude={start?.lng}
             latitude={start?.lat}
@@ -841,7 +820,7 @@ const MapContainer = (props: Props) => {
             onDragEnd={updateStartCoord}
           />
         )}
-        {hasEnd && dest && (
+        {dest && (
           <Marker
             longitude={dest?.lng}
             latitude={dest?.lat}
