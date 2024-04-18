@@ -11,7 +11,7 @@ import Map, {
   Marker,
   NavigationControl,
   ScaleControl,
-  Source,
+  Source
 } from "react-map-gl/maplibre"; // Note: Important to use the MapLibre version of react-map-gl, otherwise we get a lot of incompatible types and weird errors
 // TODO: Try to remove mapbox-gl as a dependency again and see if it works
 import { Backdrop, CircularProgress } from "@mui/material";
@@ -30,7 +30,9 @@ import InfoPopup, {
   BIKE_ROUTE_POPUP,
 } from "./InfoPopup";
 import { cities, TARGET_URLS, TARGETS } from "../assets/constants";
-import { Coords, Elevation, Feature, InfoPopupType, SnowPlow } from "./types";
+import { Elevation, InfoPopupType, SnowPlow, SnowPlowCollection, SnowPlowFeature } from "./types";
+import { GeoJSONSource } from "maplibre-gl";
+import { GeoJSON, Feature, Point, MultiPoint, GeoJsonProperties, Position } from "geojson";
 
 const INITIAL_LAT = 59.868;
 const INITIAL_LON = 10.322;
@@ -40,19 +42,19 @@ const MapContainer = () => {
   const lat = window.location.hash
     ? Number(window.location.hash.split("/")[1])
     : INITIAL_LAT;
-  const lon = window.location.hash
+  const lng = window.location.hash
     ? Number(window.location.hash.split("/")[2])
     : INITIAL_LON;
 
   // TODO: Remove hasStart, instead just check if start !== null
   const [hasStart, setHasStart] = useState(false);
-  const [start, setStart] = useState<Coords | null>(null);
+  const [start, setStart] = useState<Position | null>(null);
   // TODO: Remove hasEnd, instead just check if dest !== null
   const [hasEnd, setHasEnd] = useState(false);
-  const [dest, setDest] = useState<Coords | null>(null);
+  const [dest, setDest] = useState<Position | null>(null);
   const [isBackdropOpen, setIsBackdropOpen] = useState(false);
   const [popupType, setPopupType] = useState<InfoPopupType | null>(null);
-  const [popupCoords, setPopupCoords] = useState<Coords | null>(null);
+  const [popupCoords, setPopupCoords] = useState<Position | null>(null);
   const [popupPoint, setPopupPoint] = useState<any | null>(null); // TODO: Use a type instead of any
   // TODO: These four route states are related and can be combined into one
   //       state object like `const [trip, setTrip] = useState<Trip|null>(null)`
@@ -156,14 +158,14 @@ const MapContainer = () => {
           const roadSnow = [];
           for (let feature of jsonResponse.features) {
             if (jsonResponse.isSnowing) {
-              roadSnow.push(feature);
+              roadSnow.push(feature as SnowPlowFeature);
             } else if (
               feature.properties.isOld === undefined ||
               feature.properties.isOld
             ) {
-              roadWarn.push(feature);
+              roadWarn.push(feature as SnowPlowFeature);
             } else {
-              roadOk.push(feature);
+              roadOk.push(feature as SnowPlowFeature);
             }
           }
           drawOnMap(roadOk, roadWarn, roadSnow);
@@ -174,29 +176,22 @@ const MapContainer = () => {
     }
   };
 
-  // Simulate snow plow data
-  type SimulationFeature = {
-    type: string;
-    geometry: {
-      type: string;
-      coordinates: number[][];
-    };
-  };
   const drawSimulation = () => {
-    let roadOk: SimulationFeature[] = [];
-    let roadWarn: SimulationFeature[] = [];
-    let roadSnow: SimulationFeature[] = [];
+    let roadOk: SnowPlowFeature[] = [];
+    let roadWarn: SnowPlowFeature[] = [];
+    let roadSnow: SnowPlowFeature[] = [];
+    const dataCollection = data as SnowPlowCollection;
     if (simulateLayer === null) {
       // all white
-      roadSnow = data.features;
+      roadSnow = dataCollection.features;
       setSimulateLayer("snow-plow-snow");
     } else if (simulateLayer === "snow-plow-snow") {
       // all orange
-      roadWarn = data.features;
+      roadWarn = dataCollection.features;
       setSimulateLayer("snow-plow-warn");
     } else if (simulateLayer === "snow-plow-warn") {
       // all green
-      roadOk = data.features;
+      roadOk = dataCollection.features;
       setSimulateLayer("snow-plow-ok");
     } else {
       // empty all
@@ -204,24 +199,25 @@ const MapContainer = () => {
     }
     drawOnMap(roadOk, roadWarn, roadSnow);
   };
+
   const drawOnMap = (
-    roadOk: SimulationFeature[],
-    roadWarn: SimulationFeature[],
-    roadSnow: SimulationFeature[]
+    roadOk: SnowPlowFeature[],
+    roadWarn: SnowPlowFeature[],
+    roadSnow: SnowPlowFeature[]
   ) => {
     if (map.current !== null) {
-      // @ts-expect-error TODO: Are we sure setData works here?
-      map.current.getSource("snow-plow-ok")?.setData({
+      const okRoadSource = map.current.getSource("snow-plow-ok") as GeoJSONSource;
+      okRoadSource.setData({
         type: "FeatureCollection",
         features: roadOk,
       });
-      // @ts-expect-error TODO: Are we sure setData works here?
-      map.current.getSource("snow-plow-warn")?.setData({
+      const warnRoadSource = map.current.getSource("snow-plow-warn") as GeoJSONSource;
+      warnRoadSource.setData({
         type: "FeatureCollection",
         features: roadWarn,
       });
-      // @ts-expect-error TODO: Are we sure setData works here?
-      map.current.getSource("snow-plow-snow")?.setData({
+      const snowyRoadSource = map.current.getSource("snow-plow-snow") as GeoJSONSource;
+      snowyRoadSource.setData({
         type: "FeatureCollection",
         features: roadSnow,
       });
@@ -247,7 +243,7 @@ const MapContainer = () => {
 
   const onStartChoose = (
     event: SyntheticEvent,
-    value: Feature | string | null
+    value: Feature<Point, GeoJsonProperties> | string | null
   ) => {
     if (typeof value === "string") {
       console.error("string param not supported yet");
@@ -258,10 +254,10 @@ const MapContainer = () => {
         value.geometry.coordinates[0],
         value.geometry.coordinates[1]
       );
-      map.current.setCenter(value.geometry.coordinates);
-      updateQueryFromParam(coords);
+      map.current.setCenter(coords);
+      updateQueryFromParam(value.geometry.coordinates);
       if (hasEnd) {
-        getQuery(coords, dest);
+        getQuery(value.geometry.coordinates, dest);
       }
     } else {
       resetRoute();
@@ -270,17 +266,17 @@ const MapContainer = () => {
 
   const onDestChoose = (
     event: SyntheticEvent,
-    value: Feature | string | null
+    value: Feature<Point, GeoJsonProperties> | string | null
   ) => {
     if (typeof value === "string") {
       console.error("string param not supported yet");
       return;
     }
     if (value !== null && map.current !== null) {
-      let coords = new maplibregl.LngLat(
-        value.geometry.coordinates[0],
-        value.geometry.coordinates[1]
-      );
+      let coords = [
+        value.geometry.coordinates[1],
+        value.geometry.coordinates[0]
+      ] as Position;
       updateQueryToParam(coords);
       if (hasStart) {
         getQuery(start, coords);
@@ -292,11 +288,11 @@ const MapContainer = () => {
 
   const parseLngLat = (s: string) => {
     const [lat, lng] = s.split(",").map((n) => Number(n));
-    return { lng, lat };
+    return [lng, lat] as Position;
   };
 
-  const lngLatToString = (lngLat: { lat: number; lng: number }) =>
-    `${lngLat.lat.toFixed(5)},${lngLat.lng.toFixed(5)}`;
+  const lngLatToString = (lngLat: Position) =>
+    `${lngLat[1].toFixed(5)},${lngLat[0].toFixed(5)}`;
 
   const onMapClick = (event: MapLayerMouseEvent) => {
     if (map.current !== null) {
@@ -340,39 +336,39 @@ const MapContainer = () => {
       if (bikelyFeatures.length > 0) {
         const feature = bikelyFeatures[0].properties;
         setPopupType(BIKELY_POPUP);
-        setPopupCoords(event.lngLat);
+        setPopupCoords([event.lngLat.lng, event.lngLat.lat]);
         setPopupPoint(feature);
       } else if (sykkelHotelFeatures.length > 0) {
         const feature = sykkelHotelFeatures[0].properties;
         setPopupType(SYKKELHOTEL_POPUP);
-        setPopupCoords(event.lngLat);
+        setPopupCoords([event.lngLat.lng, event.lngLat.lat]);
         setPopupPoint(feature);
       } else if (snowPlowFeatures.length > 0) {
         const feature = snowPlowFeatures[0].properties;
         setPopupType(SNOWPLOW_POPUP);
-        setPopupCoords(event.lngLat);
+        setPopupCoords([event.lngLat.lng, event.lngLat.lat]);
         setPopupPoint(feature);
       } else if (tunnelFeatures.length > 0) {
         const feature = tunnelFeatures[0].properties;
         setPopupType(TUNNEL_POPUP);
-        setPopupCoords(event.lngLat);
+        setPopupCoords([event.lngLat.lng, event.lngLat.lat]);
         setPopupPoint(feature);
       } else if (closedRoadFeatures.length > 0) {
         const feature = closedRoadFeatures[0].properties;
         setPopupType(CLOSED_ROAD_POPUP);
-        setPopupCoords(event.lngLat);
+        setPopupCoords([event.lngLat.lng, event.lngLat.lat]);
         setPopupPoint(feature);
       } else if (toiletFeatures.length > 0) {
         const feature = toiletFeatures[0].properties;
         setPopupType(TOILET_POPUP);
-        setPopupCoords(event.lngLat);
+        setPopupCoords([event.lngLat.lng, event.lngLat.lat]);
         setPopupPoint(feature);
       } else if (bikeRouteFeatures.length > 0) {
         setPopupType(BIKE_ROUTE_POPUP);
-        setPopupCoords(event.lngLat);
+        setPopupCoords([event.lngLat.lng, event.lngLat.lat]);
         setPopupPoint(bikeRouteFeatures);
       } else {
-        addMarker(event);
+        addMarker([event.lngLat.lng, event.lngLat.lat]);
       }
     }
   };
@@ -382,23 +378,23 @@ const MapContainer = () => {
     setPopupPoint(null);
   };
 
-  const addMarker = (event: MapLayerMouseEvent) => {
+  const addMarker = (lngLat: Position) => {
     if (hasStart && hasEnd) {
       return;
     }
     if (!hasStart) {
-      updateQueryFromParam(event.lngLat);
+      updateQueryFromParam(lngLat);
     } else {
-      getQuery(start, event.lngLat);
+      getQuery(start, lngLat);
     }
   };
 
-  const updateStartCoord = (event: { lngLat: Coords }) => {
-    getQuery(event.lngLat, dest);
+  const updateStartCoord = (lngLat: Position) => {
+    getQuery(lngLat, dest);
   };
 
-  const updateDestCoord = (event: { lngLat: Coords }) => {
-    getQuery(start, event.lngLat);
+  const updateDestCoord = (lngLat: Position) => {
+    getQuery(start, lngLat);
   };
 
   const drawPolyline = (lines: string[]) => {
@@ -415,8 +411,8 @@ const MapContainer = () => {
       type: "FeatureCollection",
       features,
     };
-    // @ts-expect-error TODO: Are we sure setData works here?
-    map.current?.getSource("route")?.setData(geojson);
+    const routeSource = map.current?.getSource("route") as GeoJSONSource;
+    routeSource.setData(geojson as GeoJSON);
 
     const coordinates = features.map((f) => f.geometry.coordinates).flat();
 
@@ -441,7 +437,7 @@ const MapContainer = () => {
     }
   };
 
-  const updateQueryFromParam = (start: Coords) => {
+  const updateQueryFromParam = (start: Position) => {
     const url = new URL(window.location.href);
     url.searchParams.set("from", lngLatToString(start));
     window.history.pushState({}, "", url);
@@ -450,7 +446,7 @@ const MapContainer = () => {
     setStart(start);
   };
 
-  const updateQueryToParam = (dest: Coords) => {
+  const updateQueryToParam = (dest: Position) => {
     const url = new URL(window.location.href);
     url.searchParams.set("to", lngLatToString(dest));
     window.history.pushState({}, "", url);
@@ -459,7 +455,7 @@ const MapContainer = () => {
     setDest(dest);
   };
 
-  const getQuery = (start: Coords | null, dest: Coords | null) => {
+  const getQuery = (start: Position | null, dest: Position | null) => {
     if (start === null || dest === null) {
       return;
     }
@@ -475,8 +471,8 @@ const MapContainer = () => {
 					{
 					  trip(
 					    modes: { directMode: bicycle, accessMode: bicycle, egressMode: bicycle, transportModes: { transportMode: water }},
-					    from: {coordinates: {latitude: ${start.lat}, longitude: ${start.lng} }},
-					    to: {coordinates: {latitude: ${dest.lat}, longitude: ${dest.lng}}}
+					    from: {coordinates: {latitude: ${start[1]}, longitude: ${start[0]} }},
+					    to: {coordinates: {latitude: ${dest[1]}, longitude: ${dest[0]}}}
 					    bicycleOptimisationMethod: triangle
 					    triangleFactors: {safety: 0.5, slope: 0.2, time: 0.3}
 					    bikeSpeed: 7
@@ -599,7 +595,7 @@ const MapContainer = () => {
         ref={map}
         mapLib={maplibregl}
         initialViewState={{
-          longitude: lon,
+          longitude: lng,
           latitude: lat,
           zoom: INITIAL_ZOOM,
         }}
@@ -795,21 +791,21 @@ const MapContainer = () => {
         </div>
         {hasStart && start && (
           <Marker
-            longitude={start?.lng}
-            latitude={start?.lat}
+            longitude={start[0]}
+            latitude={start[1]}
             color="blue"
             anchor="center"
             draggable
-            onDragEnd={updateStartCoord}
+            onDragEnd={(e) => updateStartCoord([e.lngLat.lng, e.lngLat.lat])}
           />
         )}
         {hasEnd && dest && (
           <Marker
-            longitude={dest?.lng}
-            latitude={dest?.lat}
+            longitude={dest[0]}
+            latitude={dest[1]}
             anchor="center"
             draggable
-            onDragEnd={updateDestCoord}
+            onDragEnd={(e) => updateDestCoord([e.lngLat.lng, e.lngLat.lat])}
           >
             <SportsScoreIcon fontSize="large" />
           </Marker>

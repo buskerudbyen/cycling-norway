@@ -6,7 +6,8 @@ import TunnelPopup from "./TunnelPopup";
 import ClosedRoadPopup from "./ClosedRoadPopup";
 import ToiletPopup from "./ToiletPopup";
 import BikeRoutePopup from "./BikeRoutePopup";
-import { Coords, Point, Route } from "./types";
+import { Point, Route } from "./types";
+import { Position } from "geojson";
 
 export const BIKELY_POPUP = "bikely";
 export const SYKKELHOTEL_POPUP = "sykkelhotel";
@@ -34,14 +35,14 @@ type PropsWithPoint = {
     | "tunnel"
     | "closed_road"
     | "toilet";
-  popupCoords: Coords;
+  popupCoords: Position;
   onPopupClose: () => void;
   popupPoint: Point;
 };
 
 type PropsWithRoutes = {
   type: "bike_route";
-  popupCoords: Coords;
+  popupCoords: Position;
   onPopupClose: () => void;
   popupPoint: Route[]; // TODO: Should be named popupRoute since it is not a Point?
 };
@@ -51,28 +52,28 @@ export default function InfoPopup({type, popupCoords, onPopupClose, popupPoint}:
 	switch (type) {
 		case BIKELY_POPUP: {
 			return <BikelyPopup lngLat={popupCoords} onClose={onPopupClose} point={popupPoint} />;
-    }
+        }
 		case SYKKELHOTEL_POPUP: {
 			return <SykkelHotelPopup lngLat={popupCoords} onClose={onPopupClose} point={popupPoint} />;
-    }
+        }
 		case SNOWPLOW_POPUP: {
 			return <SnowPlowPopup lngLat={popupCoords} onClose={onPopupClose} point={popupPoint} />;
-    }
+        }
 		case TUNNEL_POPUP: {
 			return <TunnelPopup lngLat={popupCoords} onClose={onPopupClose} point={popupPoint} />;
-    }
+        }
 		case CLOSED_ROAD_POPUP: {
 			return <ClosedRoadPopup lngLat={popupCoords} onClose={onPopupClose} point={popupPoint} />;
-    }
+        }
 		case TOILET_POPUP: {
 			return <ToiletPopup lngLat={popupCoords} onClose={onPopupClose} point={popupPoint} />;
-    }
-    case BIKE_ROUTE_POPUP: {
-      return <BikeRoutePopup lngLat={popupCoords} onClose={onPopupClose} point={popupPoint} />;
-    }
-    default: {
-      console.error('unknown popup type:', type);
-			return null;
-		}
+        }
+        case BIKE_ROUTE_POPUP: {
+          return <BikeRoutePopup lngLat={popupCoords} onClose={onPopupClose} point={popupPoint} />;
+        }
+        default: {
+          console.error('unknown popup type:', type);
+                return null;
+        }
 	}
 }

@@ -75,8 +75,8 @@ const BikeRoutePopup = (props: PopupPropsForBikeRoute) => {
 
     return (
       <Popup
-        latitude={props.lngLat.lat}
-        longitude={props.lngLat.lng}
+        latitude={props.lngLat[1]}
+        longitude={props.lngLat[0]}
         onClose={props.onClose}
       >
         <h4>Flere sykkelruter funnet. Vennligst velg:</h4>
@@ -94,8 +94,8 @@ const BikeRoutePopup = (props: PopupPropsForBikeRoute) => {
 
     return (
       <Popup
-        latitude={props.lngLat.lat}
-        longitude={props.lngLat.lng}
+        latitude={props.lngLat[1]}
+        longitude={props.lngLat[0]}
         onClose={props.onClose}
       >
         <h3>

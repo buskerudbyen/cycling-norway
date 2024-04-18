@@ -1,43 +1,17 @@
-// TODO: Use this instead: https://visgl.github.io/react-map-gl/docs/api-reference/types#lnglat
-export type Coords = {
-  lat: number;
-  lng: number;
-};
+import { Position, FeatureCollection, Feature, Geometry, LineString, GeoJsonProperties } from "geojson";
 
 export type DayShortName = "mo" | "tu" | "we" | "th" | "fr" | "sa" | "su";
 
 export type Elevation = { elevation: number };
 
-// TODO: Note: This is just home-made. The type is not compatible with Feature
-//       from maplibre-gl, should look into the specification and different type
-//       implementations to see what makes the most sense for our use case.
-export type Feature = {
-  type: "feature";
-  geometry: {
-    type: "Point";
-    coordinates: [number, number];
-  };
-  properties: {
-    id?: string;
-    gid?: string;
-    layer?: string;
-    source?: string;
-    source_id?: string;
-    name?: string;
-    street?: string;
-    accuracy?: string;
-    country_a?: string;
-    county?: string;
-    county_gid?: string;
-    locality?: string;
-    locality_gid?: string;
-    borough?: string;
-    borough_gid?: string;
-    label: string;
-    category?: string[];
-    tariff_zones?: string[];
-  };
-};
+export interface SnowPlowCollection extends FeatureCollection<LineString, SnowPlowProperties>{};
+
+export interface SnowPlowFeature extends Feature<LineString, SnowPlowProperties>{};
+
+type SnowPlowProperties = GeoJsonProperties & {
+  start?: Date;
+  isOld?: boolean;
+}
 
 export type InfoPopupType =
   | "bikely"
@@ -66,13 +40,13 @@ export type Point = {
 };
 
 export type PopupProps = {
-  lngLat: Coords;
+  lngLat: Position;
   onClose: () => void;
   point: Point;
 };
 
 export type PopupPropsForBikeRoute = {
-  lngLat: Coords;
+  lngLat: Position;
   onClose: () => void;
   point: Route[]; // TODO: Should be renamed "routes"
 };

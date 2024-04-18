@@ -4,8 +4,8 @@ import { PopupProps } from "./types";
 
 const BikelyPopup = (props: PopupProps) => (
   <Popup
-    latitude={props.lngLat.lat}
-    longitude={props.lngLat.lng}
+    latitude={props.lngLat[1]}
+    longitude={props.lngLat[0]}
     onClose={props.onClose}
   >
     <h3>
