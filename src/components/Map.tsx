@@ -87,11 +87,11 @@ const MapContainer = (props: Props) => {
     } else if (url.searchParams.has("from")) {
       const from = parseLngLat(url.searchParams.get("from")!);
       updateQueryFromParam(from);
-      // } else if (navigator.geolocation) {
-      //   navigator.geolocation.getCurrentPosition(
-      //     getLocation,
-      //     getRandomCityLocation
-      //   );
+    } else if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        getLocation,
+        getRandomCityLocation
+      );
     } else {
       getRandomCityLocation();
     }
@@ -162,7 +162,7 @@ const MapContainer = (props: Props) => {
           const roadOk = [];
           const roadWarn = [];
           const roadSnow = [];
-          for (let feature of jsonResponse.features) {
+          for (const feature of jsonResponse.features) {
             if (jsonResponse.isSnowing) {
               roadSnow.push(feature);
             } else if (
@@ -570,7 +570,7 @@ const MapContainer = (props: Props) => {
   };
 
   const updateQueryByLegend = (event: MouseEvent) => {
-    let target = event.target as HTMLInputElement;
+    const target = event.target as HTMLInputElement;
 
     if (target.type === "checkbox" && TARGET_URLS.has(target.name)) {
       const url = new URL(window.location.href);

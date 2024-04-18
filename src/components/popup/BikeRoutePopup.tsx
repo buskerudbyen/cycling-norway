@@ -44,7 +44,7 @@ const BikeRoutePopup = (props: PopupPropsForBikeRoute) => {
     );
 
     const rowsEnabled: JSX.Element[] = [];
-    for (let r of hasDetails) {
+    for (const r of hasDetails) {
       rowsEnabled.push(
         <Button
           key={r.properties.name}
@@ -58,7 +58,7 @@ const BikeRoutePopup = (props: PopupPropsForBikeRoute) => {
       );
     }
     const rowsDisabled: JSX.Element[] = [];
-    for (let r of noDetails) {
+    for (const r of noDetails) {
       rowsDisabled.push(
         <Button
           key={r.properties.name}
