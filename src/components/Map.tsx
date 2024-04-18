@@ -784,12 +784,6 @@ const MapContainer = (props: Props) => {
             elevationProfile={routeElevationProfile}
           />
         )}
-        <Backdrop
-          sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
-          open={isBackdropOpen}
-        >
-          <CircularProgress color="inherit" />
-        </Backdrop>
         <GeolocateControl
           position="top-left"
           positionOptions={{ enableHighAccuracy: true }}
@@ -832,6 +826,11 @@ const MapContainer = (props: Props) => {
           </Marker>
         )}
       </Map>
+      {isBackdropOpen && (
+        <div className="backdrop">
+          <CircularProgress color="info" />
+        </div>
+      )}
     </div>
   );
 };
