@@ -38,6 +38,7 @@ const INITIAL_LON = 10.322;
 const INITIAL_ZOOM = 8;
 
 type Props = {
+  dest?: Coords;
   isWidget?: boolean;
 };
 
@@ -53,14 +54,16 @@ const MapContainer = (props: Props) => {
   const [hasStart, setHasStart] = useState(false);
   const [start, setStart] = useState<Coords | null>(null);
   // TODO: Remove hasEnd, instead just check if dest !== null
-  const [hasEnd, setHasEnd] = useState(false);
-  const [dest, setDest] = useState<Coords | null>(null);
+  const [hasEnd, setHasEnd] = useState(props.dest ? true : false);
+  const [dest, setDest] = useState<Coords | null>(props.dest ?? null);
   const [isBackdropOpen, setIsBackdropOpen] = useState(false);
+  // TODO: These three popup states are related and can be combined into one
+  //       state object like `const [popup, setPopup] = useState<PopupType|null>(null)`
   const [popupType, setPopupType] = useState<InfoPopupType | null>(null);
   const [popupCoords, setPopupCoords] = useState<Coords | null>(null);
   const [popupPoint, setPopupPoint] = useState<any | null>(null); // TODO: Use a type instead of any
   // TODO: These four route states are related and can be combined into one
-  //       state object like `const [trip, setTrip] = useState<Trip|null>(null)`
+  //       state object like `const [trip, setTrip] = useState<TripType|null>(null)`
   const [routeDuration, setRouteDuration] = useState<number | null>(null);
   const [routeDistance, setRouteDistance] = useState<number | null>(null);
   const [routeElevation, setRouteElevation] = useState<number | null>(null);
@@ -74,24 +77,30 @@ const MapContainer = (props: Props) => {
 
   useEffect(() => {
     const url = new URL(window.location.href);
-    if (url.searchParams.has("from") && url.searchParams.has("to")) {
+    if (props.isWidget && url.searchParams.has("from") && dest) {
+      const from = parseLngLat(url.searchParams.get("from")!);
+      getQuery(from, dest);
+    } else if (
+      !props.isWidget &&
+      url.searchParams.has("from") &&
+      url.searchParams.has("to")
+    ) {
       const from = parseLngLat(url.searchParams.get("from")!);
       const to = parseLngLat(url.searchParams.get("to")!);
       getQuery(from, to);
     } else if (url.searchParams.has("from")) {
       const from = parseLngLat(url.searchParams.get("from")!);
       updateQueryFromParam(from);
-    } else {
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-          getLocation,
-          getRandomCityLocation
-        );
-      } else {
-        getRandomCityLocation();
-      }
+    // } else if (navigator.geolocation) {
+    //   navigator.geolocation.getCurrentPosition(
+    //     getLocation,
+    //     getRandomCityLocation
+    //   );
+    // } else {
+    //   getRandomCityLocation();
     }
-
+    // TODO: This click listener for the legend should be moved to the legend
+    //       itself instead of being on the wrapper for the whole map.
     wrapper.current?.addEventListener("click", (e) => updateQueryByLegend(e));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -99,39 +108,37 @@ const MapContainer = (props: Props) => {
   const getLocation = (position: {
     coords: { latitude: number; longitude: number };
   }) => {
-    const latitude = position.coords.latitude;
-    const longitude = position.coords.longitude;
+    const { latitude, longitude } = position.coords;
     map.current?.setCenter(new maplibregl.LngLat(longitude, latitude));
     map.current?.setZoom(15);
   };
 
-  const getRandomCityLocation = () => {
-    // if a location is requested by URL, do not change it
-    if (
-      window.location.hash !==
-      "#" + INITIAL_ZOOM + "/" + INITIAL_LAT + "/" + INITIAL_LON
-    ) {
-      return;
-    }
-
-    setTimeout(() => {
-      try {
-        const cityNum = cities.features.length;
-        const rndIndex = Math.floor(Math.random() * (cityNum - 2));
-        const city = cities.features.at(rndIndex);
-        if (city !== undefined) {
-          const latitude = city.geometry.coordinates[0];
-          const longitude = city.geometry.coordinates[1];
-          map.current?.setCenter(new maplibregl.LngLat(longitude, latitude));
-          map.current?.setZoom(13);
-        } else {
-          console.warn("City not found");
-        }
-      } catch (e) {
-        console.error(e);
-      }
-    }, 1200);
-  };
+  // const getRandomCityLocation = () => {
+  //   // if a location is requested by URL, do not change it
+  //   if (
+  //     window.location.hash !==
+  //     "#" + INITIAL_ZOOM + "/" + INITIAL_LAT + "/" + INITIAL_LON
+  //   ) {
+  //     return;
+  //   }
+  //   setTimeout(() => {
+  //     try {
+  //       const cityNum = cities.features.length;
+  //       const rndIndex = Math.floor(Math.random() * (cityNum - 2));
+  //       const city = cities.features.at(rndIndex);
+  //       if (city !== undefined) {
+  //         const latitude = city.geometry.coordinates[0];
+  //         const longitude = city.geometry.coordinates[1];
+  //         map.current?.setCenter(new maplibregl.LngLat(longitude, latitude));
+  //         map.current?.setZoom(13);
+  //       } else {
+  //         console.warn("City not found");
+  //       }
+  //     } catch (e) {
+  //       console.error(e);
+  //     }
+  //   }, 1200);
+  // };
 
   const addLegend = () => {
     map.current?.addControl(
@@ -236,8 +243,10 @@ const MapContainer = (props: Props) => {
   const resetRoute = () => {
     setHasStart(false);
     setStart(null);
-    setHasEnd(false);
-    setDest(null);
+    if (!props.isWidget) {
+      setHasEnd(false);
+      setDest(null);
+    }
     setRouteDuration(null);
     setRouteDistance(null);
     setRouteElevation(null);
@@ -274,7 +283,7 @@ const MapContainer = (props: Props) => {
   };
 
   const onDestChoose = (
-    event: SyntheticEvent,
+    event: SyntheticEvent | null,
     value: Feature | string | null
   ) => {
     if (typeof value === "string") {
@@ -282,7 +291,7 @@ const MapContainer = (props: Props) => {
       return;
     }
     if (value !== null && map.current !== null) {
-      let coords = new maplibregl.LngLat(
+      const coords = new maplibregl.LngLat(
         value.geometry.coordinates[0],
         value.geometry.coordinates[1]
       );
@@ -290,10 +299,23 @@ const MapContainer = (props: Props) => {
       if (hasStart) {
         getQuery(start, coords);
       }
-    } else {
+    } /*if (!props.isWidget)*/ else {
       resetRoute();
     }
   };
+  // useEffect(() => {
+  //   // Load initial destination, if any. Mostly for when app is used as a widget.
+  //   if (props.dest) {
+  //     onDestChoose(null, {
+  //       type: "feature",
+  //       geometry: {
+  //         type: "Point",
+  //         coordinates: [props.dest.lat, props.dest.lng],
+  //       },
+  //     });
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, []); // Empty dependency array means work like "componentDidMount".
 
   const parseLngLat = (s: string) => {
     const [lat, lng] = s.split(",").map((n) => Number(n));
@@ -450,18 +472,18 @@ const MapContainer = (props: Props) => {
     const url = new URL(window.location.href);
     url.searchParams.set("from", lngLatToString(start));
     window.history.pushState({}, "", url);
-
     setHasStart(true);
     setStart(start);
   };
 
   const updateQueryToParam = (dest: Coords) => {
-    const url = new URL(window.location.href);
-    url.searchParams.set("to", lngLatToString(dest));
-    window.history.pushState({}, "", url);
-
-    setHasEnd(true);
-    setDest(dest);
+    if (!props.isWidget) {
+      const url = new URL(window.location.href);
+      url.searchParams.set("to", lngLatToString(dest));
+      window.history.pushState({}, "", url);
+      setHasEnd(true);
+      setDest(dest);
+    }
   };
 
   const getQuery = (start: Coords | null, dest: Coords | null) => {
