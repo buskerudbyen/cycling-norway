@@ -61,6 +61,7 @@ const SearchField = ({
       sx={{ width: 300 }}
       renderInput={(params) => <TextField {...params} label={labelText} />}
       onChange={onChoose}
+      size="small"
     />
   );
 };

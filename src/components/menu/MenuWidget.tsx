@@ -85,34 +85,37 @@ const MenuWidget = (props: Props) => {
         <ButtonHelp />
       </div>
       <div id="routing" hidden={!searchFieldsOpen}>
-        <div id="searchFields">
+        <div>
           <SearchField
             disableClearable
             onChoose={props.chooseStart}
             labelText={isYourLocation ? "Din posisjon" : "Fra"}
             rerender={renderFormKeys}
           />
-          <IconButton
-            disabled={
-              navigator.geolocation === undefined || waitingForGeolocation
-            }
-            onClick={() => {
-              setWaitingForGeolocation(true);
-              navigator.geolocation.getCurrentPosition(
-                successCallback,
-                errorCallback,
-                geoLocationOptions
-              );
-            }}
-            style={{
-              // TODO: Relative positioning here is not great, consider fixing.
-              position: "relative",
-              left: prevWidth < 460 ? "172px" : "252px",
-              top: "-53px",
-            }}
-          >
-            <MyLocationIcon />
-          </IconButton>
+          <div style={{ position: "absolute" }}>
+            <IconButton
+              disabled={
+                navigator.geolocation === undefined || waitingForGeolocation
+              }
+              onClick={() => {
+                setWaitingForGeolocation(true);
+                navigator.geolocation.getCurrentPosition(
+                  successCallback,
+                  errorCallback,
+                  geoLocationOptions
+                );
+              }}
+              style={{
+                // TODO: Relative positioning here is not great, consider fixing.
+                position: "relative",
+                left: prevWidth < 460 ? "172px" : "252px",
+                top: "-53px",
+              }}
+              title="Naviger fra din posisjon"
+            >
+              <MyLocationIcon />
+            </IconButton>
+          </div>
         </div>
         <RoutingResults
           distance={props.distance}
