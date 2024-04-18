@@ -73,27 +73,30 @@ const MapContainer = (props: Props) => {
 
   useEffect(() => {
     const url = new URL(window.location.href);
-    if (props.isWidget && url.searchParams.has("from") && dest) {
-      const from = parseLngLat(url.searchParams.get("from")!);
-      getQuery(from, dest);
-    } else if (
-      !props.isWidget &&
-      url.searchParams.has("from") &&
-      url.searchParams.has("to")
-    ) {
-      const from = parseLngLat(url.searchParams.get("from")!);
-      const to = parseLngLat(url.searchParams.get("to")!);
-      getQuery(from, to);
-    } else if (url.searchParams.has("from")) {
-      const from = parseLngLat(url.searchParams.get("from")!);
-      updateQueryFromParam(from);
-    } else if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        getLocation,
-        getRandomCityLocation
-      );
+    if (props.isWidget) {
+      if (props.isWidget && url.searchParams.has("from") && dest) {
+        const from = parseLngLat(url.searchParams.get("from")!);
+        getQuery(from, dest);
+      } else if (url.searchParams.has("from")) {
+        const from = parseLngLat(url.searchParams.get("from")!);
+        updateQueryFromParam(from);
+      }
     } else {
-      getRandomCityLocation();
+      if (url.searchParams.has("from") && url.searchParams.has("to")) {
+        const from = parseLngLat(url.searchParams.get("from")!);
+        const to = parseLngLat(url.searchParams.get("to")!);
+        getQuery(from, to);
+      } else if (url.searchParams.has("from")) {
+        const from = parseLngLat(url.searchParams.get("from")!);
+        updateQueryFromParam(from);
+      } else if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          getLocation,
+          getRandomCityLocation
+        );
+      } else {
+        getRandomCityLocation();
+      }
     }
     // TODO: This click listener for the legend should be moved to the legend
     //       itself instead of being on the wrapper for the whole map.
