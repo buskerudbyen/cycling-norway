@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { Feature } from "../types";
 
 type Props = {
+  disableClearable?: boolean;
   onChoose: (
     event: React.SyntheticEvent,
     value: Feature | string | null
@@ -15,7 +16,12 @@ type Data = {
   features: Feature[];
 };
 
-const SearchField = ({ onChoose, labelText, rerender }: Props) => {
+const SearchField = ({
+  disableClearable,
+  onChoose,
+  labelText,
+  rerender,
+}: Props) => {
   const [options, setOptions] = useState<Feature[]>([]);
 
   const inputChanged = (event: React.SyntheticEvent, value: string) => {
@@ -46,6 +52,7 @@ const SearchField = ({ onChoose, labelText, rerender }: Props) => {
   return (
     <Autocomplete
       className="autocomplete"
+      disableClearable={disableClearable}
       key={labelText + "-" + rerender}
       freeSolo
       options={options}

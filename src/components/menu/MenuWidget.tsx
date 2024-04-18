@@ -35,16 +35,19 @@ const MenuWidget = (props: Props) => {
     window.innerWidth >= 460
   );
   const [waitingForGeolocation, setWaitingForGeolocation] = useState(false);
+  const [isYourLocation, setIsYourLocation] = useState(false);
 
   useEffect(() => setSearchFieldsOpen(prevWidth >= 460), [prevWidth]);
 
   const resetRoute = () => {
     props.reset();
+    setIsYourLocation(false);
     setRenderFormKeys(!renderFormKeys);
   };
 
   const successCallback: PositionCallback = (position: GeolocationPosition) => {
     setWaitingForGeolocation(false);
+    setIsYourLocation(true);
     const { latitude, longitude } = position.coords;
     props.chooseStart(null, {
       type: "feature",
@@ -84,8 +87,9 @@ const MenuWidget = (props: Props) => {
       <div id="routing" hidden={!searchFieldsOpen}>
         <div id="searchFields">
           <SearchField
+            disableClearable
             onChoose={props.chooseStart}
-            labelText="Fra"
+            labelText={isYourLocation ? "Din posisjon" : "Fra"}
             rerender={renderFormKeys}
           />
           <IconButton
