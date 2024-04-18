@@ -4,6 +4,7 @@ import ButtonHelp from "./ButtonHelp";
 import SearchField from "./SearchField";
 import RoutingResults from "./RoutingResults";
 import { Feature } from "../types";
+import useResponsiveness from "./useResponsiveness";
 
 type Props = {
   chooseStart: (
@@ -21,23 +22,16 @@ type Props = {
   elevationProfile: number[] | null;
 };
 
+/**
+ * The Menu. In App mode.
+ */
 const Menu = (props: Props) => {
-  const [prevWidth, setPrevWidth] = useState(window.innerWidth);
-  const [searchFieldsOpen, setSearchFieldsOpen] = useState(
-    window.innerWidth >= 450
-  );
   const [renderFormKeys, setRenderFormKeys] = useState(true);
-
-  useEffect(() => {
-    const updateBySize = () => {
-      if (prevWidth !== window.innerWidth) {
-        setPrevWidth(window.innerWidth);
-        setSearchFieldsOpen(window.innerWidth >= 460);
-      }
-    };
-    window.addEventListener("resize", updateBySize);
-    return () => window.removeEventListener("resize", updateBySize);
-  }, [prevWidth]);
+  const prevWidth = useResponsiveness();
+  const [searchFieldsOpen, setSearchFieldsOpen] = useState(
+    window.innerWidth >= 460
+  );
+  useEffect(() => setSearchFieldsOpen(prevWidth >= 460), [prevWidth]);
 
   const resetRoute = () => {
     props.reset();
