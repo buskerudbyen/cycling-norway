@@ -204,6 +204,13 @@ th.legend-table-th {
   stroke-opacity: 0.5;
 }
 
+.maplibregl-ctrl-attrib {
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+}
+
 .maplibregl-ctrl-attrib a,
 .maplibregl-ctrl-attrib button {
   color: rgba(0, 0, 0, 0.75);
