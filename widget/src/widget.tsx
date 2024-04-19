@@ -6,6 +6,7 @@ import "./widget.css";
 type WidgetOptions = {
   dest?: { lat: number; lng: number };
   zoom?: number;
+  showZoomControls?: boolean;
   width?: CSSProperties["width"];
   height?: CSSProperties["height"];
 };
@@ -22,7 +23,12 @@ declare global {
 export const CyclingWidget = (props: WidgetOptions) => {
   return (
     <div style={{ width: props.width ?? 700, height: props.height ?? 450 }}>
-      <Map dest={props.dest} zoom={props.zoom} isWidget />
+      <Map
+        isWidget
+        dest={props.dest}
+        zoom={props.zoom}
+        showZoomControls={props.showZoomControls}
+      />
     </div>
   );
 };
@@ -51,6 +57,7 @@ export const Demo = () => {
   const [lat, setLat] = useState(59.868);
   const [lng, setLng] = useState(10.322);
   const [zoom, setZoom] = useState(2);
+  const [showZoomControls, setShowZoomControls] = useState(false);
   return (
     <div className="cycling-demo-container">
       <h2 className="cycling-demo-heading">Sykkelveier.no Widget Demo</h2>
@@ -80,6 +87,14 @@ export const Demo = () => {
             onChange={(e) => setZoom(+e.target.value)}
           />
         </label>
+        <label className="cycling-demo-label">
+          Show zoom controls
+          <input
+            type="checkbox"
+            checked={showZoomControls}
+            onChange={(e) => setShowZoomControls(e.target.checked)}
+          />
+        </label>
       </div>
       <button
         className="cycling-demo-load-widget"
@@ -87,6 +102,7 @@ export const Demo = () => {
           window.CyclingWidget({
             dest: { lat, lng },
             zoom,
+            showZoomControls,
             width: "100%",
             height: "100%",
           })

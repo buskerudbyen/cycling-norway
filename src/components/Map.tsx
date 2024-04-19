@@ -38,9 +38,10 @@ const INITIAL_LON = 10.322;
 const INITIAL_ZOOM = 8;
 
 type Props = {
-  dest?: Coords;
   isWidget?: boolean;
+  dest?: Coords;
   zoom?: number;
+  showZoomControls?: boolean;
 };
 
 const MapContainer = (props: Props) => {
@@ -800,12 +801,14 @@ const MapContainer = (props: Props) => {
           position="bottom-left"
           style={{ paddingLeft: "20px" }}
         />
-        <NavigationControl
-          position="bottom-left"
-          showCompass
-          showZoom
-          visualizePitch
-        />
+        {props.showZoomControls !== false && (
+          <NavigationControl
+            position="bottom-left"
+            showCompass
+            showZoom
+            visualizePitch
+          />
+        )}
         <div className="maplibregl-ctrl-bottom-right mapboxgl-ctrl-bottom-right">
           <AttributionPanel />
         </div>
