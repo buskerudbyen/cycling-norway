@@ -27,29 +27,13 @@ div.cycling-demo-container {
   /* nothing here yet */
 }
 
-h2.cycling-demo-heading {
-  font-size: 24px;
-  font-weight: 400;
-  margin-bottom: 5px;
-}
-
 div.cycling-demo-menu {
   display: flex;
   flex-direction: row;
   gap: 10px;
-}
-
-label.cycling-demo-label {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-  margin-bottom: 10px;
-}
-
-label.cycling-demo-label input {
-  width: 70px;
+  margin-top: 20px;
 }
 
 button.cycling-demo-load-widget {
-  margin-bottom: 20px;
+  margin: 20px 0;
 }

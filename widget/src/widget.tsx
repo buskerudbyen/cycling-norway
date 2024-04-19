@@ -1,5 +1,13 @@
 import { CSSProperties, useState } from "react";
 import { createRoot } from "react-dom/client";
+import {
+  Button,
+  Checkbox,
+  FormControlLabel,
+  Link,
+  TextField,
+  Typography,
+} from "@mui/material";
 import Map from "../../src/components/Map";
 import "./widget.css";
 
@@ -56,48 +64,64 @@ console.log(
 export const Demo = () => {
   const [lat, setLat] = useState(59.868);
   const [lng, setLng] = useState(10.322);
-  const [zoom, setZoom] = useState(2);
-  const [showZoomControls, setShowZoomControls] = useState(false);
+  const [zoom, setZoom] = useState(9);
+  const [showZoomControls, setShowZoomControls] = useState(true);
   return (
     <div className="cycling-demo-container">
-      <h2 className="cycling-demo-heading">Sykkelveier.no Widget Demo</h2>
-      <p>This is a simple demo page for the Sykkelveier.no Widget.</p>
+      <Typography variant="h4" gutterBottom>
+        Sykkelveier.no Widget Demo
+      </Typography>
+      <Typography variant="body1" gutterBottom>
+        This is a simple demo page for the Sykkelveier.no Widget. You may use
+        the widget without prior consent. See our repository for instructions on
+        how to use the widget on your own website:{" "}
+        <Link
+          href="https://github.com/buskerudbyen/cycling-norway/widget"
+          target="_blank"
+          rel="noreferrer"
+        >
+          https://github.com/buskerudbyen/cycling-norway/widget
+        </Link>
+      </Typography>
       <div className="cycling-demo-menu">
-        <label className="cycling-demo-label">
-          Dest Lat
-          <input
-            type="number"
-            value={lat}
-            onChange={(e) => setLat(+e.target.value)}
-          />
-        </label>
-        <label className="cycling-demo-label">
-          Dest Lng
-          <input
-            type="number"
-            value={lng}
-            onChange={(e) => setLng(+e.target.value)}
-          />
-        </label>
-        <label className="cycling-demo-label">
-          Initial zoom
-          <input
-            type="number"
-            value={zoom}
-            onChange={(e) => setZoom(+e.target.value)}
-          />
-        </label>
-        <label className="cycling-demo-label">
-          Show zoom controls
-          <input
-            type="checkbox"
-            checked={showZoomControls}
-            onChange={(e) => setShowZoomControls(e.target.checked)}
-          />
-        </label>
+        <TextField
+          id="outlined-basic"
+          label="Dest Lat"
+          onChange={(e) => setLat(+e.target.value)}
+          type="number"
+          value={lat}
+          variant="outlined"
+        />
+        <TextField
+          id="outlined-basic"
+          label="Dest Lng"
+          onChange={(e) => setLng(+e.target.value)}
+          type="number"
+          value={lng}
+          variant="outlined"
+        />
+        <TextField
+          id="outlined-basic"
+          label="Initial zoom"
+          onChange={(e) => setZoom(+e.target.value)}
+          type="number"
+          value={zoom}
+          variant="outlined"
+        />
+        <FormControlLabel
+          label="Show zoom controls"
+          control={
+            <Checkbox
+              checked={showZoomControls}
+              onChange={(e) => setShowZoomControls(e.target.checked)}
+            />
+          }
+        />
       </div>
-      <button
+      <Button
         className="cycling-demo-load-widget"
+        size="large"
+        variant="contained"
         onClick={() =>
           window.CyclingWidget({
             dest: { lat, lng },
@@ -108,8 +132,8 @@ export const Demo = () => {
           })
         }
       >
-        Load Widget
-      </button>
+        Load widget
+      </Button>
     </div>
   );
 };
