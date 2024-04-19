@@ -17,10 +17,9 @@ main#cycling-demo-main {
   border-radius: 5px;
   display: grid;
   grid-template-rows: min-content auto;
-  min-width: 800px;
-  max-width: 1000px;
+  width: min(100%, 900px);
   min-height: 700px;
-  padding: 50px;
+  padding: 75px;
   gap: 20px;
 }
 

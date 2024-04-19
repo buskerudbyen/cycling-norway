@@ -15,7 +15,7 @@ import Map, {
   Source,
 } from "react-map-gl/maplibre"; // Note: Important to use the MapLibre version of react-map-gl, otherwise we get a lot of incompatible types and weird errors
 // TODO: Try to remove mapbox-gl as a dependency again and see if it works
-import { Backdrop, CircularProgress } from "@mui/material";
+import { CircularProgress } from "@mui/material";
 import polyline from "@mapbox/polyline";
 import { MaplibreLegendControl } from "@watergis/maplibre-gl-legend";
 import SportsScoreIcon from "@mui/icons-material/SportsScore";
@@ -40,6 +40,7 @@ const INITIAL_ZOOM = 8;
 type Props = {
   dest?: Coords;
   isWidget?: boolean;
+  zoom?: number;
 };
 
 const MapContainer = (props: Props) => {
@@ -49,6 +50,7 @@ const MapContainer = (props: Props) => {
   const lon = window.location.hash
     ? Number(window.location.hash.split("/")[2])
     : INITIAL_LON;
+  const zoom = props.zoom ?? INITIAL_ZOOM;
 
   const [start, setStart] = useState<Coords | null>(null);
   const [dest, setDest] = useState<Coords | null>(props.dest ?? null);
@@ -116,7 +118,7 @@ const MapContainer = (props: Props) => {
     // if a location is requested by URL, do not change it
     if (
       window.location.hash !==
-      "#" + INITIAL_ZOOM + "/" + INITIAL_LAT + "/" + INITIAL_LON
+      "#" + zoom + "/" + INITIAL_LAT + "/" + INITIAL_LON
     ) {
       return;
     }
@@ -610,7 +612,7 @@ const MapContainer = (props: Props) => {
         initialViewState={{
           longitude: lon,
           latitude: lat,
-          zoom: INITIAL_ZOOM,
+          zoom,
         }}
         scrollZoom
         interactive
