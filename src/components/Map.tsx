@@ -18,7 +18,7 @@ import Map, {
 import { CircularProgress } from "@mui/material";
 import polyline from "@mapbox/polyline";
 import { MaplibreLegendControl } from "@watergis/maplibre-gl-legend";
-import SportsScoreIcon from "@mui/icons-material/SportsScore";
+import TripOriginIcon from "@mui/icons-material/TripOrigin";
 import AttributionPanel from "./AttributionPanel";
 import data from "../assets/snow-plow-example.json";
 import InfoPopup, {
@@ -816,22 +816,23 @@ const MapContainer = (props: Props) => {
           <Marker
             longitude={start?.lng}
             latitude={start?.lat}
-            color="blue"
+            color="white"
             anchor="center"
             draggable
             onDragEnd={updateStartCoord}
-          />
+          >
+            <TripOriginIcon />
+          </Marker>
         )}
         {dest && (
           <Marker
             longitude={dest?.lng}
             latitude={dest?.lat}
             anchor="center"
+            color="red"
             draggable={!props.isWidget} // Disable dragging in widget mode, destination is fixed
             onDragEnd={updateDestCoord}
-          >
-            <SportsScoreIcon fontSize="large" />
-          </Marker>
+          />
         )}
       </Map>
       {isBackdropOpen && (
