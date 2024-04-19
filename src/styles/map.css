@@ -121,18 +121,26 @@
   vertical-align: middle;
 }
 
-#routingResults span {
+#routingResults span.routing-results-display-text {
   color: #777;
   font-weight: bold;
   height: inherit;
+  margin-left: 5px;
   vertical-align: middle;
 }
 
 .elevation-details-trigger {
-  background-color: #1976d2;
   color: white;
-  padding: 10px 5px 10px 0;
+  padding: 6px 8px;
   border-radius: 5px;
+}
+.elevation-details-trigger:hover {
+  background-color: #fff;
+}
+
+.routing-results-clickable-text {
+  cursor: pointer;
+  text-decoration: underline;
 }
 
 .menu button {

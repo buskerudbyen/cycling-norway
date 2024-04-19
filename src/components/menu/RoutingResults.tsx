@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import { Chart as ChartJS, registerables } from "chart.js";
 import { Line } from "react-chartjs-2";
 import { Box, Modal } from "@mui/material";
+import RouteIcon from "@mui/icons-material/Route";
 import TimerIcon from "@mui/icons-material/Timer";
-import HeightIcon from "@mui/icons-material/Height";
-import ExpandIcon from "@mui/icons-material/Expand";
+import TerrainIcon from "@mui/icons-material/Terrain";
 
 const style = {
   position: "absolute",
@@ -33,36 +33,28 @@ const RoutingResults = (props: Props) => {
 
   const duration =
     props.duration !== null
-      ? new Date(props.duration * 1000).toISOString().slice(11, 19)
-      : "0:00:00";
+      ? new Date(props.duration * 1000).toISOString().slice(11, 16)
+      : "0:00";
   const distance =
-    props.distance !== null ? (props.distance / 1000).toFixed(2) : "0";
-  const elevation = props.elevation !== null ? props.elevation.toFixed(2) : "0";
+    props.distance !== null ? (props.distance / 1000).toFixed(1) : "0";
+  const elevation = props.elevation !== null ? props.elevation.toFixed(0) : "0";
 
   return (
     <div id="routingResults">
       <div>
-        <TimerIcon
-          htmlColor="gray"
-          fontSize="small"
-          sx={{ marginLeft: "5px" }}
-        />
-        <span style={{ margin: "5px" }}>{duration}</span>
+        <TimerIcon fontSize="small" htmlColor="gray" />
+        <span className="routing-results-display-text">{duration}</span>
       </div>
       <div>
-        <HeightIcon
-          htmlColor="gray"
-          sx={{ transform: "rotate(90deg)", marginLeft: "5px" }}
-        />
-        <span style={{ margin: "5px" }}>{distance} km</span>
+        <RouteIcon fontSize="small" htmlColor="gray" />
+        <span className="routing-results-display-text">{distance} km</span>
       </div>
-      <div>
-        <span
-          className="elevation-details-trigger"
-          style={{ color: "white", marginLeft: "5px" }}
-          onClick={() => setShowElevationPopup(true)}
-        >
-          <ExpandIcon htmlColor="white" sx={{ marginRight: "5px" }} />
+      <div
+        className="elevation-details-trigger"
+        onClick={() => setShowElevationPopup(true)}
+      >
+        <TerrainIcon fontSize="small" htmlColor="gray" />
+        <span className="routing-results-display-text routing-results-clickable-text">
           {elevation} m
         </span>
       </div>
