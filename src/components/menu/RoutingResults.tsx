@@ -41,21 +41,31 @@ const RoutingResults = (props: Props) => {
 
   return (
     <div id="routingResults">
-      <TimerIcon htmlColor="gray" fontSize="small" sx={{ marginLeft: "5px" }} />
-      <span style={{ margin: "5px" }}>{duration}</span>
-      <HeightIcon
-        htmlColor="gray"
-        sx={{ transform: "rotate(90deg)", marginLeft: "5px" }}
-      />
-      <span style={{ margin: "5px" }}>{distance} km</span>
-      <span
-        className="elevation-details-trigger"
-        style={{ marginLeft: "5px" }}
-        onClick={() => setShowElevationPopup(true)}
-      >
-        <ExpandIcon htmlColor="white" sx={{ marginRight: "5px" }} />
-        {elevation} m
-      </span>
+      <div>
+        <TimerIcon
+          htmlColor="gray"
+          fontSize="small"
+          sx={{ marginLeft: "5px" }}
+        />
+        <span style={{ margin: "5px" }}>{duration}</span>
+      </div>
+      <div>
+        <HeightIcon
+          htmlColor="gray"
+          sx={{ transform: "rotate(90deg)", marginLeft: "5px" }}
+        />
+        <span style={{ margin: "5px" }}>{distance} km</span>
+      </div>
+      <div>
+        <span
+          className="elevation-details-trigger"
+          style={{ color: "white", marginLeft: "5px" }}
+          onClick={() => setShowElevationPopup(true)}
+        >
+          <ExpandIcon htmlColor="white" sx={{ marginRight: "5px" }} />
+          {elevation} m
+        </span>
+      </div>
       <Modal
         id={"elevationInfo"}
         aria-labelledby="modal-title"

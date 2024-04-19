@@ -106,9 +106,14 @@
 }
 
 #routingResults {
-  background-color: #fff;
+  align-items: center;
+  background-color: #f0f0f0;
   border-radius: 4px;
   box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  margin: 0 1px; /* Fixes minor alignment issue */
 }
 
 #routingResults svg {
@@ -117,6 +122,8 @@
 }
 
 #routingResults span {
+  color: #777;
+  font-weight: bold;
   height: inherit;
   vertical-align: middle;
 }
