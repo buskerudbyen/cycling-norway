@@ -131,6 +131,7 @@
   display: flex;
   flex-direction: row;
   justify-content: space-evenly;
+  padding-left: 10px;
   padding-top: 1px;
   margin: 0 1px; /* Fixes minor alignment issue */
 }
@@ -149,10 +150,14 @@
 }
 
 .elevation-details-trigger {
+  align-items: center;
+  border-radius: 5px;
   color: white;
   cursor: pointer;
+  display: flex;
+  flex-direction: row;
+  gap: 6px;
   padding: 6px 8px;
-  border-radius: 5px;
 }
 .elevation-details-trigger:hover {
   background-color: #fff;
