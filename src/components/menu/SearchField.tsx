@@ -3,6 +3,7 @@ import { Autocomplete, debounce, TextField } from "@mui/material";
 import { Feature } from "../types";
 
 type Props = {
+  className?: string;
   disableClearable?: boolean;
   endAdornment?: JSX.Element;
   onChoose: (
@@ -47,7 +48,7 @@ const SearchField = (props: Props) => {
 
   return (
     <Autocomplete
-      className="autocomplete"
+      className={`autocomplete ${props.className ?? ""}`}
       disableClearable={props.disableClearable}
       key={props.labelText + "-" + props.rerender}
       freeSolo

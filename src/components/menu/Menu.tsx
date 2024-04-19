@@ -60,16 +60,20 @@ const Menu = (props: Props) => {
         <ButtonHelp />
       </div>
       <div id="routing" hidden={!searchFieldsOpen}>
-        <SearchField
-          onChoose={props.chooseStart}
-          labelText="Fra"
-          rerender={renderFormKeys}
-        />
-        <SearchField
-          onChoose={props.chooseDest}
-          labelText="Til"
-          rerender={renderFormKeys}
-        />
+        <div style={{ zIndex: 1 }}>
+          <SearchField
+            className="first"
+            onChoose={props.chooseStart}
+            labelText="Fra"
+            rerender={renderFormKeys}
+          />
+          <SearchField
+            className="last"
+            onChoose={props.chooseDest}
+            labelText="Til"
+            rerender={renderFormKeys}
+          />
+        </div>
         <RoutingResults
           distance={props.distance}
           duration={props.duration}
