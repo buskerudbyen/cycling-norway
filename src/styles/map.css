@@ -141,6 +141,11 @@
 .maplibregl-legend-list {
   overflow-y: auto;
   max-height: calc(100vh * 0.7);
+  min-width: 175px;
+}
+
+.maplibregl-legend-list br {
+  display: none;
 }
 
 .maplibregl-legend-switcher {
@@ -156,9 +161,10 @@
 }
 
 .maplibregl-legend-title-label {
+  display: inline-block;
   font-size: 14px;
   font-weight: bold;
-  margin: 5px;
+  margin: 5px 0px 0px 7px;
 }
 
 .maplibregl-legend-close-button {
@@ -179,7 +185,7 @@
 
 .legend-table {
   border-collapse: collapse;
-  margin: 0 auto;
+  margin-top: 5px;
 }
 
 .legend-table-td,
