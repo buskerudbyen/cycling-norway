@@ -72,9 +72,9 @@ export const Demo = () => {
         Sykkelveier.no Widget Demo
       </Typography>
       <Typography variant="body1" gutterBottom>
-        This is a simple demo page for the Sykkelveier.no Widget. You may use
-        the widget without prior consent. See our repository for instructions on
-        how to use the widget on your own website:{" "}
+        Dette er en enkel demoside for Sykkelveier.no-widgeten. Du kan bruke
+        widgeten uten forhåndssamtykke. Se vår kildekode for instruksjoner om
+        hvordan du bruker widgeten på ditt eget nettsted:{" "}
         <Link
           href="https://github.com/buskerudbyen/cycling-norway/widget"
           target="_blank"
@@ -86,7 +86,7 @@ export const Demo = () => {
       <div className="cycling-demo-menu">
         <TextField
           id="outlined-basic"
-          label="Dest Lat"
+          label="Destinasjon lat"
           onChange={(e) => setLat(+e.target.value)}
           type="number"
           value={lat}
@@ -94,7 +94,7 @@ export const Demo = () => {
         />
         <TextField
           id="outlined-basic"
-          label="Dest Lng"
+          label="Destinasjon lng"
           onChange={(e) => setLng(+e.target.value)}
           type="number"
           value={lng}
@@ -102,14 +102,14 @@ export const Demo = () => {
         />
         <TextField
           id="outlined-basic"
-          label="Initial zoom"
+          label="Initiell zoom"
           onChange={(e) => setZoom(+e.target.value)}
           type="number"
           value={zoom}
           variant="outlined"
         />
         <FormControlLabel
-          label="Show zoom controls"
+          label="Vis zoom kontroll"
           control={
             <Checkbox
               checked={showZoomControls}
@@ -126,13 +126,13 @@ export const Demo = () => {
           window.CyclingWidget({
             dest: { lat, lng },
             zoom,
-            showZoomControls,
+            showZoomControls, // FIXME: Trenger ikke denne
             width: "100%",
             height: "100%",
           })
         }
       >
-        Load widget
+        Last inn widget
       </Button>
     </div>
   );
