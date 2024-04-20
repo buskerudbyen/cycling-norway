@@ -30,9 +30,9 @@ import InfoPopup, {
   BIKE_ROUTE_POPUP,
 } from "./InfoPopup";
 import { cities, TARGET_URLS, TARGETS } from "../assets/constants";
-import { Elevation, InfoPopupType, SnowPlow, SnowPlowCollection, SnowPlowFeature } from "./types";
+import { Elevation, InfoPopupType, SnowPlow, SnowPlowCollection, SnowPlowFeature, MapFeature } from "./types";
 import { GeoJSONSource } from "maplibre-gl";
-import { GeoJSON, Feature, Point, MultiPoint, GeoJsonProperties, Position } from "geojson";
+import { GeoJSON, Position } from "geojson";
 
 const INITIAL_LAT = 59.868;
 const INITIAL_LON = 10.322;
@@ -243,7 +243,7 @@ const MapContainer = () => {
 
   const onStartChoose = (
     event: SyntheticEvent,
-    value: Feature<Point, GeoJsonProperties> | string | null
+    value: MapFeature | string | null
   ) => {
     if (typeof value === "string") {
       console.error("string param not supported yet");
@@ -266,7 +266,7 @@ const MapContainer = () => {
 
   const onDestChoose = (
     event: SyntheticEvent,
-    value: Feature<Point, GeoJsonProperties> | string | null
+    value: MapFeature | string | null
   ) => {
     if (typeof value === "string") {
       console.error("string param not supported yet");

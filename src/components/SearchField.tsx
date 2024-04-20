@@ -1,18 +1,19 @@
 import { Autocomplete, debounce, TextField } from "@mui/material";
 import React, { useState } from "react";
-import { FeatureCollection, Feature, Point, MultiPoint, GeoJsonProperties } from "geojson";
+import { FeatureCollection, Point, GeoJsonProperties } from "geojson";
+import { MapFeature } from "./types";
 
 type Props = {
   onChoose: (
     event: React.SyntheticEvent,
-    value: Feature<Point, GeoJsonProperties> | string | null
+    value: MapFeature | string | null
   ) => void;
   labelText: string;
   rerender: boolean;
 };
 
 const SearchField = ({ onChoose, labelText, rerender }: Props) => {
-  let [options, setOptions] = useState<Feature<Point, GeoJsonProperties>[]>([]);
+  let [options, setOptions] = useState<MapFeature[]>([]);
 
   const inputChanged = (event: React.SyntheticEvent, value: string) => {
     const url = `https://api.entur.io/geocoder/v1/autocomplete?text=${value}&lang=en`;
@@ -28,7 +29,7 @@ const SearchField = ({ onChoose, labelText, rerender }: Props) => {
     })
       .then((response) => response.json())
       .then((data: FeatureCollection<Point, GeoJsonProperties>) => {
-        const newOptions: Feature<Point, GeoJsonProperties>[] = [];
+        const newOptions: MapFeature[] = [];
         data.features.forEach((feature) => {
           newOptions.push(feature);
         });
@@ -45,7 +46,7 @@ const SearchField = ({ onChoose, labelText, rerender }: Props) => {
       key={labelText + "-" + rerender}
       freeSolo
       options={options}
-      getOptionLabel={(option) => (option as Feature<Point, GeoJsonProperties>)?.properties?.label ?? ""}
+      getOptionLabel={(option) => (option as MapFeature)?.properties?.label ?? ""}
       onInputChange={debounce(inputChanged, 200)}
       sx={{ width: 300 }}
       renderInput={(params) => <TextField {...params} label={labelText} />}

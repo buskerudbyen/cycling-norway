@@ -8,8 +8,9 @@ export interface SnowPlowCollection extends FeatureCollection<LineString, SnowPl
 
 export interface SnowPlowFeature extends Feature<LineString, SnowPlowProperties>{};
 
+export interface MapFeature extends Feature<Point, GeoJsonProperties>{};
+
 type SnowPlowProperties = GeoJsonProperties & {
-  start?: Date;
   isOld?: boolean;
 }
 

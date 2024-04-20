@@ -6,8 +6,7 @@ import HeightIcon from "@mui/icons-material/Height";
 import ExpandIcon from "@mui/icons-material/Expand";
 import { Chart as ChartJS, registerables } from "chart.js";
 import { Line } from "react-chartjs-2";
-import { Feature, Point, GeoJsonProperties } from "geojson";
-
+import { MapFeature } from "./types";
 const style = {
   position: "absolute",
   top: "50%",
@@ -22,11 +21,11 @@ const style = {
 type Props = {
   chooseStart: (
     event: React.SyntheticEvent,
-    value: Feature<Point, GeoJsonProperties> | string | null
+    value: MapFeature | string | null
   ) => void;
   chooseDest: (
     event: React.SyntheticEvent,
-    value: Feature<Point, GeoJsonProperties> | string | null
+    value: MapFeature | string | null
   ) => void;
   reset: () => void;
   duration: number | null;
