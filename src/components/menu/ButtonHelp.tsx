@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Box, Button, Modal, Typography } from "@mui/material";
+import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 
 const style = {
   position: "absolute",
@@ -19,11 +20,11 @@ const ButtonHelp = () => {
     <>
       <Button
         id="show-help"
-        variant="contained"
+        variant="outlined"
         size="small"
         onClick={() => setIsHelpOpen(!isHelpOpen)}
       >
-        Hjelp
+        <HelpOutlineIcon htmlColor="gray" />
       </Button>
       <Modal
         id="help"
