@@ -8,7 +8,7 @@
   display: none;
 }
 
-@media only screen and (min-width: 520px) {
+@media only screen and (min-width: 510px) {
   .map-wrap {
     height: 100vh;
     height: 100svh;
@@ -32,7 +32,7 @@
   }
 }
 
-@media only screen and (max-width: 519px) {
+@media only screen and (max-width: 509px) {
   .map-wrap {
     height: 95vh;
     height: 100svh;
@@ -91,6 +91,7 @@
   position: absolute;
   top: 9px;
   left: 50px;
+  gap: 1px;
 }
 
 .autocomplete {

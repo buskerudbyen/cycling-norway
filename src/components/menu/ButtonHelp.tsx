@@ -23,6 +23,13 @@ const ButtonHelp = () => {
         variant="outlined"
         size="small"
         onClick={() => setIsHelpOpen(!isHelpOpen)}
+        sx={{
+          backgroundColor: "white",
+          minWidth: "unset",
+          boxShadow: "0 0 0 2px rgba(0, 0, 0, 0.1)",
+          border: "0",
+          ":hover": { backgroundColor: "white", border: "0" },
+        }}
       >
         <HelpOutlineIcon htmlColor="gray" />
       </Button>
