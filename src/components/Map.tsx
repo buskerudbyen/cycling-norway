@@ -30,7 +30,7 @@ import InfoPopup, {
   BIKE_ROUTE_POPUP,
 } from "./InfoPopup";
 import { cities, TARGET_URLS, TARGETS } from "../assets/constants";
-import { Elevation, InfoPopupType, SnowPlow, SnowPlowCollection, SnowPlowFeature, MapFeature } from "./types";
+import { Elevation, InfoPopupType, SnowPlow, SnowPlowCollection, SnowPlowFeature, MapFeature, Trip } from "./types";
 import { GeoJSONSource } from "maplibre-gl";
 import { GeoJSON, Position } from "geojson";
 
@@ -56,14 +56,7 @@ const MapContainer = () => {
   const [popupType, setPopupType] = useState<InfoPopupType | null>(null);
   const [popupCoords, setPopupCoords] = useState<Position | null>(null);
   const [popupPoint, setPopupPoint] = useState<any | null>(null); // TODO: Use a type instead of any
-  // TODO: These four route states are related and can be combined into one
-  //       state object like `const [trip, setTrip] = useState<Trip|null>(null)`
-  const [routeDuration, setRouteDuration] = useState<number | null>(null);
-  const [routeDistance, setRouteDistance] = useState<number | null>(null);
-  const [routeElevation, setRouteElevation] = useState<number | null>(null);
-  const [routeElevationProfile, setRouteElevationProfile] = useState<
-    number[] | null
-  >(null);
+  const [trip, setTrip] = useState<Trip | null>(null);
   const [simulateLayer, setSimulateLayer] = useState<SnowPlow | null>(null);
 
   const wrapper = useRef<HTMLDivElement | null>(null);
@@ -229,9 +222,7 @@ const MapContainer = () => {
     setStart(null);
     setHasEnd(false);
     setDest(null);
-    setRouteDuration(null);
-    setRouteDistance(null);
-    setRouteElevation(null);
+    setTrip(null);
 
     const url = new URL(window.location.href);
     url.searchParams.delete("from");
@@ -513,14 +504,12 @@ const MapContainer = () => {
             lastLeg?.elevationProfile[lastLeg?.elevationProfile.length - 1]
               .elevation;
           setIsBackdropOpen(false);
-          setRouteDuration(response.data.trip.tripPatterns[0].duration);
-          setRouteDistance(response.data.trip.tripPatterns[0].distance);
-          setRouteElevation(endElevation - startElevation);
-          setRouteElevationProfile(
-            tripPattern.legs[0].elevationProfile.map(
-              (e: Elevation) => e.elevation
-            )
-          );
+          setTrip({
+            "duration": response.data.trip.tripPatterns[0].duration,
+            "distance": response.data.trip.tripPatterns[0].distance,
+            "elevation": endElevation - startElevation,
+            "elevationProfile": tripPattern.legs[0].elevationProfile.map((e: Elevation) => e.elevation)
+          });
           drawPolyline(polyline);
         } else {
           setIsBackdropOpen(false);
@@ -758,10 +747,7 @@ const MapContainer = () => {
           reset={resetRoute}
           chooseStart={onStartChoose}
           chooseDest={onDestChoose}
-          duration={routeDuration}
-          distance={routeDistance}
-          elevation={routeElevation}
-          elevationProfile={routeElevationProfile}
+          trip={trip}
         />
         <Backdrop
           sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}

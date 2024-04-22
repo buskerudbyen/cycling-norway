@@ -59,3 +59,10 @@ export type RouteProperties = GeoJsonProperties & {
 };
 
 export type SnowPlow = "snow-plow-snow" | "snow-plow-warn" | "snow-plow-ok";
+
+export type Trip = {
+  duration: number;
+  distance: number,
+  elevation: number,
+  elevationProfile: number[]
+}

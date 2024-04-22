@@ -6,7 +6,7 @@ import HeightIcon from "@mui/icons-material/Height";
 import ExpandIcon from "@mui/icons-material/Expand";
 import { Chart as ChartJS, registerables } from "chart.js";
 import { Line } from "react-chartjs-2";
-import { MapFeature } from "./types";
+import { MapFeature, Trip } from "./types";
 const style = {
   position: "absolute",
   top: "50%",
@@ -28,10 +28,7 @@ type Props = {
     value: MapFeature | string | null
   ) => void;
   reset: () => void;
-  duration: number | null;
-  distance: number | null;
-  elevation: number | null;
-  elevationProfile: number[] | null;
+  trip: Trip | null;
 };
 
 const Menu = (props: Props) => {
@@ -62,12 +59,12 @@ const Menu = (props: Props) => {
   };
 
   const duration =
-    props.duration !== null
-      ? new Date(props.duration * 1000).toISOString().slice(11, 19)
+    props.trip !== null
+      ? new Date(props.trip.duration * 1000).toISOString().slice(11, 19)
       : "0:00:00";
   const distance =
-    props.distance !== null ? (props.distance / 1000).toFixed(2) : "0";
-  const elevation = props.elevation !== null ? props.elevation.toFixed(2) : "0";
+    props.trip !== null ? (props.trip.distance / 1000).toFixed(2) : "0";
+  const elevation = props.trip !== null ? props.trip.elevation.toFixed(2) : "0";
 
   return (
     <>
@@ -171,7 +168,7 @@ const Menu = (props: Props) => {
               rerender={renderFormKeys}
             />
           </div>
-          {props.duration !== null && props.distance !== null && (
+          {props.trip !== null && (
             <div id="routingResults">
               <TimerIcon
                 htmlColor="gray"
@@ -206,10 +203,10 @@ const Menu = (props: Props) => {
               datasetIdKey="id"
               className="elevation-details-modal"
               data={{
-                labels: props.elevationProfile ?? [],
+                labels: props.trip!.elevationProfile ?? [],
                 datasets: [
                   {
-                    data: props.elevationProfile,
+                    data: props.trip!.elevationProfile,
                     fill: "origin",
                     borderColor: "#162da0",
                     backgroundColor: "rgba(22,45,160,0.5)",
