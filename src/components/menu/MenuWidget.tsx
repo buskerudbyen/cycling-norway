@@ -80,7 +80,6 @@ const MenuWidget = (props: Props) => {
         style={{ display: searchFieldsOpen ? "block" : "none" }}
       >
         <SearchField
-          disableClearable
           endAdornment={
             <MyLocation
               waitingForGeolocation={waitingForGeolocation}

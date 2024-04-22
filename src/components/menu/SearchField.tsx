@@ -4,7 +4,6 @@ import { Feature } from "../types";
 
 type Props = {
   className?: string;
-  disableClearable?: boolean;
   endAdornment?: JSX.Element;
   onChoose: (
     event: React.SyntheticEvent,
@@ -57,7 +56,6 @@ const SearchField = (props: Props) => {
   return (
     <Autocomplete
       className={`autocomplete ${props.className ?? ""}`}
-      disableClearable={props.disableClearable}
       key={props.labelText + "-" + props.rerender}
       freeSolo
       options={options}
