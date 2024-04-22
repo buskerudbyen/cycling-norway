@@ -1,11 +1,12 @@
 import React, { MouseEvent, useEffect, useState } from "react";
-import { Button } from "@mui/material";
 import ButtonHelp from "./ButtonHelp";
 import SearchField from "./SearchField";
 import RoutingResults from "./RoutingResults";
 import { Feature } from "../types";
 import useResponsiveness from "./useResponsiveness";
 import MyLocation from "./MyLocation";
+import ButtonToggleMenu from "./ButtonToggleMenu";
+import ButtonResetRoute from "./ButtonResetRoute";
 
 const geoLocationOptions: PositionOptions = {
   // TODO: Experiment with these options to see if we can speed up geolocation
@@ -67,25 +68,17 @@ const MenuWidget = (props: Props) => {
   return (
     <>
       <div className="menu">
-        <Button
-          id="searchFieldsButton"
-          variant="contained"
-          size="small"
-          onClick={() => setSearchFieldsOpen(!searchFieldsOpen)}
-        >
-          Tekstsøk
-        </Button>
-        <Button
-          id="reset"
-          variant="contained"
-          size="small"
-          onClick={resetRoute}
-        >
-          Nullstill rute
-        </Button>
+        <ButtonToggleMenu
+          searchFieldsOpen={searchFieldsOpen}
+          setSearchFieldsOpen={setSearchFieldsOpen}
+        />
+        <ButtonResetRoute resetRoute={resetRoute} />
         <ButtonHelp />
       </div>
-      <div id="routing" hidden={!searchFieldsOpen}>
+      <div
+        id="routing"
+        style={{ display: searchFieldsOpen ? "block" : "none" }}
+      >
         <SearchField
           disableClearable
           endAdornment={

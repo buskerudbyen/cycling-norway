@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Button } from "@mui/material";
 import ButtonHelp from "./ButtonHelp";
 import SearchField from "./SearchField";
 import RoutingResults from "./RoutingResults";
 import { Feature } from "../types";
 import useResponsiveness from "./useResponsiveness";
+import ButtonToggleMenu from "./ButtonToggleMenu";
+import ButtonResetRoute from "./ButtonResetRoute";
 
 type Props = {
   chooseStart: (
@@ -41,25 +42,17 @@ const Menu = (props: Props) => {
   return (
     <>
       <div className="menu">
-        <Button
-          id="searchFieldsButton"
-          variant="contained"
-          size="small"
-          onClick={() => setSearchFieldsOpen(!searchFieldsOpen)}
-        >
-          Tekstsøk
-        </Button>
-        <Button
-          id="reset"
-          variant="contained"
-          size="small"
-          onClick={resetRoute}
-        >
-          Nullstill rute
-        </Button>
+        <ButtonToggleMenu
+          searchFieldsOpen={searchFieldsOpen}
+          setSearchFieldsOpen={setSearchFieldsOpen}
+        />
+        <ButtonResetRoute resetRoute={resetRoute} />
         <ButtonHelp />
       </div>
-      <div id="routing" hidden={!searchFieldsOpen}>
+      <div
+        id="routing"
+        style={{ display: searchFieldsOpen ? "block" : "none" }}
+      >
         <div style={{ zIndex: 1 }}>
           <SearchField
             className="first"
