@@ -11,6 +11,7 @@ const ButtonResetRoute = (props: Props) => (
     variant="contained"
     size="small"
     onClick={props.resetRoute}
+    sx={{ minWidth: "140px" }}
   >
     Nullstill rute
   </Button>
