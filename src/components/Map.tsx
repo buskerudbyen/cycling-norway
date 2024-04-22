@@ -400,7 +400,10 @@ const MapContainer = (props: Props) => {
     if (start !== null && dest !== null) {
       return;
     }
-    if (start === null) {
+    if (start === null && dest !== null) {
+      updateQueryFromParam(event.lngLat);
+      getQuery(event.lngLat, dest);
+    } else if (start === null) {
       updateQueryFromParam(event.lngLat);
     } else {
       getQuery(start, event.lngLat);
