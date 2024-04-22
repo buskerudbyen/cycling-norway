@@ -1,20 +1,12 @@
 import { CSSProperties, useState } from "react";
 import { createRoot } from "react-dom/client";
-import {
-  Button,
-  Checkbox,
-  FormControlLabel,
-  Link,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Button, Link, TextField, Typography } from "@mui/material";
 import Map from "../../src/components/Map";
 import "./widget.css";
 
 type WidgetOptions = {
   dest?: { lat: number; lng: number };
   zoom?: number;
-  showZoomControls?: boolean;
   width?: CSSProperties["width"];
   height?: CSSProperties["height"];
 };
@@ -35,7 +27,6 @@ export const CyclingWidget = (props: WidgetOptions) => {
         isWidget
         dest={props.dest}
         zoom={props.zoom}
-        showZoomControls={props.showZoomControls}
       />
     </div>
   );
@@ -65,7 +56,6 @@ export const Demo = () => {
   const [lat, setLat] = useState(59.868);
   const [lng, setLng] = useState(10.322);
   const [zoom, setZoom] = useState(9);
-  const [showZoomControls, setShowZoomControls] = useState(true);
   return (
     <div className="cycling-demo-container">
       <Typography variant="h4" gutterBottom>
@@ -108,7 +98,7 @@ export const Demo = () => {
           value={zoom}
           variant="outlined"
         />
-        <FormControlLabel
+        {/* <FormControlLabel
           label="Vis zoom kontroll"
           control={
             <Checkbox
@@ -116,7 +106,7 @@ export const Demo = () => {
               onChange={(e) => setShowZoomControls(e.target.checked)}
             />
           }
-        />
+        /> */}
       </div>
       <Button
         className="cycling-demo-load-widget"
@@ -126,7 +116,6 @@ export const Demo = () => {
           window.CyclingWidget({
             dest: { lat, lng },
             zoom,
-            showZoomControls, // FIXME: Trenger ikke denne
             width: "100%",
             height: "100%",
           })
