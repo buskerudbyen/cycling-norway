@@ -52,7 +52,7 @@ const MenuWidget = (props: Props) => {
     setIsYourLocation(true);
     const { latitude, longitude } = position.coords;
     props.chooseStart(null, {
-      type: "feature",
+      type: "Feature",
       geometry: { type: "Point", coordinates: [longitude, latitude] },
     });
   };

@@ -23,10 +23,6 @@
     width: 260px !important;
   }
 
-  #searchFieldsButton {
-    display: none;
-  }
-
   #routingResults {
     height: 40px;
   }

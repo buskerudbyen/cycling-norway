@@ -46,6 +46,14 @@ const SearchField = (props: Props) => {
       });
   };
 
+  // TODO: It would be nice to show the label of the selected place, or "Din
+  //       posisjon" if it's a pin, or "Din startposisjon" if it's your live
+  //       location. However, this requires using <Autocomplete> as a controlled
+  //       component with the value prop. This has been attempted, but turned
+  //       out to be harder than expected due to <Autocomplete> calling
+  //       onInputChanged in an unpredictable manner. So to achieve what we want
+  //       we should just use a <TextField> and handle the value and options
+  //       ourselves.
   return (
     <Autocomplete
       className={`autocomplete ${props.className ?? ""}`}

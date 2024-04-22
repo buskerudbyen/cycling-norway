@@ -13,7 +13,7 @@ const ButtonToggleMenu = (props: Props) => (
     size="small"
     onClick={() => props.setSearchFieldsOpen(!props.searchFieldsOpen)}
   >
-    Tekstsøk
+    Rute
   </Button>
 );
 
