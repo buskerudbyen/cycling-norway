@@ -30,9 +30,9 @@ const Menu = (props: Props) => {
   const [renderFormKeys, setRenderFormKeys] = useState(true);
   const prevWidth = useResponsiveness();
   const [searchFieldsOpen, setSearchFieldsOpen] = useState(
-    window.innerWidth >= 460
+    window.innerWidth >= 420
   );
-  useEffect(() => setSearchFieldsOpen(prevWidth >= 460), [prevWidth]);
+  useEffect(() => setSearchFieldsOpen(prevWidth >= 420), [prevWidth]);
 
   const resetRoute = () => {
     props.reset();
