@@ -79,7 +79,7 @@
 
 #routing {
   position: absolute;
-  top: 48px;
+  top: 46px;
   left: 9px;
   display: flex;
   flex-direction: column;
@@ -90,8 +90,8 @@
   display: flex;
   position: absolute;
   top: 9px;
-  left: 50px;
-  gap: 1px;
+  left: 47px;
+  gap: 2.5px;
 }
 
 .autocomplete {
