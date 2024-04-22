@@ -12,7 +12,7 @@ import {
 import moment from "moment";
 import "moment/locale/nb";
 import { DAYS } from "./InfoPopup";
-import { DayShortName, Point, PopupProps } from "./types";
+import { DayShortName, PopupProps, PopupProperties } from "./types";
 
 const TunnelPopup = (props: PopupProps) => {
   const parseOpeningHours = (oh?: string, startString?: string) => {
@@ -50,7 +50,7 @@ const TunnelPopup = (props: PopupProps) => {
     return moment(fullDate).format("LT");
   };
 
-  const getMessage = (point: Point) => {
+  const getMessage = (point: PopupProperties) => {
     if (point.hasOwnProperty("opening_hours")) {
       return parseOpeningHours(point.opening_hours, "Tunnel åpen ");
     }
@@ -70,7 +70,7 @@ const TunnelPopup = (props: PopupProps) => {
     }
   };
 
-  const getOpeningHoursValue = (point: Point) => {
+  const getOpeningHoursValue = (point: PopupProperties) => {
     if (point.hasOwnProperty("opening_hours")) {
       return point.opening_hours;
     }
@@ -84,7 +84,7 @@ const TunnelPopup = (props: PopupProps) => {
     }
   };
 
-  const getOpeningHoursTable = (point: Point) => {
+  const getOpeningHoursTable = (point: PopupProperties) => {
     const oh = getOpeningHoursValue(point);
 
     // If there are multiple rules.

@@ -1,19 +1,19 @@
 import React, { useState } from "react";
 import { Popup } from "react-map-gl";
 import { Button } from "@mui/material";
-import { Network, PopupPropsForBikeRoute, Route } from "./types";
+import { Network, PopupPropsForBikeRoute, RouteProperties } from "./types";
 
 /**
- * The props.point can have multiple points (is a list). If there are multiple
+ * The props.point can have multiple routes (is a list). If there are multiple
  * elements, the user has to choose one to see its details.
  */
 const BikeRoutePopup = (props: PopupPropsForBikeRoute) => {
-  const [multiple, setMultiple] = useState(props.point.length > 1);
-  const [chosenRoute, setChosenRoute] = useState<Route | null>(
-    props.point.length === 1 ? props.point[0] : null
+  const [multiple, setMultiple] = useState(props.routes.length > 1);
+  const [chosenRoute, setChosenRoute] = useState<RouteProperties | null>(
+    props.routes.length === 1 ? props.routes[0] : null
   );
 
-  const chooseRoute = (route: Route) => {
+  const chooseRoute = (route: RouteProperties) => {
     setMultiple(false);
     setChosenRoute(route);
   };
@@ -28,7 +28,7 @@ const BikeRoutePopup = (props: PopupPropsForBikeRoute) => {
   };
 
   const getMultipleRoutesPopup = () => {
-    const [hasDetails, noDetails] = props.point.reduce(
+    const [hasDetails, noDetails] = props.routes.reduce(
       (arr, cur) => {
         arr[
           cur.properties.from ||
@@ -40,7 +40,7 @@ const BikeRoutePopup = (props: PopupPropsForBikeRoute) => {
         ].push(cur);
         return arr;
       },
-      [[], []] as [hasDetails: Route[], noDetails: Route[]]
+      [[], []] as [hasDetails: RouteProperties[], noDetails: RouteProperties[]]
     );
 
     const rowsEnabled: JSX.Element[] = [];

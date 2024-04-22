@@ -1,4 +1,4 @@
-import { Position, FeatureCollection, Feature, Geometry, LineString, GeoJsonProperties } from "geojson";
+import { Position, FeatureCollection, Feature, Geometry, LineString, GeoJsonProperties, Point } from "geojson";
 
 export type DayShortName = "mo" | "tu" | "we" | "th" | "fr" | "sa" | "su";
 
@@ -29,56 +29,33 @@ export type OpeningHourTable = {
   [key in DayShortName]: string;
 };
 
-export type Point = {
-  id: number;
-  name: string;
+export type PopupProperties = GeoJsonProperties & {
   note?: string;
   opening_hours?: string;
   lit?: string;
   conditional_bike?: string;
   fee?: string;
-  "name:latin"?: string;
+  'name:latin'?: string;
 };
 
 export type PopupProps = {
   lngLat: Position;
   onClose: () => void;
-  point: Point;
+  point: PopupProperties;
 };
 
 export type PopupPropsForBikeRoute = {
   lngLat: Position;
   onClose: () => void;
-  point: Route[]; // TODO: Should be renamed "routes"
+  routes: RouteProperties[];
 };
 
-export type PopupPoint = {
-  id: string;
-  bicyclePlaces: boolean;
-  anyCarPlaces: boolean;
-  carPlaces: boolean;
-  wheelchairAccessibleCarPlaces: boolean;
-  name: string;
-  realTimeData: boolean;
-  tags: string;
-  state: string;
-  note: string;
-  capacity: '{"bicyclePlaces":10,"carPlaces":null,"wheelchairAccessibleCarPlaces":null}';
-  "capacity.bicyclePlaces": 10;
-  availability: '{"bicyclePlaces":5,"carPlaces":null,"wheelchairAccessibleCarPlaces":null}';
-  "availability.bicyclePlaces": 5;
-};
-
-// TODO: Perhaps avoid wrapping in `properties`?
-export type Route = {
-  properties: {
-    name: string;
-    network: Network;
-    from?: string;
-    to?: string;
-    description?: string;
-    website?: string;
-  };
+export type RouteProperties = GeoJsonProperties & {
+  network?: Network;
+  from?: string;
+  to?: string;
+  description?: string;
+  website?: string;
 };
 
 export type SnowPlow = "snow-plow-snow" | "snow-plow-warn" | "snow-plow-ok";

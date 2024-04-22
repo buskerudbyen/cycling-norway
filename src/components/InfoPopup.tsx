@@ -6,8 +6,8 @@ import TunnelPopup from "./TunnelPopup";
 import ClosedRoadPopup from "./ClosedRoadPopup";
 import ToiletPopup from "./ToiletPopup";
 import BikeRoutePopup from "./BikeRoutePopup";
-import { Point, Route } from "./types";
-import { Position } from "geojson";
+import { PopupProperties, RouteProperties } from "./types";
+import { Position, Point } from "geojson";
 
 export const BIKELY_POPUP = "bikely";
 export const SYKKELHOTEL_POPUP = "sykkelhotel";
@@ -37,14 +37,14 @@ type PropsWithPoint = {
     | "toilet";
   popupCoords: Position;
   onPopupClose: () => void;
-  popupPoint: Point;
+  popupPoint: PopupProperties;
 };
 
 type PropsWithRoutes = {
   type: "bike_route";
   popupCoords: Position;
   onPopupClose: () => void;
-  popupPoint: Route[]; // TODO: Should be named popupRoute since it is not a Point?
+  popupPoint: RouteProperties[]; // TODO: Should be named popupRoute since it is not a Point?
 };
 
 // prettier-ignore
@@ -69,7 +69,7 @@ export default function InfoPopup({type, popupCoords, onPopupClose, popupPoint}:
 			return <ToiletPopup lngLat={popupCoords} onClose={onPopupClose} point={popupPoint} />;
         }
         case BIKE_ROUTE_POPUP: {
-          return <BikeRoutePopup lngLat={popupCoords} onClose={onPopupClose} point={popupPoint} />;
+          return <BikeRoutePopup lngLat={popupCoords} onClose={onPopupClose} routes={popupPoint} />;
         }
         default: {
           console.error('unknown popup type:', type);
