@@ -112,17 +112,49 @@ export const Demo = () => {
         className="cycling-demo-load-widget"
         size="large"
         variant="contained"
-        onClick={() =>
+        onClick={() => {
+          document
+            .getElementById("cycling-widget")
+            ?.style.setProperty("height", "350px");
           window.CyclingWidget({
             dest: { lat, lng },
             zoom,
             width: "100%",
             height: "100%",
-          })
-        }
+          });
+        }}
       >
         Last inn widget
       </Button>
+      <Typography variant="h4" gutterBottom>
+        Hvordan bruke widgeten på ditt eget nettsted
+      </Typography>
+      <Typography variant="body1" gutterBottom>
+        Kopier og lim inn denne koden i din HTML-fil, i &lt;head&gt;
+      </Typography>
+      <pre className="cycling-demo-code">
+        <code>{`<script src="https://sykkelveier.no/widget.js"></script>`}</code>
+      </pre>
+      <Typography variant="body1" gutterBottom>
+        Kopier og lim inn denne koden i din HTML-fil, i &lt;body&gt;
+      </Typography>
+      <pre className="cycling-demo-code">
+        <code>{`<div id="cycling-widget"></div>`}</code>
+      </pre>
+      <Typography variant="body1" gutterBottom>
+        Kopier og lim inn denne koden i JavaScript, eventuelt i en useEffect i
+        React.
+      </Typography>
+      <pre className="cycling-demo-code">
+        <code>
+          {`window.CyclingWidget({
+  dest: { lat: ${lat}, lng: ${lng} },
+  zoom: ${zoom},
+  width: "100%",
+  height: "100%",
+});`}
+        </code>
+      </pre>
     </div>
   );
 };

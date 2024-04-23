@@ -15,16 +15,13 @@ body#cycling-demo-body {
 main#cycling-demo-main {
   background-color: #fafafa;
   border-radius: 5px;
-  display: grid;
-  grid-template-rows: min-content auto;
-  width: min(100%, 900px);
+  width: min(100%, 750px);
   min-height: 700px;
   padding: 75px;
-  gap: 20px;
 }
 
 div.cycling-demo-container {
-  /* nothing here yet */
+  margin-top: 20px;
 }
 
 div.cycling-demo-menu {
@@ -36,4 +33,11 @@ div.cycling-demo-menu {
 
 button.cycling-demo-load-widget {
   margin: 20px 0;
+}
+
+pre.cycling-demo-code {
+  background-color: #eaeaea;
+  border-radius: 5px;
+  padding: 10px 20px;
+  overflow-x: auto;
 }
