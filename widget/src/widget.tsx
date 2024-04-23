@@ -107,9 +107,13 @@ export const Demo = () => {
         size="large"
         variant="contained"
         onClick={() => {
+          // Clear URL state
+          window.history.replaceState(null, '', window.location.pathname);
+          // Set widget height to 350px
           document
             .getElementById("cycling-widget")
             ?.style.setProperty("height", "350px");
+          // Load the widget
           window.CyclingWidget({
             dest: { lat, lng },
             zoom,
