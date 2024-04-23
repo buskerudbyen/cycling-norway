@@ -1,6 +1,7 @@
-import { CSSProperties, useState } from "react";
+import { CSSProperties, SyntheticEvent, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { Button, Link, TextField, Typography } from "@mui/material";
+import AddressField, { Feature } from "./AddressField";
 import Map from "../../src/components/Map";
 import "./widget.css";
 
@@ -55,7 +56,7 @@ console.log(
 export const Demo = () => {
   const [lat, setLat] = useState(59.74474);
   const [lng, setLng] = useState(10.20625);
-  const [zoom, setZoom] = useState(9);
+  const [zoom, setZoom] = useState(10);
   return (
     <div className="cycling-demo-container">
       <Typography variant="h4" gutterBottom>
@@ -74,26 +75,19 @@ export const Demo = () => {
         </Link>
       </Typography>
       <div className="cycling-demo-menu">
-        <TextField
-          id="outlined-basic"
-          label="Destinasjon lat"
-          onChange={(e) => setLat(+e.target.value)}
-          type="number"
-          value={lat}
-          variant="outlined"
-        />
-        <TextField
-          id="outlined-basic"
-          label="Destinasjon lng"
-          onChange={(e) => setLng(+e.target.value)}
-          type="number"
-          value={lng}
-          variant="outlined"
+        <AddressField
+          onChoose={(event: SyntheticEvent, value: string | Feature) => {
+            if (typeof value !== "string") {
+              setLat(value.geometry.coordinates[1]);
+              setLng(value.geometry.coordinates[0]);
+            }
+          }}
         />
         <TextField
           id="outlined-basic"
           label="Initiell zoom"
           onChange={(e) => setZoom(+e.target.value)}
+          sx={{ width: 100 }}
           type="number"
           value={zoom}
           variant="outlined"
