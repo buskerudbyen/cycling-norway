@@ -21,7 +21,6 @@ import Map, {
   ScaleControl,
   Source,
 } from "react-map-gl/maplibre"; // Note: Important to use the MapLibre version of react-map-gl, otherwise we get a lot of incompatible types and weird errors
-// TODO: Try to remove mapbox-gl as a dependency again and see if it works
 import { CircularProgress } from "@mui/material";
 import polyline from "@mapbox/polyline";
 import { MaplibreLegendControl } from "@watergis/maplibre-gl-legend";
@@ -841,7 +840,7 @@ const MapContainer = (props: Props) => {
           showZoom
           visualizePitch
         />
-        <div className="maplibregl-ctrl-bottom-right mapboxgl-ctrl-bottom-right">
+        <div className="maplibregl-ctrl-bottom-right">
           <AttributionPanel />
         </div>
         {start && (

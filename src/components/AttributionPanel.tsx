@@ -21,7 +21,7 @@ const AttributionPanel = () => {
 
   // prettier-ignore
   return (
-		<div className="maplibregl-ctrl maplibregl-ctrl-attrib mapboxgl-ctrl mapboxgl-ctrl-attrib">
+		<div className="maplibregl-ctrl maplibregl-ctrl-attrib">
 			<Button variant="text" size="small" onClick={togglePolicyPopup}>Personvern</Button>
 			<a href="https://www.maptiler.com/copyright/" target="_blank" rel="noreferrer">&copy; MapTiler </a>
 			<a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">&copy; OpenStreetMaps bidragsytere</a>

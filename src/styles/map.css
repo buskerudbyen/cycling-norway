@@ -11,7 +11,6 @@
   min-height: 300px;
 }
 
-.mapboxgl-ctrl button:disabled,
 .maplibregl-ctrl button:disabled {
   display: none;
 }
@@ -273,7 +272,6 @@ th.legend-table-th {
   font-family: "Helvetica Neue", "Arial", serif;
 }
 
-.mapboxgl-ctrl-bottom-left,
 .maplibregl-ctrl-bottom-left {
   bottom: 0;
   left: 0;
