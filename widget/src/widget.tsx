@@ -76,8 +76,8 @@ export const Demo = () => {
       </Typography>
       <div className="cycling-demo-menu">
         <AddressField
-          onChoose={(event: SyntheticEvent, value: string | Feature) => {
-            if (typeof value !== "string") {
+          onChoose={(event: SyntheticEvent, value: Feature | string | null) => {
+            if (typeof value !== "string" && value !== null) {
               setLat(value.geometry.coordinates[1]);
               setLng(value.geometry.coordinates[0]);
             }

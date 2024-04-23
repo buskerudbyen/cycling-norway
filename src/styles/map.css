@@ -3,6 +3,14 @@
   width: 100vw;
 }
 
+.maplibregl-map {
+  /* This min-height affects the widget and helps users see that the map renders
+   * rather than possible getting a <div> with zero height which appears
+   * invisible.
+   */
+  min-height: 300px;
+}
+
 .mapboxgl-ctrl button:disabled,
 .maplibregl-ctrl button:disabled {
   display: none;
