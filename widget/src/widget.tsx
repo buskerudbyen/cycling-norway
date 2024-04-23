@@ -7,6 +7,7 @@ import "./widget.css";
 
 type WidgetOptions = {
   dest?: { lat: number; lng: number };
+  destDescription?: string;
   zoom?: number;
   width?: CSSProperties["width"];
   height?: CSSProperties["height"];
@@ -27,6 +28,7 @@ export const CyclingWidget = (props: WidgetOptions) => {
       <Map
         isWidget
         dest={props.dest}
+        destDescription={props.destDescription}
         zoom={props.zoom}
       />
     </div>
@@ -54,6 +56,16 @@ console.log(
  * clicked, as long as a <div id="cycling-demo-exists"> exists.
  */
 export const Demo = () => {
+  const [destDescription, _setDestDescription] = useState<string | undefined>();
+  const setDestDescription = (value: string | undefined) => {
+    if (value === undefined) {
+      _setDestDescription(undefined);
+    } else if (value.length <= 140) {
+      // Should we have input sanitation here? Probably not necessary, the only
+      // security risk seems to be XSS, and we're not rendering HTML.
+      _setDestDescription(value);
+    }
+  };
   const [lat, setLat] = useState(59.74474);
   const [lng, setLng] = useState(10.20625);
   const [zoom, setZoom] = useState(10);
@@ -92,6 +104,23 @@ export const Demo = () => {
           value={zoom}
           variant="outlined"
         />
+        <TextField
+          id="outlined-basic"
+          label="Destinasjonsbeskrivelse (max 280 chars)"
+          multiline
+          maxRows={4}
+          onChange={(e) => {
+            if (e.target.value.length === 0) {
+              setDestDescription(undefined);
+            } else if (e.target.value.length <= 140) {
+              setDestDescription(e.target.value);
+            }
+          }}
+          sx={{ width: 350 }}
+          type="text"
+          value={destDescription}
+          variant="outlined"
+        />
         {/* <FormControlLabel
           label="Vis zoom kontroll"
           control={
@@ -108,7 +137,7 @@ export const Demo = () => {
         variant="contained"
         onClick={() => {
           // Clear URL state
-          window.history.replaceState(null, '', window.location.pathname);
+          window.history.replaceState(null, "", window.location.pathname);
           // Set widget height to 350px
           document
             .getElementById("cycling-widget")
@@ -116,6 +145,7 @@ export const Demo = () => {
           // Load the widget
           window.CyclingWidget({
             dest: { lat, lng },
+            destDescription,
             zoom,
             width: "100%",
             height: "100%",
@@ -147,6 +177,7 @@ export const Demo = () => {
         <code>
           {`window.CyclingWidget({
   dest: { lat: ${lat}, lng: ${lng} },
+  destDescription: "${destDescription ?? "Frivillig beskrivelse her"}",
   zoom: ${zoom},
   width: "100%",
   height: "100%",

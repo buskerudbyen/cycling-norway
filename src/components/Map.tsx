@@ -1,4 +1,11 @@
-import React, { SyntheticEvent, useEffect, useRef, useState } from "react";
+import React, {
+  SyntheticEvent,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import maplibregl from "maplibre-gl";
 import "../styles/map.css";
 import "maplibre-gl/dist/maplibre-gl.css";
@@ -40,6 +47,7 @@ const INITIAL_ZOOM = 8;
 type Props = {
   isWidget?: boolean;
   dest?: Coords;
+  destDescription?: string;
   zoom?: number;
 };
 
@@ -610,6 +618,26 @@ const MapContainer = (props: Props) => {
     return map?.getLayoutProperty(layer, "visibility") === "visible";
   };
 
+  // The destination marker can show a popup when clicked
+  const destMarkerRef = useRef<maplibregl.Marker | null>(null);
+  const DEST_DESCRIPTION_MIN_LENGTH = 3;
+  const DEST_DESCRIPTION_MAX_LENGTH = 140;
+  const destPopup = useMemo(() => {
+    if (props.destDescription) {
+      return new maplibregl.Popup().setText(props.destDescription);
+    }
+  }, [props.destDescription]);
+  const toggleDestPopup = useCallback(() => {
+    // If description is too short or too long, do not toggle popup
+    if (
+      props.destDescription &&
+      props.destDescription.length > DEST_DESCRIPTION_MIN_LENGTH &&
+      props.destDescription.length < DEST_DESCRIPTION_MAX_LENGTH
+    ) {
+      destMarkerRef.current?.togglePopup();
+    }
+  }, [props.destDescription]);
+
   return (
     <div className={`map-wrap ${props.isWidget ? "widget" : ""}`} ref={wrapper}>
       <Map
@@ -836,6 +864,14 @@ const MapContainer = (props: Props) => {
             color="red"
             draggable={!props.isWidget} // Disable dragging in widget mode, destination is fixed
             onDragEnd={updateDestCoord}
+            popup={destPopup}
+            ref={destMarkerRef}
+            onClick={(e) => {
+              // If we let the click event propagates to the map, it will
+              // immediately close the popup with `closeOnClick: true`
+              e.originalEvent.stopPropagation();
+              toggleDestPopup();
+            }}
           />
         )}
       </Map>

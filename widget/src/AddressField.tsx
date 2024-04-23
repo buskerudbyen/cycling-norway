@@ -62,7 +62,7 @@ const AddressField = (props: Props) => {
       options={options}
       onChange={props.onChoose}
       renderInput={(params) => <TextField {...params} label="Destinasjon" />}
-      sx={{ width: 300 }}
+      sx={{ width: 250 }}
     />
   );
 };
