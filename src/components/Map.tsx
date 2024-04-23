@@ -46,9 +46,13 @@ type Props = {
 const MapContainer = (props: Props) => {
   const lat = window.location.hash
     ? Number(window.location.hash.split("/")[1])
+    : props.dest
+    ? props.dest.lat
     : INITIAL_LAT;
   const lon = window.location.hash
     ? Number(window.location.hash.split("/")[2])
+    : props.dest
+    ? props.dest.lng
     : INITIAL_LON;
   const zoom = props.zoom ?? INITIAL_ZOOM;
 

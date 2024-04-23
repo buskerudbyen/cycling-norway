@@ -53,8 +53,8 @@ console.log(
  * clicked, as long as a <div id="cycling-demo-exists"> exists.
  */
 export const Demo = () => {
-  const [lat, setLat] = useState(59.868);
-  const [lng, setLng] = useState(10.322);
+  const [lat, setLat] = useState(59.74474);
+  const [lng, setLng] = useState(10.20625);
   const [zoom, setZoom] = useState(9);
   return (
     <div className="cycling-demo-container">
