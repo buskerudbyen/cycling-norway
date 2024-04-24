@@ -846,7 +846,7 @@ const MapContainer = (props: Props) => {
           visualizePitch
         />
         <div className="maplibregl-ctrl-bottom-right">
-          <AttributionPanel />
+          <AttributionPanel dest={props.dest} isWidget={props.isWidget} mapRef={map} />
         </div>
         {start && (
           <Marker

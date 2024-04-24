@@ -1,7 +1,17 @@
 import React, { useState } from "react";
+import { MapRef } from "react-map-gl/maplibre";
 import { Box, Button, Modal, Typography } from "@mui/material";
+import { Coords } from "./types";
 
-const AttributionPanel = () => {
+type Props = {
+  dest?: Coords;
+  isWidget?: boolean;
+  mapRef: {
+    current: MapRef | null;
+  };
+};
+
+const AttributionPanel = (props: Props) => {
   const [isPolicyPopup, setPolicyPopup] = useState(false);
 
   const style = {
@@ -19,14 +29,59 @@ const AttributionPanel = () => {
     setPolicyPopup(!isPolicyPopup);
   };
 
-  // prettier-ignore
   return (
-		<div className="maplibregl-ctrl maplibregl-ctrl-attrib">
-			<Button variant="text" size="small" onClick={togglePolicyPopup}>Personvern</Button>
-			<a href="https://www.maptiler.com/copyright/" target="_blank" rel="noreferrer">&copy; MapTiler </a>
-			<a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">&copy; OpenStreetMaps bidragsytere</a>
+    <div className="maplibregl-ctrl maplibregl-ctrl-attrib">
+      {props.isWidget && (
+        <Button
+          variant="text"
+          size="small"
+          sx={{ fontWeight: "normal" }}
+          onClick={() => {
+            const thisUrl = new URL(window.location.href);
+            const searchParams = new URLSearchParams(
+              thisUrl.searchParams
+            ).toString();
+            const to = props.dest
+              ? `&to=${props.dest.lat}%2C${props.dest.lng}`
+              : "";
+            const newUrl = `https://sykkelveier.no/?${searchParams}${to}#${props.mapRef?.current?.getZoom()}/${
+              props.mapRef?.current?.getCenter().lat
+            }/${props.mapRef?.current?.getCenter().lng}`;
+            window.open(newUrl, "_blank")?.focus();
+          }}
+        >
+          Vis full side
+        </Button>
+      )}
+      <Button
+        variant="text"
+        size="small"
+        onClick={togglePolicyPopup}
+        sx={{ fontWeight: "normal" }}
+      >
+        Personvern
+      </Button>
+      <div className="attribution-link-box">
+        <a
+          href="https://www.maptiler.com/copyright/"
+          target="_blank"
+          rel="noreferrer"
+        >
+          &copy;&thinsp;MapTiler
+        </a>
+      </div>
+      <div className="attribution-link-box">
+        <a
+          href="https://www.openstreetmap.org/copyright"
+          target="_blank"
+          rel="noreferrer"
+        >
+          &copy;&thinsp;OpenStreetMaps bidragsytere
+        </a>
+      </div>
 
-			<Modal id={"privacy-policy"} open={isPolicyPopup} onClose={togglePolicyPopup} aria-labelledby="modal-title">
+      {/* prettier-ignore */}
+      <Modal id={"privacy-policy"} open={isPolicyPopup} onClose={togglePolicyPopup} aria-labelledby="modal-title">
 				<Box sx={style} className="modal-box">
 					<Typography id="modal-title" variant="h5" component="h1">
 						Personopplysninger og personvern
@@ -64,8 +119,8 @@ const AttributionPanel = () => {
 					</Typography>
 				</Box>
 			</Modal>
-		</div>
-	);
+    </div>
+  );
 };
 
 export default AttributionPanel;

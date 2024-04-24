@@ -259,7 +259,7 @@ th.legend-table-th {
   align-items: center;
   display: flex;
   flex-direction: row;
-  gap: 8px;
+  gap: 3px;
 }
 
 .maplibregl-ctrl-attrib a,
@@ -277,6 +277,10 @@ th.legend-table-th {
   left: 0;
   display: flex;
   align-items: flex-end;
+}
+
+.attribution-link-box {
+  padding: 0px 5px;
 }
 
 .routeChoice {
