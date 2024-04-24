@@ -618,12 +618,15 @@ const MapContainer = (props: Props) => {
   };
 
   // The destination marker can show a popup when clicked
-  const destMarkerRef = useRef<maplibregl.Marker | null>(null);
+  const [destMarkerRef, setDestMarkerRef] = useState<maplibregl.Marker | null>(
+    null
+  );
   const DEST_DESCRIPTION_MIN_LENGTH = 3;
   const DEST_DESCRIPTION_MAX_LENGTH = 140;
   const destPopup = useMemo(() => {
     if (props.destDescription) {
       return new maplibregl.Popup().setText(props.destDescription);
+      // .setOffset([0, 20]); // If we want to show the popup overlaid on the marker, do something like this
     }
   }, [props.destDescription]);
   const toggleDestPopup = useCallback(() => {
@@ -633,9 +636,11 @@ const MapContainer = (props: Props) => {
       props.destDescription.length > DEST_DESCRIPTION_MIN_LENGTH &&
       props.destDescription.length < DEST_DESCRIPTION_MAX_LENGTH
     ) {
-      destMarkerRef.current?.togglePopup();
+      destMarkerRef?.togglePopup();
     }
-  }, [props.destDescription]);
+  }, [props.destDescription, destMarkerRef]);
+  // Show destination popup when the widget loads
+  useEffect(toggleDestPopup, [toggleDestPopup, destMarkerRef]);
 
   return (
     <div className={`map-wrap ${props.isWidget ? "widget" : ""}`} ref={wrapper}>
@@ -864,7 +869,7 @@ const MapContainer = (props: Props) => {
             draggable={!props.isWidget} // Disable dragging in widget mode, destination is fixed
             onDragEnd={updateDestCoord}
             popup={destPopup}
-            ref={destMarkerRef}
+            ref={setDestMarkerRef}
             onClick={(e) => {
               // If we let the click event propagates to the map, it will
               // immediately close the popup with `closeOnClick: true`
