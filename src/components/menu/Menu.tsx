@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import ButtonHelp from "./ButtonHelp";
 import SearchField from "./SearchField";
 import RoutingResults from "./RoutingResults";
-import { Feature } from "../types";
+import { Coords, Feature } from "../types";
 import useResponsiveness from "./useResponsiveness";
 import ButtonToggleMenu from "./ButtonToggleMenu";
 import ButtonResetRoute from "./ButtonResetRoute";
@@ -17,6 +17,8 @@ type Props = {
     value: Feature | string | null
   ) => void;
   reset: () => void;
+  start: Coords | null;
+  dest: Coords | null;
   duration: number | null;
   distance: number | null;
   elevation: number | null;
@@ -72,6 +74,8 @@ const Menu = (props: Props) => {
           duration={props.duration}
           elevation={props.elevation}
           elevationProfile={props.elevationProfile}
+          start={props.start}
+          dest={props.dest}
         />
       </div>
     </>

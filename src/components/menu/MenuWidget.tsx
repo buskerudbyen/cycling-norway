@@ -1,6 +1,4 @@
 import React, { MouseEvent, useEffect, useState } from "react";
-import { Button } from "@mui/material";
-import DirectionsBusIcon from "@mui/icons-material/DirectionsBus";
 import ButtonHelp from "./ButtonHelp";
 import SearchField from "./SearchField";
 import RoutingResults from "./RoutingResults";
@@ -83,57 +81,33 @@ const MenuWidget = (props: Props) => {
         id="routing"
         style={{ display: searchFieldsOpen ? "block" : "none" }}
       >
-        <div className="flex-row">
-          <SearchField
-            className="left"
-            endAdornment={
-              <MyLocation
-                waitingForGeolocation={waitingForGeolocation}
-                setWaitingForGeolocation={setWaitingForGeolocation}
-                clickHandler={(e: MouseEvent<HTMLButtonElement>) => {
-                  e.stopPropagation();
-                  setWaitingForGeolocation(true);
-                  navigator.geolocation.getCurrentPosition(
-                    successCallback,
-                    errorCallback,
-                    geoLocationOptions
-                  );
-                }}
-              />
-            }
-            onChoose={props.chooseStart}
-            labelText={isYourLocation ? "Din posisjon" : "Sykle fra"}
-            rerender={renderFormKeys}
-            sx={{ borderRadius: "4px 0px 0px 4px", width: '236px' }}
-          />
-          <Button
-            disabled={props.start === null || props.dest === null}
-            variant="contained"
-            size="small"
-            sx={{
-              borderRadius: "0px 4px 4px 0px",
-              boxShadow: "0 0 0 1px rgba(0, 0, 0, 0.1)",
-              padding: "6px",
-            }}
-            onClick={() => {
-              if (props.start !== null && props.dest !== null) {
-                const enturUrl = `https://entur.no/reiseresultater?transportModes=rail%2Ctram%2Cbus%2Ccoach%2Cwater%2Ccar_ferry%2Cmetro%2Cflytog%2Cflybuss&date=${Date.now()}&tripMode=oneway&walkSpeed=1.3&minimumTransferTime=120&timepickerMode=departAfter&startLat=${
-                  props.start.lat
-                }&startLon=${props.start.lng}&stopLat=${
-                  props.dest.lat
-                }&stopLon=${props.dest.lng}`;
-                window.open(enturUrl, "_blank")?.focus();
-              }
-            }}
-          >
-            <DirectionsBusIcon />
-          </Button>
-        </div>
+        <SearchField
+          endAdornment={
+            <MyLocation
+              waitingForGeolocation={waitingForGeolocation}
+              setWaitingForGeolocation={setWaitingForGeolocation}
+              clickHandler={(e: MouseEvent<HTMLButtonElement>) => {
+                e.stopPropagation();
+                setWaitingForGeolocation(true);
+                navigator.geolocation.getCurrentPosition(
+                  successCallback,
+                  errorCallback,
+                  geoLocationOptions
+                );
+              }}
+            />
+          }
+          onChoose={props.chooseStart}
+          labelText={isYourLocation ? "Din posisjon" : "Sykle fra"}
+          rerender={renderFormKeys}
+        />
         <RoutingResults
           distance={props.distance}
           duration={props.duration}
           elevation={props.elevation}
           elevationProfile={props.elevationProfile}
+          start={props.start}
+          dest={props.dest}
         />
       </div>
     </>

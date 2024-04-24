@@ -30,10 +30,6 @@
     width: 260px !important;
   }
 
-  #routingResults {
-    height: 40px;
-  }
-
   .elevation-details-modal {
     width: 400px;
   }
@@ -47,11 +43,6 @@
 
   #searchFields {
     width: 220px;
-  }
-
-  #routingResults {
-    width: 100px;
-    padding: 5px;
   }
 
   .menu button {
@@ -142,19 +133,36 @@
 }
 
 #routingResults {
-  align-items: center;
   background-color: #f0f0f0;
   border-bottom-left-radius: 4px;
   border-bottom-right-radius: 4px;
   box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+  font-weight: bold;
+  display: flex;
+  flex-direction: column;
+  margin: 0 1px; /* Fixes minor alignment issue */
+  min-width: 203px;
+  padding: 3px 5px 5px 5px;
+}
+
+#routingResults #infoRow {
+  align-items: center;
   display: flex;
   flex-direction: row;
   justify-content: space-evenly;
   padding-left: 10px;
   padding-top: 1px;
-  margin: 0 1px; /* Fixes minor alignment issue */
-  min-width: 203px;
-  max-width: 288px;
+}
+
+#routingResults #enturRow {
+  text-align: center;
+}
+#routingResults #enturRow a {
+  color: #777;
+  text-decoration: underline;
+}
+#routingResults #enturRow a:hover {
+  color: #aaa;
 }
 
 #routingResults svg {

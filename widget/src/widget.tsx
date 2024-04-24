@@ -97,15 +97,6 @@ export const Demo = () => {
         />
         <TextField
           id="outlined-basic"
-          label="Initiell zoom"
-          onChange={(e) => setZoom(+e.target.value)}
-          sx={{ width: 100 }}
-          type="number"
-          value={zoom}
-          variant="outlined"
-        />
-        <TextField
-          id="outlined-basic"
           label="Destinasjonsbeskrivelse (max 280 chars)"
           multiline
           maxRows={4}
@@ -119,6 +110,15 @@ export const Demo = () => {
           sx={{ width: 350 }}
           type="text"
           value={destDescription}
+          variant="outlined"
+        />
+        <TextField
+          id="outlined-basic"
+          label="Initiell zoom"
+          onChange={(e) => setZoom(+e.target.value)}
+          sx={{ width: 100 }}
+          type="number"
+          value={zoom}
           variant="outlined"
         />
         {/* <FormControlLabel

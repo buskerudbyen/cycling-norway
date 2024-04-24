@@ -821,9 +821,11 @@ const MapContainer = (props: Props) => {
           />
         ) : (
           <Menu
-            reset={resetRoute}
             chooseStart={onStartChoose}
             chooseDest={onDestChoose}
+            reset={resetRoute}
+            start={start}
+            dest={dest}
             duration={routeDuration}
             distance={routeDistance}
             elevation={routeElevation}
