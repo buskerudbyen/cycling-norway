@@ -84,14 +84,6 @@
   }
 }
 
-#routing {
-  position: absolute;
-  top: 46px;
-  left: 9px;
-  display: flex;
-  flex-direction: column;
-}
-
 .menu {
   padding: 0;
   display: flex;
@@ -99,6 +91,21 @@
   top: 9px;
   left: 47px;
   gap: 2.5px;
+  z-index: 1; /* Show over map popups */
+}
+
+#routing {
+  position: absolute;
+  top: 46px;
+  left: 9px;
+  display: flex;
+  flex-direction: column;
+  z-index: 1; /* Show over map popups */
+}
+
+#routing .flex-row {
+  display: flex;
+  flex-direction: row;
 }
 
 .autocomplete {
@@ -109,21 +116,29 @@
   z-index: 1;
 }
 
-.autocomplete.first {
+.autocomplete.top {
   border-bottom-left-radius: 0px;
   border-bottom-right-radius: 0px;
 }
-.autocomplete.first fieldset {
+.autocomplete.top fieldset {
   border-bottom-left-radius: 0px;
   border-bottom-right-radius: 0px;
 }
-.autocomplete.last {
+.autocomplete.bottom {
   border-top-left-radius: 0px;
   border-top-right-radius: 0px;
 }
-.autocomplete.last fieldset {
+.autocomplete.bottom fieldset {
   border-top-left-radius: 0px;
   border-top-right-radius: 0px;
+}
+.autocomplete.left {
+  border-top-right-radius: 0px;
+  border-bottom-right-radius: 0px;
+}
+.autocomplete.left fieldset {
+  border-top-right-radius: 0px;
+  border-bottom-right-radius: 0px;
 }
 
 #routingResults {
@@ -139,6 +154,7 @@
   padding-top: 1px;
   margin: 0 1px; /* Fixes minor alignment issue */
   min-width: 203px;
+  max-width: 288px;
 }
 
 #routingResults svg {

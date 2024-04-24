@@ -55,13 +55,13 @@ const Menu = (props: Props) => {
       >
         <div style={{ zIndex: 1 }}>
           <SearchField
-            className="first"
+            className="top"
             onChoose={props.chooseStart}
             labelText="Fra"
             rerender={renderFormKeys}
           />
           <SearchField
-            className="last"
+            className="bottom"
             onChoose={props.chooseDest}
             labelText="Til"
             rerender={renderFormKeys}

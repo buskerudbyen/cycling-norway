@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { CSSProperties, useState } from "react";
 import { Autocomplete, debounce, TextField } from "@mui/material";
 import { Feature } from "../types";
 
@@ -11,6 +11,7 @@ type Props = {
   ) => void;
   labelText: string;
   rerender: boolean;
+  sx?: CSSProperties;
 };
 
 type Data = {
@@ -61,7 +62,7 @@ const SearchField = (props: Props) => {
       options={options}
       getOptionLabel={(option) => (option as Feature).properties?.label ?? ""}
       onInputChange={debounce(inputChanged, 200)}
-      sx={{ width: 300 }}
+      sx={{ width: 300, ...props.sx }}
       onChange={props.onChoose}
       size={props.endAdornment ? "medium" : "small"}
       renderInput={(params) => (

@@ -810,8 +810,10 @@ const MapContainer = (props: Props) => {
         )}
         {props.isWidget ? (
           <MenuWidget
-            reset={resetRoute}
             chooseStart={onStartChoose}
+            reset={resetRoute}
+            start={start}
+            dest={dest}
             duration={routeDuration}
             distance={routeDistance}
             elevation={routeElevation}
@@ -846,7 +848,11 @@ const MapContainer = (props: Props) => {
           visualizePitch
         />
         <div className="maplibregl-ctrl-bottom-right">
-          <AttributionPanel dest={props.dest} isWidget={props.isWidget} mapRef={map} />
+          <AttributionPanel
+            dest={props.dest}
+            isWidget={props.isWidget}
+            mapRef={map}
+          />
         </div>
         {start && (
           <Marker
