@@ -2,16 +2,16 @@ import React from "react";
 import { Popup } from "react-map-gl";
 import { PopupProps } from "./types";
 
-const BikelyPopup = (props: PopupProps) => (
+const BikelyPopup = ({popup}: {popup: PopupProps}) => (
   <Popup
-    latitude={props.lngLat[1]}
-    longitude={props.lngLat[0]}
-    onClose={props.onClose}
+    latitude={popup.lngLat[1]}
+    longitude={popup.lngLat[0]}
+    onClose={popup.onClose}
   >
     <h3>
-      {props.point.name} ({props.point.id})
+      {popup.point.name} ({popup.point.id})
     </h3>
-    <div>{props.point.note}</div>
+    <div>{popup.point.note}</div>
   </Popup>
 );
 

@@ -39,15 +39,24 @@ export type PopupProperties = GeoJsonProperties & {
 };
 
 export type PopupProps = {
-  lngLat: Position;
+  type:
+    | "bikely"
+    | "sykkelhotel"
+    | "snowplow"
+    | "tunnel"
+    | "closed_road"
+    | "toilet";
   onClose: () => void;
+  lngLat: number[];
   point: PopupProperties;
 };
 
 export type PopupPropsForBikeRoute = {
-  lngLat: Position;
+  type: "bike_route";
   onClose: () => void;
+  lngLat: number[];
   routes: RouteProperties[];
+  //routes: Feature<LineString, RouteProperties>[];
 };
 
 export type RouteProperties = GeoJsonProperties & {

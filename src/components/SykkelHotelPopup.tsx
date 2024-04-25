@@ -2,13 +2,13 @@ import React from "react";
 import { Popup } from "react-map-gl";
 import { PopupProps } from "./types";
 
-const SykkelHotelPopup = (props: PopupProps) => (
+const SykkelHotelPopup = ({popup}: {popup: PopupProps}) => (
   <Popup
-    latitude={props.lngLat[1]}
-    longitude={props.lngLat[0]}
-    onClose={props.onClose}
+    latitude={popup.lngLat[1]}
+    longitude={popup.lngLat[0]}
+    onClose={popup.onClose}
   >
-    <h3>{props.point["name:latin"]}</h3>
+    <h3>{popup.point["name:latin"]}</h3>
     <div style={{ textAlign: "justify" }}>
       Parkeringsløsningen i et bygg og bak låste dører er tilgjengelig for alle
       som betaler abonnement, også de som ikke reiser med tog. Bruk appen{" "}

@@ -4,13 +4,13 @@ import { Button } from "@mui/material";
 import { Network, PopupPropsForBikeRoute, RouteProperties } from "./types";
 
 /**
- * The props.point can have multiple routes (is a list). If there are multiple
+ * The popup.routes can have multiple routes (is a list). If there are multiple
  * elements, the user has to choose one to see its details.
  */
-const BikeRoutePopup = (props: PopupPropsForBikeRoute) => {
-  const [multiple, setMultiple] = useState(props.routes.length > 1);
+const BikeRoutePopup = ({popup}: {popup: PopupPropsForBikeRoute}) => {
+  const [multiple, setMultiple] = useState(popup.routes.length > 1);
   const [chosenRoute, setChosenRoute] = useState<RouteProperties | null>(
-    props.routes.length === 1 ? props.routes[0] : null
+    popup.routes.length === 1 ? popup.routes[0] : null
   );
 
   const chooseRoute = (route: RouteProperties) => {
@@ -28,7 +28,7 @@ const BikeRoutePopup = (props: PopupPropsForBikeRoute) => {
   };
 
   const getMultipleRoutesPopup = () => {
-    const [hasDetails, noDetails] = props.routes.reduce(
+    const [hasDetails, noDetails] = popup.routes.reduce(
       (arr, cur) => {
         arr[
           cur.properties.from ||
@@ -75,9 +75,9 @@ const BikeRoutePopup = (props: PopupPropsForBikeRoute) => {
 
     return (
       <Popup
-        latitude={props.lngLat[1]}
-        longitude={props.lngLat[0]}
-        onClose={props.onClose}
+        latitude={popup.lngLat[1]}
+        longitude={popup.lngLat[0]}
+        onClose={popup.onClose}
       >
         <h4>Flere sykkelruter funnet. Vennligst velg:</h4>
         {rowsEnabled}
@@ -94,9 +94,9 @@ const BikeRoutePopup = (props: PopupPropsForBikeRoute) => {
 
     return (
       <Popup
-        latitude={props.lngLat[1]}
-        longitude={props.lngLat[0]}
-        onClose={props.onClose}
+        latitude={popup.lngLat[1]}
+        longitude={popup.lngLat[0]}
+        onClose={popup.onClose}
       >
         <h3>
           {route.name} {getNetwork(route.network)}

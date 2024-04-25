@@ -6,8 +6,7 @@ import TunnelPopup from "./TunnelPopup";
 import ClosedRoadPopup from "./ClosedRoadPopup";
 import ToiletPopup from "./ToiletPopup";
 import BikeRoutePopup from "./BikeRoutePopup";
-import { PopupProperties, RouteProperties } from "./types";
-import { Position, Point } from "geojson";
+import { PopupProps, PopupPropsForBikeRoute } from "./types";
 
 export const BIKELY_POPUP = "bikely";
 export const SYKKELHOTEL_POPUP = "sykkelhotel";
@@ -27,53 +26,33 @@ export const DAYS = new Map([
   ["su", "søndag"] as const,
 ]);
 
-type PropsWithPoint = {
-  type:
-    | "bikely"
-    | "sykkelhotel"
-    | "snowplow"
-    | "tunnel"
-    | "closed_road"
-    | "toilet";
-  popupCoords: Position;
-  onPopupClose: () => void;
-  popupPoint: PopupProperties;
-};
-
-type PropsWithRoutes = {
-  type: "bike_route";
-  popupCoords: Position;
-  onPopupClose: () => void;
-  popupPoint: RouteProperties[]; // TODO: Should be named popupRoute since it is not a Point?
-};
-
 // prettier-ignore
-export default function InfoPopup({type, popupCoords, onPopupClose, popupPoint}: PropsWithPoint | PropsWithRoutes) {
-	switch (type) {
+export default function InfoPopup({popup}: {popup: PopupProps | PopupPropsForBikeRoute}) {
+	switch (popup.type) {
 		case BIKELY_POPUP: {
-			return <BikelyPopup lngLat={popupCoords} onClose={onPopupClose} point={popupPoint} />;
-        }
+			return <BikelyPopup popup={popup} />;
+    }
 		case SYKKELHOTEL_POPUP: {
-			return <SykkelHotelPopup lngLat={popupCoords} onClose={onPopupClose} point={popupPoint} />;
-        }
+			return <SykkelHotelPopup popup={popup} />;
+    }
 		case SNOWPLOW_POPUP: {
-			return <SnowPlowPopup lngLat={popupCoords} onClose={onPopupClose} point={popupPoint} />;
-        }
+			return <SnowPlowPopup popup={popup} />;
+    }
 		case TUNNEL_POPUP: {
-			return <TunnelPopup lngLat={popupCoords} onClose={onPopupClose} point={popupPoint} />;
-        }
+			return <TunnelPopup popup={popup} />;
+    }
 		case CLOSED_ROAD_POPUP: {
-			return <ClosedRoadPopup lngLat={popupCoords} onClose={onPopupClose} point={popupPoint} />;
-        }
+			return <ClosedRoadPopup popup={popup} />;
+    }
 		case TOILET_POPUP: {
-			return <ToiletPopup lngLat={popupCoords} onClose={onPopupClose} point={popupPoint} />;
-        }
-        case BIKE_ROUTE_POPUP: {
-          return <BikeRoutePopup lngLat={popupCoords} onClose={onPopupClose} routes={popupPoint} />;
-        }
-        default: {
-          console.error('unknown popup type:', type);
-                return null;
-        }
+			return <ToiletPopup popup={popup} />;
+    }
+    case BIKE_ROUTE_POPUP: {
+      return <BikeRoutePopup popup={popup} />;
+    }
+    default: {
+      console.error('unknown popup type');
+        return null;
+    }
 	}
 }

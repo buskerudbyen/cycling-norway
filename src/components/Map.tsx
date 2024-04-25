@@ -30,7 +30,7 @@ import InfoPopup, {
   BIKE_ROUTE_POPUP,
 } from "./InfoPopup";
 import { cities, TARGET_URLS, TARGETS } from "../assets/constants";
-import { Elevation, InfoPopupType, SnowPlow, SnowPlowCollection, SnowPlowFeature, MapFeature, Trip } from "./types";
+import { Elevation, SnowPlow, SnowPlowCollection, SnowPlowFeature, MapFeature, Trip, PopupProps, PopupPropsForBikeRoute } from "./types";
 import { GeoJSONSource } from "maplibre-gl";
 import { GeoJSON, Position } from "geojson";
 
@@ -53,9 +53,7 @@ const MapContainer = () => {
   const [hasEnd, setHasEnd] = useState(false);
   const [dest, setDest] = useState<Position | null>(null);
   const [isBackdropOpen, setIsBackdropOpen] = useState(false);
-  const [popupType, setPopupType] = useState<InfoPopupType | null>(null);
-  const [popupCoords, setPopupCoords] = useState<Position | null>(null);
-  const [popupPoint, setPopupPoint] = useState<any | null>(null); // TODO: Use a type instead of any
+  const [popup, setPopup] = useState<PopupProps | PopupPropsForBikeRoute | null>(null);
   const [trip, setTrip] = useState<Trip | null>(null);
   const [simulateLayer, setSimulateLayer] = useState<SnowPlow | null>(null);
 
@@ -325,39 +323,54 @@ const MapContainer = () => {
         ],
       });
       if (bikelyFeatures.length > 0) {
-        const feature = bikelyFeatures[0].properties;
-        setPopupType(BIKELY_POPUP);
-        setPopupCoords([event.lngLat.lng, event.lngLat.lat]);
-        setPopupPoint(feature);
+        setPopup({
+          type: BIKELY_POPUP,
+          onClose: onPopupClose,
+          lngLat: [event.lngLat.lng, event.lngLat.lat],
+          point: bikelyFeatures[0].properties
+        });
       } else if (sykkelHotelFeatures.length > 0) {
-        const feature = sykkelHotelFeatures[0].properties;
-        setPopupType(SYKKELHOTEL_POPUP);
-        setPopupCoords([event.lngLat.lng, event.lngLat.lat]);
-        setPopupPoint(feature);
+        setPopup({
+          type: SYKKELHOTEL_POPUP,
+          onClose: onPopupClose,
+          lngLat: [event.lngLat.lng, event.lngLat.lat],
+          point: sykkelHotelFeatures[0].properties
+        });
       } else if (snowPlowFeatures.length > 0) {
-        const feature = snowPlowFeatures[0].properties;
-        setPopupType(SNOWPLOW_POPUP);
-        setPopupCoords([event.lngLat.lng, event.lngLat.lat]);
-        setPopupPoint(feature);
+        setPopup({
+          type: SNOWPLOW_POPUP,
+          onClose: onPopupClose,
+          lngLat: [event.lngLat.lng, event.lngLat.lat],
+          point: snowPlowFeatures[0].properties
+        });
       } else if (tunnelFeatures.length > 0) {
-        const feature = tunnelFeatures[0].properties;
-        setPopupType(TUNNEL_POPUP);
-        setPopupCoords([event.lngLat.lng, event.lngLat.lat]);
-        setPopupPoint(feature);
+        setPopup({
+          type: TUNNEL_POPUP,
+          onClose: onPopupClose,
+          lngLat: [event.lngLat.lng, event.lngLat.lat],
+          point: tunnelFeatures[0].properties
+        });
       } else if (closedRoadFeatures.length > 0) {
-        const feature = closedRoadFeatures[0].properties;
-        setPopupType(CLOSED_ROAD_POPUP);
-        setPopupCoords([event.lngLat.lng, event.lngLat.lat]);
-        setPopupPoint(feature);
+        setPopup({
+          type: CLOSED_ROAD_POPUP,
+          onClose: onPopupClose,
+          lngLat: [event.lngLat.lng, event.lngLat.lat],
+          point: closedRoadFeatures[0].properties
+        });
       } else if (toiletFeatures.length > 0) {
-        const feature = toiletFeatures[0].properties;
-        setPopupType(TOILET_POPUP);
-        setPopupCoords([event.lngLat.lng, event.lngLat.lat]);
-        setPopupPoint(feature);
+        setPopup({
+          type: TOILET_POPUP,
+          onClose: onPopupClose,
+          lngLat: [event.lngLat.lng, event.lngLat.lat],
+          point: toiletFeatures[0].properties
+        });
       } else if (bikeRouteFeatures.length > 0) {
-        setPopupType(BIKE_ROUTE_POPUP);
-        setPopupCoords([event.lngLat.lng, event.lngLat.lat]);
-        setPopupPoint(bikeRouteFeatures);
+        setPopup({
+          type: BIKE_ROUTE_POPUP,
+          onClose: onPopupClose,
+          lngLat: [event.lngLat.lng, event.lngLat.lat],
+          routes: bikeRouteFeatures.map(e => e.properties)
+        });
       } else {
         addMarker([event.lngLat.lng, event.lngLat.lat]);
       }
@@ -365,8 +378,7 @@ const MapContainer = () => {
   };
 
   const onPopupClose = () => {
-    setPopupType(null);
-    setPopupPoint(null);
+    setPopup(null);
   };
 
   const addMarker = (lngLat: Position) => {
@@ -735,13 +747,8 @@ const MapContainer = () => {
             "line-width": 5,
           }}
         />
-        {popupType !== null && popupCoords !== null && (
-          <InfoPopup
-            type={popupType}
-            popupCoords={popupCoords}
-            onPopupClose={onPopupClose}
-            popupPoint={popupPoint}
-          />
+        {popup !== null && (
+          <InfoPopup popup={popup} />
         )}
         <Menu
           reset={resetRoute}

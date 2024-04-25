@@ -14,7 +14,7 @@ import "moment/locale/nb";
 import { DAYS } from "./InfoPopup";
 import { DayShortName, PopupProps, PopupProperties } from "./types";
 
-const TunnelPopup = (props: PopupProps) => {
+const TunnelPopup = ({popup}: {popup: PopupProps}) => {
   const parseOpeningHours = (oh?: string, startString?: string) => {
     if (oh === undefined || startString === undefined) {
       return;
@@ -115,12 +115,12 @@ const TunnelPopup = (props: PopupProps) => {
 
   return (
     <Popup
-      latitude={props.lngLat[1]}
-      longitude={props.lngLat[0]}
-      onClose={props.onClose}
+      latitude={popup.lngLat[1]}
+      longitude={popup.lngLat[0]}
+      onClose={popup.onClose}
     >
-      <Typography gutterBottom>{getMessage(props.point)}</Typography>
-      {getOpeningHoursTable(props.point)}
+      <Typography gutterBottom>{getMessage(popup.point)}</Typography>
+      {getOpeningHoursTable(popup.point)}
     </Popup>
   );
 };
