@@ -1,7 +1,7 @@
 import React from "react";
 import { Popup } from "react-map-gl";
 import HorizontalRuleIcon from "@mui/icons-material/HorizontalRule";
-import { PopupProps } from "./types";
+import { PopupProps } from "../types";
 
 const SnowPlowPopup = (props: PopupProps) => (
   <Popup

@@ -1,22 +1,33 @@
-import { Autocomplete, debounce, TextField } from "@mui/material";
 import React, { useState } from "react";
-import { Feature } from "./types";
+import { Autocomplete, debounce, TextField } from "@mui/material";
 
-type Props = {
-  onChoose: (
-    event: React.SyntheticEvent,
-    value: Feature | string | null
-  ) => void;
-  labelText: string;
-  rerender: boolean;
+export type Feature = {
+  type: "Feature";
+  geometry: {
+    type: "Point";
+    coordinates: [number, number];
+  };
+  properties?: {
+    label: string;
+  };
 };
 
 type Data = {
   features: Feature[];
 };
 
-const SearchField = ({ onChoose, labelText, rerender }: Props) => {
-  let [options, setOptions] = useState<Feature[]>([]);
+type Props = {
+  onChoose: (
+    event: React.SyntheticEvent,
+    value: Feature | string | null
+  ) => void;
+};
+
+/**
+ * A slimmed down version of the SearchField component.
+ */
+const AddressField = (props: Props) => {
+  const [options, setOptions] = useState<Feature[]>([]);
 
   const inputChanged = (event: React.SyntheticEvent, value: string) => {
     const url = `https://api.entur.io/geocoder/v1/autocomplete?text=${value}&lang=en`;
@@ -45,17 +56,15 @@ const SearchField = ({ onChoose, labelText, rerender }: Props) => {
 
   return (
     <Autocomplete
-      className="autocomplete"
-      key={labelText + "-" + rerender}
       freeSolo
-      options={options}
-      getOptionLabel={(option) => (option as Feature).properties.label ?? ""}
+      getOptionLabel={(option) => (option as Feature).properties?.label ?? ""}
       onInputChange={debounce(inputChanged, 200)}
-      sx={{ width: 300 }}
-      renderInput={(params) => <TextField {...params} label={labelText} />}
-      onChange={onChoose}
+      options={options}
+      onChange={props.onChoose}
+      renderInput={(params) => <TextField {...params} label="Destinasjon" />}
+      sx={{ width: 250 }}
     />
   );
 };
 
-export default SearchField;
+export default AddressField;

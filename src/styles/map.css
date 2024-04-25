@@ -1,218 +1,328 @@
 .map-wrap {
-    position: relative;
-    width: 100vw;
+  position: relative;
+  width: 100vw;
 }
 
-.mapboxgl-ctrl button:disabled, .maplibregl-ctrl button:disabled {
-    display: none;
+.maplibregl-map {
+  /* This min-height affects the widget and helps users see that the map renders
+   * rather than possible getting a <div> with zero height which appears
+   * invisible.
+   */
+  min-height: 300px;
 }
 
-@media only screen and (min-width: 460px) {
-    .map-wrap {
-        height: 100vh;
-        height: 100svh;
-    }
-
-    .menu {
-        width: 260px !important;
-    }
-
-    #searchFieldsButton {
-        display: none;
-    }
-
-    #routingResults {
-        height: 40px;
-    }
-
-    .elevation-details-modal {
-        width: 400px;
-    }
+.maplibregl-ctrl button:disabled {
+  display: none;
 }
 
-@media only screen and (max-width: 459px) {
-    .map-wrap {
-        height: 95vh;
-        height: 100svh;
-    }
+@media only screen and (min-width: 510px) {
+  .map-wrap {
+    height: 100vh;
+    height: 100svh;
+  }
 
-    #searchFields {
-        width: 220px;
-    }
+  .map-wrap.widget {
+    height: 100%;
+    width: 100%;
+  }
 
-    #routingResults {
-        width: 100px;
-        padding: 5px;
-    }
+  .menu {
+    width: 260px !important;
+  }
 
-    .menu button {
-        font-size: 112%;
-    }
-
-    #searchFieldsButton {
-        display: block;
-    }
-
-    .autocomplete {
-        width: 220px !important;
-    }
-
-    .modal-box, .elevation-details-modal {
-        width: 250px;
-    }
-
-    .maplibregl-ctrl-top-right {
-        position: absolute;
-        top: 40px !important;
-        right: 0;
-    }
-
-    .maplibregl-ctrl-scale {
-        position: absolute;
-        bottom: 20px;
-        left: 35px;
-    }
+  .elevation-details-modal {
+    width: 400px;
+  }
 }
 
-#routing {
+@media only screen and (max-width: 509px) {
+  .map-wrap {
+    height: 95vh;
+    height: 100svh;
+  }
+
+  #searchFields {
+    width: 220px;
+  }
+
+  .menu button {
+    font-size: 112%;
+  }
+
+  #searchFieldsButton {
+    display: block;
+  }
+
+  .autocomplete {
+    width: 220px !important;
+  }
+
+  .modal-box,
+  .elevation-details-modal {
+    width: 250px;
+  }
+
+  .maplibregl-ctrl-top-right {
     position: absolute;
-    top: 45px;
-    left: 10px;
+    top: 40px !important;
+    right: 0;
+  }
+
+  .maplibregl-ctrl-scale {
+    position: absolute;
+    bottom: 20px;
+    left: 35px;
+  }
 }
 
 .menu {
-    padding: 0;
-    display: flex;
-    position: absolute;
-    top: 10px;
-    left: 50px;
+  padding: 0;
+  display: flex;
+  position: absolute;
+  top: 9px;
+  left: 47px;
+  gap: 2.5px;
+  z-index: 1; /* Show over map popups */
 }
 
-#searchFields {
-    margin-top: 5px;
+#routing {
+  position: absolute;
+  top: 46px;
+  left: 9px;
+  display: flex;
+  flex-direction: column;
+  z-index: 1; /* Show over map popups */
+}
+
+#routing .flex-row {
+  display: flex;
+  flex-direction: row;
 }
 
 .autocomplete {
-    background-color: #fff;
-    margin-bottom: 5px;
+  background-color: #fff;
+  border-radius: 4px;
+  border-color: transparent;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
+  z-index: 1;
+}
+
+.autocomplete.top {
+  border-bottom-left-radius: 0px;
+  border-bottom-right-radius: 0px;
+}
+.autocomplete.top fieldset {
+  border-bottom-left-radius: 0px;
+  border-bottom-right-radius: 0px;
+}
+.autocomplete.bottom {
+  border-top-left-radius: 0px;
+  border-top-right-radius: 0px;
+}
+.autocomplete.bottom fieldset {
+  border-top-left-radius: 0px;
+  border-top-right-radius: 0px;
+}
+.autocomplete.left {
+  border-top-right-radius: 0px;
+  border-bottom-right-radius: 0px;
+}
+.autocomplete.left fieldset {
+  border-top-right-radius: 0px;
+  border-bottom-right-radius: 0px;
 }
 
 #routingResults {
-    background-color: #fff;
-    border-radius: 4px;
-    border: 1px solid rgba(0, 0, 0, 0.23);
+  background-color: #f0f0f0;
+  border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 4px;
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+  font-weight: bold;
+  display: flex;
+  flex-direction: column;
+  margin: 0 1px; /* Fixes minor alignment issue */
+  min-width: 203px;
+  padding: 3px 5px 5px 5px;
+}
+
+#routingResults #infoRow {
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  padding-left: 10px;
+  padding-top: 1px;
+}
+
+#routingResults #enturRow {
+  text-align: center;
+}
+#routingResults #enturRow a {
+  color: #777;
+  text-decoration: underline;
+}
+#routingResults #enturRow a:hover {
+  color: #aaa;
 }
 
 #routingResults svg {
-    height: inherit;
-    vertical-align: middle;
+  height: inherit;
+  vertical-align: middle;
 }
 
-#routingResults span {
-    height: inherit;
-    vertical-align: middle;
+#routingResults span.routing-results-display-text {
+  color: #777;
+  font-weight: bold;
+  height: inherit;
+  margin-left: 5px;
+  vertical-align: middle;
 }
 
 .elevation-details-trigger {
-    background-color: #1976d2;
-    color: white;
-    padding: 10px 5px 10px 0;
-    border-radius: 5px;
+  align-items: center;
+  border-radius: 5px;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  flex-direction: row;
+  gap: 6px;
+  padding: 6px 8px;
+}
+.elevation-details-trigger:hover {
+  background-color: #fff;
+}
+
+.routing-results-clickable-text {
+  cursor: pointer;
+  text-decoration: underline;
 }
 
 .menu button {
-    margin-right: 5px;
+  margin-right: 5px;
 }
 
 .modal-box {
-    word-wrap: break-word;
-    overflow-y: auto;
-    max-height: 80%;
+  word-wrap: break-word;
+  overflow-y: auto;
+  max-height: 80%;
 }
 
 .maplibregl-legend-list {
-    overflow-y: auto;
-    max-height: calc(100vh * 0.7);
+  overflow-y: auto;
+  max-height: calc(100vh * 0.7);
+  min-width: 175px;
+}
+
+.maplibregl-legend-list br {
+  display: none;
 }
 
 .maplibregl-legend-switcher {
-    background: url('data:image/svg+xml;charset=UTF-8,<svg height="512pt" viewBox="0 0 512 512.0005" width="512pt" xmlns="http://www.w3.org/2000/svg"><path d="m220 0h-200c-11.046875 0-20 8.953125-20 20v200c0 11.046875 8.953125 20 20 20h200c11.046875 0 20-8.953125 20-20v-200c0-11.046875-8.953125-20-20-20zm-20 200h-160v-160h160zm299.65625 73.523438c-7.472656-3.097657-16.078125-1.386719-21.796875 4.332031l-200 200c-5.722656 5.722656-7.433594 14.324219-4.335937 21.796875 3.097656 7.476562 10.386718 12.347656 18.476562 12.347656h200c11.046875 0 20-8.953125 20-20v-200c0-8.089844-4.871094-15.382812-12.34375-18.476562zm-27.65625 198.476562h-131.714844l131.714844-131.714844zm-80-232c66.167969 0 120-53.832031 120-120s-53.832031-120-120-120-120 53.832031-120 120 53.832031 120 120 120zm0-200c44.113281 0 80 35.886719 80 80s-35.886719 80-80 80-80-35.886719-80-80 35.886719-80 80-80zm-157.859375 266.144531-85.855469 85.855469 85.855469 85.855469c7.8125 7.8125 7.8125 20.476562 0 28.285156-7.808594 7.808594-20.472656 7.8125-28.28125 0l-85.859375-85.855469-85.859375 85.859375c-7.808594 7.808594-20.472656 7.808594-28.28125 0-7.8125-7.8125-7.8125-20.476562 0-28.285156l85.855469-85.859375-85.855469-85.855469c-7.8125-7.8125-7.8125-20.476562 0-28.285156 7.808594-7.8125 20.472656-7.8125 28.28125 0l85.859375 85.855469 85.859375-85.859375c7.808594-7.808594 20.472656-7.808594 28.28125 0 7.8125 7.8125 7.8125 20.476562 0 28.289062zm0 0"/></svg>');
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: 70%;
+  background: url('data:image/svg+xml;charset=UTF-8,<svg height="512pt" viewBox="0 0 512 512.0005" width="512pt" xmlns="http://www.w3.org/2000/svg"><path d="m220 0h-200c-11.046875 0-20 8.953125-20 20v200c0 11.046875 8.953125 20 20 20h200c11.046875 0 20-8.953125 20-20v-200c0-11.046875-8.953125-20-20-20zm-20 200h-160v-160h160zm299.65625 73.523438c-7.472656-3.097657-16.078125-1.386719-21.796875 4.332031l-200 200c-5.722656 5.722656-7.433594 14.324219-4.335937 21.796875 3.097656 7.476562 10.386718 12.347656 18.476562 12.347656h200c11.046875 0 20-8.953125 20-20v-200c0-8.089844-4.871094-15.382812-12.34375-18.476562zm-27.65625 198.476562h-131.714844l131.714844-131.714844zm-80-232c66.167969 0 120-53.832031 120-120s-53.832031-120-120-120-120 53.832031-120 120 53.832031 120 120 120zm0-200c44.113281 0 80 35.886719 80 80s-35.886719 80-80 80-80-35.886719-80-80 35.886719-80 80-80zm-157.859375 266.144531-85.855469 85.855469 85.855469 85.855469c7.8125 7.8125 7.8125 20.476562 0 28.285156-7.808594 7.808594-20.472656 7.8125-28.28125 0l-85.859375-85.855469-85.859375 85.859375c-7.808594 7.808594-20.472656 7.808594-28.28125 0-7.8125-7.8125-7.8125-20.476562 0-28.285156l85.855469-85.859375-85.855469-85.855469c-7.8125-7.8125-7.8125-20.476562 0-28.285156 7.808594-7.8125 20.472656-7.8125 28.28125 0l85.859375 85.855469 85.859375-85.859375c7.808594-7.808594 20.472656-7.808594 28.28125 0 7.8125 7.8125 7.8125 20.476562 0 28.289062zm0 0"/></svg>');
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 70%;
 }
 
-.maplibregl-legend-onlyRendered-label, .maplibregl-legend-onlyRendered-checkbox {
-    display: none;
+.maplibregl-legend-onlyRendered-label,
+.maplibregl-legend-onlyRendered-checkbox {
+  display: none;
 }
 
 .maplibregl-legend-title-label {
-    font-size: 14px;
-    font-weight: bold;
-    margin: 5px;
+  display: inline-block;
+  font-size: 14px;
+  font-weight: bold;
+  margin: 5px 0px 0px 7px;
 }
 
 .maplibregl-legend-close-button {
-    position: absolute;
-    right: 0;
-    top: 0;
-    padding-top: 5px;
-    padding-right: 5px;
-    background-color: transparent;
-    border: 0;
-    box-sizing: border-box;
-    outline: none;
-    cursor: pointer;
-    display: block;
-    height: 29px;
-    width: 29px;
+  position: absolute;
+  right: 0;
+  top: 0;
+  padding-top: 5px;
+  padding-right: 5px;
+  background-color: transparent;
+  border: 0;
+  box-sizing: border-box;
+  outline: none;
+  cursor: pointer;
+  display: block;
+  height: 29px;
+  width: 29px;
 }
 
 .legend-table {
-    border-collapse: collapse;
-    margin: 0 auto;
+  border-collapse: collapse;
+  margin-top: 5px;
 }
 
-.legend-table-td, th.legend-table-th {
-    border: 1px solid #ffffff;
-    margin: 10px;
-    padding: 2px;
-    text-align: left;
+.legend-table-td,
+th.legend-table-th {
+  border: 1px solid #ffffff;
+  margin: 10px;
+  padding: 2px;
+  text-align: left;
 }
 
 .legend-table svg {
-    background-color: #ccdcb9;
+  background-color: #ccdcb9;
 }
 
 .legend-table g {
-    stroke-width: 5px;
+  stroke-width: 5px;
 }
 
 .snow-plow-color {
-    transform: rotate(-45deg);
-    stroke: gray;
-    stroke-opacity: 0.5;
+  transform: rotate(-45deg);
+  stroke: gray;
+  stroke-opacity: 0.5;
 }
 
-.maplibregl-ctrl-attrib a, .maplibregl-ctrl-attrib button {
-    color: rgba(0, 0, 0, .75);
-    text-decoration: none;
-    letter-spacing: normal;
-    text-transform: none;
-    font-size: 12px;
-    font-family: 'Helvetica Neue', 'Arial', serif;
+.maplibregl-ctrl-attrib {
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+  gap: 3px;
 }
 
-.mapboxgl-ctrl-bottom-left, .maplibregl-ctrl-bottom-left {
-    bottom: 0;
-    left: 0;
-    display: flex;
-    align-items: flex-end;
+.maplibregl-ctrl-attrib a,
+.maplibregl-ctrl-attrib button {
+  color: rgba(0, 0, 0, 0.75);
+  text-decoration: none;
+  letter-spacing: normal;
+  text-transform: none;
+  font-size: 12px;
+  font-family: "Helvetica Neue", "Arial", serif;
+}
+
+.maplibregl-ctrl-bottom-left {
+  bottom: 0;
+  left: 0;
+  display: flex;
+  align-items: flex-end;
+}
+
+.attribution-link-box {
+  padding: 0px 5px;
 }
 
 .routeChoice {
-    width: 100%;
-    text-transform: none!important;
-    line-height: 1!important;
-    margin-top: 5px!important;
+  width: 100%;
+  text-transform: none !important;
+  line-height: 1 !important;
+  margin-top: 5px !important;
+}
+
+.backdrop {
+  position: absolute;
+  top: 0%;
+  left: 0%;
+  background-color: rgba(0, 0, 0, 0.1);
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

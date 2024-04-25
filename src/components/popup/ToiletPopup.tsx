@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import { SimpleOpeningHours } from "simple-opening-hours";
 import { DAYS } from "./InfoPopup";
-import { OpeningHourTable, PopupProps } from "./types";
+import { OpeningHourTable, PopupProps } from "../types";
 
 const ToiletPopup = (props: PopupProps) => {
   const getOpeningHoursTable = () => {

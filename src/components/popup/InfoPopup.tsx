@@ -6,7 +6,7 @@ import TunnelPopup from "./TunnelPopup";
 import ClosedRoadPopup from "./ClosedRoadPopup";
 import ToiletPopup from "./ToiletPopup";
 import BikeRoutePopup from "./BikeRoutePopup";
-import { Coords, Point, Route } from "./types";
+import { Coords, Point, Route } from "../types";
 
 export const BIKELY_POPUP = "bikely";
 export const SYKKELHOTEL_POPUP = "sykkelhotel";

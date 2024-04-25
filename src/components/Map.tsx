@@ -1,8 +1,16 @@
-import React, { SyntheticEvent, useEffect, useRef, useState } from "react";
+import React, {
+  SyntheticEvent,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import maplibregl from "maplibre-gl";
 import "../styles/map.css";
 import "maplibre-gl/dist/maplibre-gl.css";
-import Menu from "./Menu";
+import Menu from "./menu/Menu";
+import MenuWidget from "./menu/MenuWidget";
 import Map, {
   GeolocateControl,
   Layer,
@@ -13,11 +21,10 @@ import Map, {
   ScaleControl,
   Source,
 } from "react-map-gl/maplibre"; // Note: Important to use the MapLibre version of react-map-gl, otherwise we get a lot of incompatible types and weird errors
-// TODO: Try to remove mapbox-gl as a dependency again and see if it works
-import { Backdrop, CircularProgress } from "@mui/material";
+import { CircularProgress } from "@mui/material";
 import polyline from "@mapbox/polyline";
 import { MaplibreLegendControl } from "@watergis/maplibre-gl-legend";
-import SportsScoreIcon from "@mui/icons-material/SportsScore";
+import TripOriginIcon from "@mui/icons-material/TripOrigin";
 import AttributionPanel from "./AttributionPanel";
 import data from "../assets/snow-plow-example.json";
 import InfoPopup, {
@@ -28,7 +35,7 @@ import InfoPopup, {
   TUNNEL_POPUP,
   TOILET_POPUP,
   BIKE_ROUTE_POPUP,
-} from "./InfoPopup";
+} from "./popup/InfoPopup";
 import { cities, TARGET_URLS, TARGETS } from "../assets/constants";
 import { Coords, Elevation, Feature, InfoPopupType, SnowPlow } from "./types";
 
@@ -36,26 +43,36 @@ const INITIAL_LAT = 59.868;
 const INITIAL_LON = 10.322;
 const INITIAL_ZOOM = 8;
 
-const MapContainer = () => {
+type Props = {
+  isWidget?: boolean;
+  dest?: Coords;
+  destDescription?: string;
+  zoom?: number;
+};
+
+const MapContainer = (props: Props) => {
   const lat = window.location.hash
     ? Number(window.location.hash.split("/")[1])
+    : props.dest
+    ? props.dest.lat
     : INITIAL_LAT;
   const lon = window.location.hash
     ? Number(window.location.hash.split("/")[2])
+    : props.dest
+    ? props.dest.lng
     : INITIAL_LON;
+  const zoom = props.zoom ?? INITIAL_ZOOM;
 
-  // TODO: Remove hasStart, instead just check if start !== null
-  const [hasStart, setHasStart] = useState(false);
   const [start, setStart] = useState<Coords | null>(null);
-  // TODO: Remove hasEnd, instead just check if dest !== null
-  const [hasEnd, setHasEnd] = useState(false);
-  const [dest, setDest] = useState<Coords | null>(null);
+  const [dest, setDest] = useState<Coords | null>(props.dest ?? null);
   const [isBackdropOpen, setIsBackdropOpen] = useState(false);
+  // TODO: These three popup states are related and can be combined into one
+  //       state object like `const [popup, setPopup] = useState<PopupType|null>(null)`
   const [popupType, setPopupType] = useState<InfoPopupType | null>(null);
   const [popupCoords, setPopupCoords] = useState<Coords | null>(null);
   const [popupPoint, setPopupPoint] = useState<any | null>(null); // TODO: Use a type instead of any
   // TODO: These four route states are related and can be combined into one
-  //       state object like `const [trip, setTrip] = useState<Trip|null>(null)`
+  //       state object like `const [trip, setTrip] = useState<TripType|null>(null)`
   const [routeDuration, setRouteDuration] = useState<number | null>(null);
   const [routeDistance, setRouteDistance] = useState<number | null>(null);
   const [routeElevation, setRouteElevation] = useState<number | null>(null);
@@ -69,15 +86,20 @@ const MapContainer = () => {
 
   useEffect(() => {
     const url = new URL(window.location.href);
-    if (url.searchParams.has("from") && url.searchParams.has("to")) {
-      const from = parseLngLat(url.searchParams.get("from")!);
-      const to = parseLngLat(url.searchParams.get("to")!);
-      getQuery(from, to);
-    } else if (url.searchParams.has("from")) {
-      const from = parseLngLat(url.searchParams.get("from")!);
-      updateQueryFromParam(from);
+    if (props.isWidget) {
+      if (props.isWidget && url.searchParams.has("from") && dest) {
+        const from = parseLngLat(url.searchParams.get("from")!);
+        getQuery(from, dest);
+      }
     } else {
-      if (navigator.geolocation) {
+      if (url.searchParams.has("from") && url.searchParams.has("to")) {
+        const from = parseLngLat(url.searchParams.get("from")!);
+        const to = parseLngLat(url.searchParams.get("to")!);
+        getQuery(from, to);
+      } else if (url.searchParams.has("from")) {
+        const from = parseLngLat(url.searchParams.get("from")!);
+        updateQueryFromParam(from);
+      } else if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
           getLocation,
           getRandomCityLocation
@@ -86,7 +108,8 @@ const MapContainer = () => {
         getRandomCityLocation();
       }
     }
-
+    // TODO: This click listener for the legend should be moved to the legend
+    //       itself instead of being on the wrapper for the whole map.
     wrapper.current?.addEventListener("click", (e) => updateQueryByLegend(e));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -94,8 +117,7 @@ const MapContainer = () => {
   const getLocation = (position: {
     coords: { latitude: number; longitude: number };
   }) => {
-    const latitude = position.coords.latitude;
-    const longitude = position.coords.longitude;
+    const { latitude, longitude } = position.coords;
     map.current?.setCenter(new maplibregl.LngLat(longitude, latitude));
     map.current?.setZoom(15);
   };
@@ -104,11 +126,10 @@ const MapContainer = () => {
     // if a location is requested by URL, do not change it
     if (
       window.location.hash !==
-      "#" + INITIAL_ZOOM + "/" + INITIAL_LAT + "/" + INITIAL_LON
+      "#" + zoom + "/" + INITIAL_LAT + "/" + INITIAL_LON
     ) {
       return;
     }
-
     setTimeout(() => {
       try {
         const cityNum = cities.features.length;
@@ -154,7 +175,7 @@ const MapContainer = () => {
           const roadOk = [];
           const roadWarn = [];
           const roadSnow = [];
-          for (let feature of jsonResponse.features) {
+          for (const feature of jsonResponse.features) {
             if (jsonResponse.isSnowing) {
               roadSnow.push(feature);
             } else if (
@@ -229,10 +250,10 @@ const MapContainer = () => {
   };
 
   const resetRoute = () => {
-    setHasStart(false);
     setStart(null);
-    setHasEnd(false);
-    setDest(null);
+    if (!props.isWidget) {
+      setDest(null);
+    }
     setRouteDuration(null);
     setRouteDistance(null);
     setRouteElevation(null);
@@ -246,7 +267,7 @@ const MapContainer = () => {
   };
 
   const onStartChoose = (
-    event: SyntheticEvent,
+    event: SyntheticEvent | null,
     value: Feature | string | null
   ) => {
     if (typeof value === "string") {
@@ -254,13 +275,13 @@ const MapContainer = () => {
       return;
     }
     if (value !== null && map.current !== null) {
-      let coords = new maplibregl.LngLat(
+      const coords = new maplibregl.LngLat(
         value.geometry.coordinates[0],
         value.geometry.coordinates[1]
       );
       map.current.setCenter(value.geometry.coordinates);
       updateQueryFromParam(coords);
-      if (hasEnd) {
+      if (dest !== null) {
         getQuery(coords, dest);
       }
     } else {
@@ -269,7 +290,7 @@ const MapContainer = () => {
   };
 
   const onDestChoose = (
-    event: SyntheticEvent,
+    event: SyntheticEvent | null,
     value: Feature | string | null
   ) => {
     if (typeof value === "string") {
@@ -277,12 +298,12 @@ const MapContainer = () => {
       return;
     }
     if (value !== null && map.current !== null) {
-      let coords = new maplibregl.LngLat(
+      const coords = new maplibregl.LngLat(
         value.geometry.coordinates[0],
         value.geometry.coordinates[1]
       );
       updateQueryToParam(coords);
-      if (hasStart) {
+      if (start !== null) {
         getQuery(start, coords);
       }
     } else {
@@ -383,10 +404,13 @@ const MapContainer = () => {
   };
 
   const addMarker = (event: MapLayerMouseEvent) => {
-    if (hasStart && hasEnd) {
+    if (start !== null && dest !== null) {
       return;
     }
-    if (!hasStart) {
+    if (start === null && dest !== null) {
+      updateQueryFromParam(event.lngLat);
+      getQuery(event.lngLat, dest);
+    } else if (start === null) {
       updateQueryFromParam(event.lngLat);
     } else {
       getQuery(start, event.lngLat);
@@ -445,18 +469,16 @@ const MapContainer = () => {
     const url = new URL(window.location.href);
     url.searchParams.set("from", lngLatToString(start));
     window.history.pushState({}, "", url);
-
-    setHasStart(true);
     setStart(start);
   };
 
   const updateQueryToParam = (dest: Coords) => {
-    const url = new URL(window.location.href);
-    url.searchParams.set("to", lngLatToString(dest));
-    window.history.pushState({}, "", url);
-
-    setHasEnd(true);
-    setDest(dest);
+    if (!props.isWidget) {
+      const url = new URL(window.location.href);
+      url.searchParams.set("to", lngLatToString(dest));
+      window.history.pushState({}, "", url);
+      setDest(dest);
+    }
   };
 
   const getQuery = (start: Coords | null, dest: Coords | null) => {
@@ -564,7 +586,7 @@ const MapContainer = () => {
   };
 
   const updateQueryByLegend = (event: MouseEvent) => {
-    let target = event.target as HTMLInputElement;
+    const target = event.target as HTMLInputElement;
 
     if (target.type === "checkbox" && TARGET_URLS.has(target.name)) {
       const url = new URL(window.location.href);
@@ -572,9 +594,9 @@ const MapContainer = () => {
         url.searchParams.get("layers")?.split(",") ?? [];
       const urlTag = TARGET_URLS.get(target.name);
 
-      let layerVisible = isVisible(map.current, target.name);
-      let layerWasVisible = urlTag !== undefined && layerList.includes(urlTag);
+      const layerVisible = isVisible(map.current, target.name);
       if (urlTag !== undefined) {
+        const layerWasVisible = layerList.includes(urlTag);
         if (!layerVisible && layerWasVisible) {
           const index = layerList.indexOf(urlTag);
           layerList.splice(index, 1);
@@ -589,11 +611,36 @@ const MapContainer = () => {
   };
 
   const isVisible = (map: MapRef | null, layer: string) => {
-    return map?.getLayoutProperty(layer, "visibility") === "visible" ?? false;
+    return map?.getLayoutProperty(layer, "visibility") === "visible";
   };
 
+  // The destination marker can show a popup when clicked
+  const [destMarkerRef, setDestMarkerRef] = useState<maplibregl.Marker | null>(
+    null
+  );
+  const DEST_DESCRIPTION_MIN_LENGTH = 3;
+  const DEST_DESCRIPTION_MAX_LENGTH = 140;
+  const destPopup = useMemo(() => {
+    if (props.destDescription) {
+      return new maplibregl.Popup().setText(props.destDescription);
+      // .setOffset([0, 20]); // If we want to show the popup overlaid on the marker, do something like this
+    }
+  }, [props.destDescription]);
+  const toggleDestPopup = useCallback(() => {
+    // If description is too short or too long, do not toggle popup
+    if (
+      props.destDescription &&
+      props.destDescription.length > DEST_DESCRIPTION_MIN_LENGTH &&
+      props.destDescription.length < DEST_DESCRIPTION_MAX_LENGTH
+    ) {
+      destMarkerRef?.togglePopup();
+    }
+  }, [props.destDescription, destMarkerRef]);
+  // Show destination popup when the widget loads
+  useEffect(toggleDestPopup, [toggleDestPopup, destMarkerRef]);
+
   return (
-    <div className="map-wrap" ref={wrapper}>
+    <div className={`map-wrap ${props.isWidget ? "widget" : ""}`} ref={wrapper}>
       <Map
         id="map"
         ref={map}
@@ -601,7 +648,7 @@ const MapContainer = () => {
         initialViewState={{
           longitude: lon,
           latitude: lat,
-          zoom: INITIAL_ZOOM,
+          zoom,
         }}
         scrollZoom
         interactive
@@ -758,21 +805,30 @@ const MapContainer = () => {
             popupPoint={popupPoint}
           />
         )}
-        <Menu
-          reset={resetRoute}
-          chooseStart={onStartChoose}
-          chooseDest={onDestChoose}
-          duration={routeDuration}
-          distance={routeDistance}
-          elevation={routeElevation}
-          elevationProfile={routeElevationProfile}
-        />
-        <Backdrop
-          sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
-          open={isBackdropOpen}
-        >
-          <CircularProgress color="inherit" />
-        </Backdrop>
+        {props.isWidget ? (
+          <MenuWidget
+            chooseStart={onStartChoose}
+            reset={resetRoute}
+            start={start}
+            dest={dest}
+            duration={routeDuration}
+            distance={routeDistance}
+            elevation={routeElevation}
+            elevationProfile={routeElevationProfile}
+          />
+        ) : (
+          <Menu
+            chooseStart={onStartChoose}
+            chooseDest={onDestChoose}
+            reset={resetRoute}
+            start={start}
+            dest={dest}
+            duration={routeDuration}
+            distance={routeDistance}
+            elevation={routeElevation}
+            elevationProfile={routeElevationProfile}
+          />
+        )}
         <GeolocateControl
           position="top-left"
           positionOptions={{ enableHighAccuracy: true }}
@@ -790,31 +846,49 @@ const MapContainer = () => {
           showZoom
           visualizePitch
         />
-        <div className="maplibregl-ctrl-bottom-right mapboxgl-ctrl-bottom-right">
-          <AttributionPanel />
+        <div className="maplibregl-ctrl-bottom-right">
+          <AttributionPanel
+            dest={props.dest}
+            isWidget={props.isWidget}
+            mapRef={map}
+          />
         </div>
-        {hasStart && start && (
+        {start && (
           <Marker
             longitude={start?.lng}
             latitude={start?.lat}
-            color="blue"
+            color="white"
             anchor="center"
             draggable
             onDragEnd={updateStartCoord}
-          />
+          >
+            <TripOriginIcon />
+          </Marker>
         )}
-        {hasEnd && dest && (
+        {dest && (
           <Marker
             longitude={dest?.lng}
             latitude={dest?.lat}
             anchor="center"
-            draggable
+            color="red"
+            draggable={!props.isWidget} // Disable dragging in widget mode, destination is fixed
             onDragEnd={updateDestCoord}
-          >
-            <SportsScoreIcon fontSize="large" />
-          </Marker>
+            popup={destPopup}
+            ref={setDestMarkerRef}
+            onClick={(e) => {
+              // If we let the click event propagates to the map, it will
+              // immediately close the popup with `closeOnClick: true`
+              e.originalEvent.stopPropagation();
+              toggleDestPopup();
+            }}
+          />
         )}
       </Map>
+      {isBackdropOpen && (
+        <div className="backdrop">
+          <CircularProgress color="info" />
+        </div>
+      )}
     </div>
   );
 };

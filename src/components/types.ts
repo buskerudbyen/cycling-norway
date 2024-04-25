@@ -12,12 +12,12 @@ export type Elevation = { elevation: number };
 //       from maplibre-gl, should look into the specification and different type
 //       implementations to see what makes the most sense for our use case.
 export type Feature = {
-  type: "feature";
+  type: "Feature";
   geometry: {
     type: "Point";
     coordinates: [number, number];
   };
-  properties: {
+  properties?: {
     id?: string;
     gid?: string;
     layer?: string;
