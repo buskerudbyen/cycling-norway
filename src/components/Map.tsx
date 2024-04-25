@@ -90,9 +90,6 @@ const MapContainer = (props: Props) => {
       if (props.isWidget && url.searchParams.has("from") && dest) {
         const from = parseLngLat(url.searchParams.get("from")!);
         getQuery(from, dest);
-      } else if (url.searchParams.has("from")) {
-        const from = parseLngLat(url.searchParams.get("from")!);
-        updateQueryFromParam(from);
       }
     } else {
       if (url.searchParams.has("from") && url.searchParams.has("to")) {

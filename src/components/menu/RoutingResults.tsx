@@ -130,21 +130,18 @@ const RoutingResults = (props: Props) => {
           </span>
         </div>
       </div>
-      {props.start &&
-        props.start !== null &&
-        props.dest &&
-        props.dest !== null && (
-          <div id="enturRow">
-            <a
-              href="https://entur.no/reiseresultater?…"
-              target="_blank"
-              rel="noreferrer"
-              onClick={enturTravelHandler}
-            >
-              Reis med Entur
-            </a>
-          </div>
-        )}
+      {props.start && props.dest && (
+        <div id="enturRow">
+          <a
+            href="https://entur.no/reiseresultater?…"
+            target="_blank"
+            rel="noreferrer"
+            onClick={enturTravelHandler}
+          >
+            Reis med Entur
+          </a>
+        </div>
+      )}
       <Modal
         id="elevationInfo"
         aria-labelledby="modal-title"
