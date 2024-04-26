@@ -1,7 +1,7 @@
+import { Typography } from "@mui/material";
 import React from "react";
 import { Popup } from "react-map-gl";
-import { Typography } from "@mui/material";
-import { PopupProps } from "../types";
+import type { PopupProps } from "../types";
 
 const ClosedRoadPopup = (props: PopupProps) => (
   <Popup

@@ -1,8 +1,8 @@
-import { CSSProperties, SyntheticEvent, useState } from "react";
-import { createRoot } from "react-dom/client";
 import { Button, Link, TextField, Typography } from "@mui/material";
-import AddressField, { Feature } from "./AddressField";
-import Map from "../../src/components/Map";
+import { type CSSProperties, type SyntheticEvent, useState } from "react";
+import { createRoot } from "react-dom/client";
+import ReactMap from "../../src/components/Map";
+import AddressField, { type Feature } from "./AddressField";
 import "./widget.css";
 
 type WidgetOptions = {
@@ -25,7 +25,7 @@ declare global {
 export const CyclingWidget = (props: WidgetOptions) => {
   return (
     <div style={{ width: props.width ?? 700, height: props.height ?? 450 }}>
-      <Map
+      <ReactMap
         isWidget
         dest={props.dest}
         destDescription={props.destDescription}
@@ -41,12 +41,12 @@ window.CyclingWidget = (options?: WidgetOptions) => {
     root.render(<CyclingWidget {...options} />);
   } else {
     console.error(
-      'Did you remember to add a <div id="cycling-widget"></div> to your HTML?'
+      'Did you remember to add a <div id="cycling-widget"></div> to your HTML?',
     );
   }
 };
 console.log(
-  "Run CyclingWidget({ …options… }) to render the Sykkelveier.no Widget."
+  "Run CyclingWidget({ …options… }) to render the Sykkelveier.no Widget.",
 );
 
 /**

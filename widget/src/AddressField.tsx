@@ -1,5 +1,6 @@
-import React, { useState } from "react";
-import { Autocomplete, debounce, TextField } from "@mui/material";
+import { Autocomplete, TextField, debounce } from "@mui/material";
+import type React from "react";
+import { useState } from "react";
 
 export type Feature = {
   type: "Feature";
@@ -19,7 +20,7 @@ type Data = {
 type Props = {
   onChoose: (
     event: React.SyntheticEvent,
-    value: Feature | string | null
+    value: Feature | string | null,
   ) => void;
 };
 

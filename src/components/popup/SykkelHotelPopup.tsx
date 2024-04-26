@@ -1,6 +1,6 @@
 import React from "react";
 import { Popup } from "react-map-gl";
-import { PopupProps } from "../types";
+import type { PopupProps } from "../types";
 
 const SykkelHotelPopup = (props: PopupProps) => (
   <Popup

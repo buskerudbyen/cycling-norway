@@ -4,6 +4,7 @@
   "private": true,
   "homepage": "https://sykkelveier.no/",
   "devDependencies": {
+    "@biomejs/biome": "1.7.1",
     "@types/mapbox__polyline": "^1.0.5",
     "@types/react": "^18.2.77",
     "@types/react-dom": "^18.2.25",
@@ -37,13 +38,11 @@
     "build": "react-scripts --openssl-legacy-provider build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "biome": "npx @biomejs/biome check --apply ."
   },
   "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
+    "extends": ["react-app", "react-app/jest"]
   },
   "browserslist": {
     "production": [

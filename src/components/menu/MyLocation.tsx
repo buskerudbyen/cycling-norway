@@ -1,6 +1,6 @@
-import React, { MouseEvent } from "react";
-import { CircularProgress, IconButton } from "@mui/material";
 import MyLocationIcon from "@mui/icons-material/MyLocation";
+import { CircularProgress, IconButton } from "@mui/material";
+import React, { type MouseEvent } from "react";
 
 type Props = {
   waitingForGeolocation: boolean;
@@ -16,7 +16,11 @@ const MyLocation = (props: Props) => (
     onClick={props.clickHandler}
     title="Naviger fra din posisjon"
   >
-    {props.waitingForGeolocation ? <CircularProgress size={24} /> : <MyLocationIcon />}
+    {props.waitingForGeolocation ? (
+      <CircularProgress size={24} />
+    ) : (
+      <MyLocationIcon />
+    )}
   </IconButton>
 );
 

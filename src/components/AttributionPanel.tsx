@@ -1,7 +1,7 @@
-import React, { useState } from "react";
-import { MapRef } from "react-map-gl/maplibre";
 import { Box, Button, Modal, Typography } from "@mui/material";
-import { Coords } from "./types";
+import React, { useState } from "react";
+import type { MapRef } from "react-map-gl/maplibre";
+import type { Coords } from "./types";
 
 type Props = {
   dest?: Coords;
@@ -39,7 +39,7 @@ const AttributionPanel = (props: Props) => {
           onClick={() => {
             const thisUrl = new URL(window.location.href);
             const searchParams = new URLSearchParams(
-              thisUrl.searchParams
+              thisUrl.searchParams,
             ).toString();
             const to = props.dest
               ? `&to=${props.dest.lat}%2C${props.dest.lng}`
@@ -80,7 +80,7 @@ const AttributionPanel = (props: Props) => {
         </a>
       </div>
 
-      {/* prettier-ignore */}
+      {/* biome-ignore format: We like it better this way */}
       <Modal id={"privacy-policy"} open={isPolicyPopup} onClose={togglePolicyPopup} aria-labelledby="modal-title">
 				<Box sx={style} className="modal-box">
 					<Typography id="modal-title" variant="h5" component="h1">

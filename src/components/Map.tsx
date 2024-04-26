@@ -1,32 +1,33 @@
+import polyline from "@mapbox/polyline";
+import TripOriginIcon from "@mui/icons-material/TripOrigin";
+import { CircularProgress } from "@mui/material";
+import { MaplibreLegendControl } from "@watergis/maplibre-gl-legend";
+import maplibregl from "maplibre-gl";
+import "maplibre-gl/dist/maplibre-gl.css";
 import React, {
-  SyntheticEvent,
+  type SyntheticEvent,
   useCallback,
   useEffect,
   useMemo,
   useRef,
   useState,
 } from "react";
-import maplibregl from "maplibre-gl";
-import "../styles/map.css";
-import "maplibre-gl/dist/maplibre-gl.css";
-import Menu from "./menu/Menu";
-import MenuWidget from "./menu/MenuWidget";
-import Map, {
+import ReactMap, {
   GeolocateControl,
   Layer,
-  MapRef,
-  MapLayerMouseEvent,
+  type MapRef,
+  type MapLayerMouseEvent,
   Marker,
   NavigationControl,
   ScaleControl,
   Source,
 } from "react-map-gl/maplibre"; // Note: Important to use the MapLibre version of react-map-gl, otherwise we get a lot of incompatible types and weird errors
-import { CircularProgress } from "@mui/material";
-import polyline from "@mapbox/polyline";
-import { MaplibreLegendControl } from "@watergis/maplibre-gl-legend";
-import TripOriginIcon from "@mui/icons-material/TripOrigin";
-import AttributionPanel from "./AttributionPanel";
+import { TARGETS, TARGET_URLS, cities } from "../assets/constants";
 import data from "../assets/snow-plow-example.json";
+import "../styles/map.css";
+import AttributionPanel from "./AttributionPanel";
+import Menu from "./menu/Menu";
+import MenuWidget from "./menu/MenuWidget";
 import InfoPopup, {
   BIKELY_POPUP,
   CLOSED_ROAD_POPUP,
@@ -36,8 +37,13 @@ import InfoPopup, {
   TOILET_POPUP,
   BIKE_ROUTE_POPUP,
 } from "./popup/InfoPopup";
-import { cities, TARGET_URLS, TARGETS } from "../assets/constants";
-import { Coords, Elevation, Feature, InfoPopupType, SnowPlow } from "./types";
+import type {
+  Coords,
+  Elevation,
+  Feature,
+  InfoPopupType,
+  SnowPlow,
+} from "./types";
 
 const INITIAL_LAT = 59.868;
 const INITIAL_LON = 10.322;
@@ -54,13 +60,13 @@ const MapContainer = (props: Props) => {
   const lat = window.location.hash
     ? Number(window.location.hash.split("/")[1])
     : props.dest
-    ? props.dest.lat
-    : INITIAL_LAT;
+      ? props.dest.lat
+      : INITIAL_LAT;
   const lon = window.location.hash
     ? Number(window.location.hash.split("/")[2])
     : props.dest
-    ? props.dest.lng
-    : INITIAL_LON;
+      ? props.dest.lng
+      : INITIAL_LON;
   const zoom = props.zoom ?? INITIAL_ZOOM;
 
   const [start, setStart] = useState<Coords | null>(null);
@@ -84,6 +90,7 @@ const MapContainer = (props: Props) => {
   const wrapper = useRef<HTMLDivElement | null>(null);
   const map = useRef<MapRef | null>(null);
 
+  // biome-ignore lint: Dependency array tested to work well
   useEffect(() => {
     const url = new URL(window.location.href);
     if (props.isWidget) {
@@ -102,7 +109,7 @@ const MapContainer = (props: Props) => {
       } else if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
           getLocation,
-          getRandomCityLocation
+          getRandomCityLocation,
         );
       } else {
         getRandomCityLocation();
@@ -111,7 +118,6 @@ const MapContainer = (props: Props) => {
     // TODO: This click listener for the legend should be moved to the legend
     //       itself instead of being on the wrapper for the whole map.
     wrapper.current?.addEventListener("click", (e) => updateQueryByLegend(e));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const getLocation = (position: {
@@ -124,10 +130,7 @@ const MapContainer = (props: Props) => {
 
   const getRandomCityLocation = () => {
     // if a location is requested by URL, do not change it
-    if (
-      window.location.hash !==
-      "#" + zoom + "/" + INITIAL_LAT + "/" + INITIAL_LON
-    ) {
+    if (window.location.hash !== `#${zoom}/${INITIAL_LAT}/${INITIAL_LON}`) {
       return;
     }
     setTimeout(() => {
@@ -158,7 +161,7 @@ const MapContainer = (props: Props) => {
         onlyRendered: true,
         title: "Tegnforklaring",
       }),
-      "top-right"
+      "top-right",
     );
   };
 
@@ -228,7 +231,7 @@ const MapContainer = (props: Props) => {
   const drawOnMap = (
     roadOk: SimulationFeature[],
     roadWarn: SimulationFeature[],
-    roadSnow: SimulationFeature[]
+    roadSnow: SimulationFeature[],
   ) => {
     if (map.current !== null) {
       // @ts-expect-error TODO: Are we sure setData works here?
@@ -268,7 +271,7 @@ const MapContainer = (props: Props) => {
 
   const onStartChoose = (
     event: SyntheticEvent | null,
-    value: Feature | string | null
+    value: Feature | string | null,
   ) => {
     if (typeof value === "string") {
       console.error("string param not supported yet");
@@ -277,7 +280,7 @@ const MapContainer = (props: Props) => {
     if (value !== null && map.current !== null) {
       const coords = new maplibregl.LngLat(
         value.geometry.coordinates[0],
-        value.geometry.coordinates[1]
+        value.geometry.coordinates[1],
       );
       map.current.setCenter(value.geometry.coordinates);
       updateQueryFromParam(coords);
@@ -291,7 +294,7 @@ const MapContainer = (props: Props) => {
 
   const onDestChoose = (
     event: SyntheticEvent | null,
-    value: Feature | string | null
+    value: Feature | string | null,
   ) => {
     if (typeof value === "string") {
       console.error("string param not supported yet");
@@ -300,7 +303,7 @@ const MapContainer = (props: Props) => {
     if (value !== null && map.current !== null) {
       const coords = new maplibregl.LngLat(
         value.geometry.coordinates[0],
-        value.geometry.coordinates[1]
+        value.geometry.coordinates[1],
       );
       updateQueryToParam(coords);
       if (start !== null) {
@@ -328,7 +331,7 @@ const MapContainer = (props: Props) => {
         event.point,
         {
           layers: ["poi-bicycle-parking-shed"],
-        }
+        },
       );
       const snowPlowFeatures = map.current.queryRenderedFeatures(event.point, {
         layers: [
@@ -345,7 +348,7 @@ const MapContainer = (props: Props) => {
         event.point,
         {
           layers: ["no-snowplowing-winter_road"],
-        }
+        },
       );
       const toiletFeatures = map.current.queryRenderedFeatures(event.point, {
         layers: ["poi-toilets"],
@@ -442,7 +445,7 @@ const MapContainer = (props: Props) => {
     // @ts-expect-error TODO: Are we sure setData works here?
     map.current?.getSource("route")?.setData(geojson);
 
-    const coordinates = features.map((f) => f.geometry.coordinates).flat();
+    const coordinates = features.flatMap((f) => f.geometry.coordinates);
 
     /* Pass the first coordinates in the LineString to `lngLatBounds`,
 		then wrap each coordinate pair in `extend` to include them
@@ -455,7 +458,7 @@ const MapContainer = (props: Props) => {
       // @ts-expect-error TODO: Figure out these types
       (bounds, coord) => bounds.extend(coord),
       // @ts-expect-error TODO: Figure out these types
-      new maplibregl.LngLatBounds(coordinates[0], coordinates[0])
+      new maplibregl.LngLatBounds(coordinates[0], coordinates[0]),
     );
 
     if (lines.length) {
@@ -530,7 +533,7 @@ const MapContainer = (props: Props) => {
         if (tripPatterns.length > 0) {
           const tripPattern = response.data.trip.tripPatterns[0];
           const polyline = tripPattern.legs.map(
-            (l: any) => l.pointsOnLink.points
+            (l: any) => l.pointsOnLink.points,
           ) as [string];
           const startElevation =
             tripPattern.legs[0].elevationProfile[0]?.elevation;
@@ -544,14 +547,14 @@ const MapContainer = (props: Props) => {
           setRouteElevation(endElevation - startElevation);
           setRouteElevationProfile(
             tripPattern.legs[0].elevationProfile.map(
-              (e: Elevation) => e.elevation
-            )
+              (e: Elevation) => e.elevation,
+            ),
           );
           drawPolyline(polyline);
         } else {
           setIsBackdropOpen(false);
           alert(
-            "Beklager vi kunne ikke finne en god sykkelrute til deg. Vennligst prøv rute over kortere avstand eller fra/til et mer sentralt sted."
+            "Beklager vi kunne ikke finne en god sykkelrute til deg. Vennligst prøv rute over kortere avstand eller fra/til et mer sentralt sted.",
           );
         }
       });
@@ -579,7 +582,7 @@ const MapContainer = (props: Props) => {
     } else {
       url.searchParams.set(
         "layers",
-        [...TARGET_URLS.values()].flat().join(",")
+        [...TARGET_URLS.values()].flat().join(","),
       );
       window.history.pushState({}, "", url);
     }
@@ -616,7 +619,7 @@ const MapContainer = (props: Props) => {
 
   // The destination marker can show a popup when clicked
   const [destMarkerRef, setDestMarkerRef] = useState<maplibregl.Marker | null>(
-    null
+    null,
   );
   const DEST_DESCRIPTION_MIN_LENGTH = 3;
   const DEST_DESCRIPTION_MAX_LENGTH = 140;
@@ -637,11 +640,13 @@ const MapContainer = (props: Props) => {
     }
   }, [props.destDescription, destMarkerRef]);
   // Show destination popup when the widget loads
-  useEffect(toggleDestPopup, [toggleDestPopup, destMarkerRef]);
+  useEffect(() => {
+    toggleDestPopup();
+  }, [toggleDestPopup]);
 
   return (
     <div className={`map-wrap ${props.isWidget ? "widget" : ""}`} ref={wrapper}>
-      <Map
+      <ReactMap
         id="map"
         ref={map}
         mapLib={maplibregl}
@@ -883,7 +888,7 @@ const MapContainer = (props: Props) => {
             }}
           />
         )}
-      </Map>
+      </ReactMap>
       {isBackdropOpen && (
         <div className="backdrop">
           <CircularProgress color="info" />

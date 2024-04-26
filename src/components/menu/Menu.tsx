@@ -1,20 +1,21 @@
-import React, { useEffect, useState } from "react";
+import type React from "react";
+import { useEffect, useState } from "react";
+import type { Coords, Feature } from "../types";
 import ButtonHelp from "./ButtonHelp";
-import SearchField from "./SearchField";
-import RoutingResults from "./RoutingResults";
-import { Coords, Feature } from "../types";
-import useResponsiveness from "./useResponsiveness";
-import ButtonToggleMenu from "./ButtonToggleMenu";
 import ButtonResetRoute from "./ButtonResetRoute";
+import ButtonToggleMenu from "./ButtonToggleMenu";
+import RoutingResults from "./RoutingResults";
+import SearchField from "./SearchField";
+import useResponsiveness from "./useResponsiveness";
 
 type Props = {
   chooseStart: (
     event: React.SyntheticEvent,
-    value: Feature | string | null
+    value: Feature | string | null,
   ) => void;
   chooseDest: (
     event: React.SyntheticEvent,
-    value: Feature | string | null
+    value: Feature | string | null,
   ) => void;
   reset: () => void;
   start: Coords | null;
@@ -32,7 +33,7 @@ const Menu = (props: Props) => {
   const [renderFormKeys, setRenderFormKeys] = useState(true);
   const prevWidth = useResponsiveness();
   const [searchFieldsOpen, setSearchFieldsOpen] = useState(
-    window.innerWidth >= 420
+    window.innerWidth >= 420,
   );
   useEffect(() => setSearchFieldsOpen(prevWidth >= 420), [prevWidth]);
 

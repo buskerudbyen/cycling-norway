@@ -1,12 +1,12 @@
 import React from "react";
-import BikelyPopup from "./BikelyPopup";
-import SykkelHotelPopup from "./SykkelHotelPopup";
-import SnowPlowPopup from "./SnowPlowPopup";
-import TunnelPopup from "./TunnelPopup";
-import ClosedRoadPopup from "./ClosedRoadPopup";
-import ToiletPopup from "./ToiletPopup";
+import type { Coords, Point, Route } from "../types";
 import BikeRoutePopup from "./BikeRoutePopup";
-import { Coords, Point, Route } from "../types";
+import BikelyPopup from "./BikelyPopup";
+import ClosedRoadPopup from "./ClosedRoadPopup";
+import SnowPlowPopup from "./SnowPlowPopup";
+import SykkelHotelPopup from "./SykkelHotelPopup";
+import ToiletPopup from "./ToiletPopup";
+import TunnelPopup from "./TunnelPopup";
 
 export const BIKELY_POPUP = "bikely";
 export const SYKKELHOTEL_POPUP = "sykkelhotel";
@@ -46,7 +46,7 @@ type PropsWithRoutes = {
   popupPoint: Route[]; // TODO: Should be named popupRoute since it is not a Point?
 };
 
-// prettier-ignore
+// biome-ignore format: We like it better this way
 export default function InfoPopup({type, popupCoords, onPopupClose, popupPoint}: PropsWithPoint | PropsWithRoutes) {
 	switch (type) {
 		case BIKELY_POPUP: {
