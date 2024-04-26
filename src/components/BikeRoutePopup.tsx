@@ -28,6 +28,7 @@ const BikeRoutePopup = ({popup}: {popup: PopupPropsForBikeRoute}) => {
   };
 
   const getMultipleRoutesPopup = () => {
+    // @ts-expect-error
     const [hasDetails, noDetails] = popup.routes.reduce(
       (arr, cur) => {
         arr[
