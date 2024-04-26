@@ -1,7 +1,3 @@
-import React from "react";
-import { Popup } from "react-map-gl";
-import opening_hours from "opening_hours";
-import { SimpleOpeningHours } from "simple-opening-hours";
 import {
   Table,
   TableBody,
@@ -11,8 +7,12 @@ import {
 } from "@mui/material";
 import moment from "moment";
 import "moment/locale/nb";
+import opening_hours from "opening_hours";
+import React from "react";
+import { Popup } from "react-map-gl";
+import { SimpleOpeningHours } from "simple-opening-hours";
+import type { DayShortName, Point, PopupProps } from "../types";
 import { DAYS } from "./InfoPopup";
-import { DayShortName, Point, PopupProps } from "../types";
 
 const TunnelPopup = (props: PopupProps) => {
   const parseOpeningHours = (oh?: string, startString?: string) => {
@@ -25,6 +25,7 @@ const TunnelPopup = (props: PopupProps) => {
     }
 
     if (oh === "24/7") {
+      // biome-ignore lint:
       return startString + DAYS.get("mo") + " til " + DAYS.get("su") + ".";
     }
 
@@ -37,6 +38,7 @@ const TunnelPopup = (props: PopupProps) => {
     tomorrow.setHours(0, 0, 0, 0);
     const intervals = ohObject.getOpenIntervals(today, tomorrow);
     return (
+      // biome-ignore lint:
       startString +
       getTime(intervals[0][0]) +
       " til " +
@@ -51,35 +53,33 @@ const TunnelPopup = (props: PopupProps) => {
   };
 
   const getMessage = (point: Point) => {
-    if (point.hasOwnProperty("opening_hours")) {
+    if ("opening_hours" in point) {
       return parseOpeningHours(point.opening_hours, "Tunnel åpen ");
     }
 
-    if (point.hasOwnProperty("lit")) {
+    if ("lit" in point) {
       if (point.lit === "no") {
         return "Tunnel uten lys.";
-      } else if (point.lit === "24/7") {
-        return "Tunnel med lys.";
-      } else {
-        return parseOpeningHours(point.lit, "Tunnel med lys kun ");
       }
+      if (point.lit === "24/7") {
+        return "Tunnel med lys.";
+      }
+      return parseOpeningHours(point.lit, "Tunnel med lys kun ");
     }
 
-    if (point.hasOwnProperty("conditional_bike")) {
+    if ("conditional_bike" in point) {
       return parseOpeningHours(point.conditional_bike, "Anlegg stengt kl. ");
     }
   };
 
   const getOpeningHoursValue = (point: Point) => {
-    if (point.hasOwnProperty("opening_hours")) {
+    if ("opening_hours" in point) {
       return point.opening_hours;
     }
-
-    if (point.hasOwnProperty("lit")) {
+    if ("lit" in point) {
       return point.lit;
     }
-
-    if (point.hasOwnProperty("conditional_bike")) {
+    if ("conditional_bike" in point) {
       return point.conditional_bike;
     }
   };
@@ -100,7 +100,7 @@ const TunnelPopup = (props: PopupProps) => {
           <TableRow>
             <TableCell>{value}</TableCell>
             <TableCell>{openingHours[key]}</TableCell>
-          </TableRow>
+          </TableRow>,
         );
       });
 

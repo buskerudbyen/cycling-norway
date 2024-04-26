@@ -1,13 +1,14 @@
-import React, { CSSProperties, useState } from "react";
-import { Autocomplete, debounce, TextField } from "@mui/material";
-import { Feature } from "../types";
+import { Autocomplete, TextField, debounce } from "@mui/material";
+import type React from "react";
+import { type CSSProperties, useState } from "react";
+import type { Feature } from "../types";
 
 type Props = {
   className?: string;
   endAdornment?: JSX.Element;
   onChoose: (
     event: React.SyntheticEvent,
-    value: Feature | string | null
+    value: Feature | string | null,
   ) => void;
   labelText: string;
   rerender: boolean;
@@ -57,7 +58,7 @@ const SearchField = (props: Props) => {
   return (
     <Autocomplete
       className={`autocomplete ${props.className ?? ""}`}
-      key={props.labelText + "-" + props.rerender}
+      key={`${props.labelText}-${props.rerender}`}
       freeSolo
       options={options}
       getOptionLabel={(option) => (option as Feature).properties?.label ?? ""}

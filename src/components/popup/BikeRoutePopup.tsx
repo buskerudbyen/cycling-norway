@@ -1,7 +1,7 @@
+import { Button } from "@mui/material";
 import React, { useState } from "react";
 import { Popup } from "react-map-gl";
-import { Button } from "@mui/material";
-import { Network, PopupPropsForBikeRoute, Route } from "../types";
+import type { Network, PopupPropsForBikeRoute, Route } from "../types";
 
 /**
  * The props.point can have multiple points (is a list). If there are multiple
@@ -10,7 +10,7 @@ import { Network, PopupPropsForBikeRoute, Route } from "../types";
 const BikeRoutePopup = (props: PopupPropsForBikeRoute) => {
   const [multiple, setMultiple] = useState(props.point.length > 1);
   const [chosenRoute, setChosenRoute] = useState<Route | null>(
-    props.point.length === 1 ? props.point[0] : null
+    props.point.length === 1 ? props.point[0] : null,
   );
 
   const chooseRoute = (route: Route) => {
@@ -40,7 +40,7 @@ const BikeRoutePopup = (props: PopupPropsForBikeRoute) => {
         ].push(cur);
         return arr;
       },
-      [[], []] as [hasDetails: Route[], noDetails: Route[]]
+      [[], []] as [hasDetails: Route[], noDetails: Route[]],
     );
 
     const rowsEnabled: JSX.Element[] = [];
@@ -53,8 +53,8 @@ const BikeRoutePopup = (props: PopupPropsForBikeRoute) => {
           size="small"
           onClick={() => chooseRoute(r)}
         >
-          {r.properties["name"]}
-        </Button>
+          {r.properties.name}
+        </Button>,
       );
     }
     const rowsDisabled: JSX.Element[] = [];
@@ -69,7 +69,7 @@ const BikeRoutePopup = (props: PopupPropsForBikeRoute) => {
           onClick={() => chooseRoute(r)}
         >
           {r.properties.name}
-        </Button>
+        </Button>,
       );
     }
 

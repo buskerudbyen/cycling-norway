@@ -1,10 +1,10 @@
-import React, { CSSProperties, MouseEvent, useState } from "react";
-import { Chart as ChartJS, registerables } from "chart.js";
-import { Line } from "react-chartjs-2";
-import { Box, Modal } from "@mui/material";
 import RouteIcon from "@mui/icons-material/Route";
 import TimerIcon from "@mui/icons-material/Timer";
-import { Coords } from "../types";
+import { Box, Modal } from "@mui/material";
+import { Chart as ChartJS, registerables } from "chart.js";
+import React, { type CSSProperties, type MouseEvent, useState } from "react";
+import { Line } from "react-chartjs-2";
+import type { Coords } from "../types";
 
 // Note: To make it easy to understand/edit the graphs we keep some styles here
 // instead of in stylesheets.
@@ -76,6 +76,7 @@ const RoutingResults = (props: Props) => {
           <RouteIcon fontSize="small" htmlColor="gray" />
           <span className="routing-results-display-text">{distance} km</span>
         </div>
+        {/* biome-ignore lint: Rebeka will get back to this */}
         <div
           className="elevation-details-trigger"
           onClick={() => setShowElevationPopup(true)}

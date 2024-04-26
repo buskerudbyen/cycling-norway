@@ -1,5 +1,3 @@
-import React from "react";
-import { Popup } from "react-map-gl";
 import {
   Table,
   TableBody,
@@ -7,9 +5,11 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
+import React from "react";
+import { Popup } from "react-map-gl";
 import { SimpleOpeningHours } from "simple-opening-hours";
+import type { OpeningHourTable, PopupProps } from "../types";
 import { DAYS } from "./InfoPopup";
-import { OpeningHourTable, PopupProps } from "../types";
 
 const ToiletPopup = (props: PopupProps) => {
   const getOpeningHoursTable = () => {
@@ -28,7 +28,7 @@ const ToiletPopup = (props: PopupProps) => {
           <TableRow>
             <TableCell>{value}</TableCell>
             <TableCell>{openingHours[key]}</TableCell>
-          </TableRow>
+          </TableRow>,
         );
       });
 

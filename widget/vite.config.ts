@@ -1,6 +1,6 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-import { resolve } from 'path'
+import { resolve } from "node:path";
+import react from "@vitejs/plugin-react";
+import { defineConfig } from "vite";
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -8,13 +8,13 @@ export default defineConfig({
   build: {
     emptyOutDir: true,
     rollupOptions: {
-      input: resolve(__dirname, './src/widget.tsx'),
+      input: resolve(__dirname, "./src/widget.tsx"),
       output: {
-        format: 'iife',
-        dir: resolve(__dirname, './dist'),
-        entryFileNames: 'widget.js',
-        assetFileNames: 'style.css',
+        format: "iife",
+        dir: resolve(__dirname, "./dist"),
+        entryFileNames: "widget.js",
+        assetFileNames: "style.css",
       },
     },
   },
-})
+});
