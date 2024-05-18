@@ -179,9 +179,20 @@ const RoutingResults = (props: Props) => {
                 x: {
                   display: false,
                 },
+                y: {
+                  ticks: {
+                    callback: function(value, index, ticks) {
+                      if ((value as number)%1 === 0) {
+                        return value;
+                      }
+                      return undefined;
+                    }
+                  }
+                }
               },
             }}
           />
+          <span style={{fontSize: "11px"}}>Kalkuleringen tar ikke høyde for broer. Dette er data vi jobber med å få inn.</span>
         </Box>
       </Modal>
     </div>
