@@ -1,6 +1,7 @@
 import type React from "react";
 import { type MouseEvent, useEffect, useState } from "react";
-import type { Coords, Feature } from "../types";
+import type { Position } from "geojson";
+import type { MapFeature, Trip } from "../types";
 import ButtonHelp from "./ButtonHelp";
 import ButtonResetRoute from "./ButtonResetRoute";
 import ButtonToggleMenu from "./ButtonToggleMenu";
@@ -19,15 +20,12 @@ const geoLocationOptions: PositionOptions = {
 type Props = {
   chooseStart: (
     event: React.SyntheticEvent | null,
-    value: Feature | string | null,
+    value: MapFeature | string | null,
   ) => void;
   reset: () => void;
-  start: Coords | null;
-  dest: Coords | null;
-  duration: number | null;
-  distance: number | null;
-  elevation: number | null;
-  elevationProfile: number[] | null;
+  start: Position | null;
+  dest: Position | null;
+  trip: Trip | null;
 };
 
 /**
@@ -57,7 +55,7 @@ const MenuWidget = (props: Props) => {
     props.chooseStart(null, {
       type: "Feature",
       geometry: { type: "Point", coordinates: [longitude, latitude] },
-    });
+    } as MapFeature);
   };
 
   const errorCallback: PositionErrorCallback = (
@@ -103,10 +101,7 @@ const MenuWidget = (props: Props) => {
           rerender={renderFormKeys}
         />
         <RoutingResults
-          distance={props.distance}
-          duration={props.duration}
-          elevation={props.elevation}
-          elevationProfile={props.elevationProfile}
+          trip={props.trip}
           start={props.start}
           dest={props.dest}
         />

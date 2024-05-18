@@ -4,7 +4,7 @@ import { Box, Modal } from "@mui/material";
 import { Chart as ChartJS, registerables } from "chart.js";
 import React, { type CSSProperties, type MouseEvent, useState } from "react";
 import { Line } from "react-chartjs-2";
-import type { Coords } from "../types";
+import type { Trip } from "../types";
 
 // Note: To make it easy to understand/edit the graphs we keep some styles here
 // instead of in stylesheets.
@@ -31,12 +31,9 @@ const modalGraphStyle = {
 };
 
 type Props = {
-  duration: number | null;
-  distance: number | null;
-  elevation: number | null;
-  elevationProfile: number[] | null;
-  start?: Coords | null;
-  dest?: Coords | null;
+  trip: Trip | null;
+  start?: number[] | null;
+  dest?: number[] | null;
 };
 
 const RoutingResults = (props: Props) => {
@@ -44,23 +41,23 @@ const RoutingResults = (props: Props) => {
 
   ChartJS.register(...registerables);
 
-  if (props.duration === null || props.distance === null) return null;
+  if (props.trip === null) return null;
 
   const duration =
-    props.duration !== null
-      ? new Date(props.duration * 1000).toISOString().slice(11, 16)
+    props.trip.duration !== null
+      ? new Date(props.trip.duration * 1000).toISOString().slice(11, 16)
       : "0:00";
   const distance =
-    props.distance !== null ? (props.distance / 1000).toFixed(1) : "0";
-  const elevation = props.elevation !== null ? props.elevation.toFixed(0) : "0";
+    props.trip.distance !== null ? (props.trip.distance / 1000).toFixed(1) : "0";
+  const elevation = props.trip.elevation !== null ? props.trip.elevation.toFixed(0) : "0";
 
   const enturTravelHandler = (e: MouseEvent) => {
     e.preventDefault();
     // The handler is not rendered unless start/dest is set
     const enturUrl = `https://entur.no/reiseresultater?transportModes=rail%2Ctram%2Cbus%2Ccoach%2Cwater%2Ccar_ferry%2Cmetro%2Cflytog%2Cflybuss&date=${Date.now()}&tripMode=oneway&walkSpeed=1.3&minimumTransferTime=120&timepickerMode=departAfter&startLat=${
-      props.start!.lat
-    }&startLon=${props.start!.lng}&stopLat=${props.dest!.lat}&stopLon=${
-      props.dest!.lng
+      props.start![0]
+    }&startLon=${props.start![1]}&stopLat=${props.dest![0]}&stopLon=${
+      props.dest![1]
     }`;
     window.open(enturUrl, "_blank")?.focus();
   };
@@ -88,10 +85,10 @@ const RoutingResults = (props: Props) => {
               height={`${SPARKLINE_HEIGHT}px`}
               datasetIdKey="id"
               data={{
-                labels: props.elevationProfile ?? [],
+                labels: props.trip.elevationProfile ?? [],
                 datasets: [
                   {
-                    data: props.elevationProfile,
+                    data: props.trip.elevationProfile,
                     fill: "origin",
                     borderColor: "#000000",
                     borderWidth: 1,
@@ -154,10 +151,10 @@ const RoutingResults = (props: Props) => {
             datasetIdKey="id"
             className="elevation-details-modal"
             data={{
-              labels: props.elevationProfile ?? [],
+              labels: props.trip.elevationProfile ?? [],
               datasets: [
                 {
-                  data: props.elevationProfile,
+                  data: props.trip.elevationProfile,
                   fill: "origin",
                   borderColor: "#000000",
                   borderWidth: 1,

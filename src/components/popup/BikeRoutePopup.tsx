@@ -1,19 +1,19 @@
 import { Button } from "@mui/material";
 import React, { useState } from "react";
 import { Popup } from "react-map-gl";
-import type { Network, PopupPropsForBikeRoute, Route } from "../types";
+import type { Network, PopupPropsForBikeRoute, RouteProperties } from "../types";
 
 /**
- * The props.point can have multiple points (is a list). If there are multiple
+ * The routes can have multiple points (is a list). If there are multiple
  * elements, the user has to choose one to see its details.
  */
-const BikeRoutePopup = (props: PopupPropsForBikeRoute) => {
-  const [multiple, setMultiple] = useState(props.point.length > 1);
-  const [chosenRoute, setChosenRoute] = useState<Route | null>(
-    props.point.length === 1 ? props.point[0] : null,
+const BikeRoutePopup = ({popup}: {popup: PopupPropsForBikeRoute}) => {
+  const [multiple, setMultiple] = useState(popup.routes.length > 1);
+  const [chosenRoute, setChosenRoute] = useState<RouteProperties | null>(
+    popup.routes.length === 1 ? popup.routes[0] : null,
   );
 
-  const chooseRoute = (route: Route) => {
+  const chooseRoute = (route: RouteProperties) => {
     setMultiple(false);
     setChosenRoute(route);
   };
@@ -28,7 +28,8 @@ const BikeRoutePopup = (props: PopupPropsForBikeRoute) => {
   };
 
   const getMultipleRoutesPopup = () => {
-    const [hasDetails, noDetails] = props.point.reduce(
+    // @ts-expect-error
+    const [hasDetails, noDetails] = popup.routes.reduce(
       (arr, cur) => {
         arr[
           cur.properties.from ||
@@ -40,7 +41,7 @@ const BikeRoutePopup = (props: PopupPropsForBikeRoute) => {
         ].push(cur);
         return arr;
       },
-      [[], []] as [hasDetails: Route[], noDetails: Route[]],
+      [[], []] as [hasDetails: RouteProperties[], noDetails: RouteProperties[]],
     );
 
     const rowsEnabled: JSX.Element[] = [];
@@ -75,9 +76,9 @@ const BikeRoutePopup = (props: PopupPropsForBikeRoute) => {
 
     return (
       <Popup
-        latitude={props.lngLat.lat}
-        longitude={props.lngLat.lng}
-        onClose={props.onClose}
+        latitude={popup.lngLat[1]}
+        longitude={popup.lngLat[0]}
+        onClose={popup.onClose}
       >
         <h4>Flere sykkelruter funnet. Vennligst velg:</h4>
         {rowsEnabled}
@@ -94,9 +95,9 @@ const BikeRoutePopup = (props: PopupPropsForBikeRoute) => {
 
     return (
       <Popup
-        latitude={props.lngLat.lat}
-        longitude={props.lngLat.lng}
-        onClose={props.onClose}
+        latitude={popup.lngLat[1]}
+        longitude={popup.lngLat[0]}
+        onClose={popup.onClose}
       >
         <h3>
           {route.name} {getNetwork(route.network)}

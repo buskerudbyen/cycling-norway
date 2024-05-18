@@ -11,10 +11,10 @@ import opening_hours from "opening_hours";
 import React from "react";
 import { Popup } from "react-map-gl";
 import { SimpleOpeningHours } from "simple-opening-hours";
-import type { DayShortName, Point, PopupProps } from "../types";
+import type { DayShortName, PopupProps, PopupProperties } from "../types";
 import { DAYS } from "./InfoPopup";
 
-const TunnelPopup = (props: PopupProps) => {
+const TunnelPopup = ({popup}: {popup: PopupProps}) => {
   const parseOpeningHours = (oh?: string, startString?: string) => {
     if (oh === undefined || startString === undefined) {
       return;
@@ -52,7 +52,7 @@ const TunnelPopup = (props: PopupProps) => {
     return moment(fullDate).format("LT");
   };
 
-  const getMessage = (point: Point) => {
+  const getMessage = (point: PopupProperties) => {
     if ("opening_hours" in point) {
       return parseOpeningHours(point.opening_hours, "Tunnel åpen ");
     }
@@ -72,7 +72,7 @@ const TunnelPopup = (props: PopupProps) => {
     }
   };
 
-  const getOpeningHoursValue = (point: Point) => {
+  const getOpeningHoursValue = (point: PopupProperties) => {
     if ("opening_hours" in point) {
       return point.opening_hours;
     }
@@ -84,7 +84,7 @@ const TunnelPopup = (props: PopupProps) => {
     }
   };
 
-  const getOpeningHoursTable = (point: Point) => {
+  const getOpeningHoursTable = (point: PopupProperties) => {
     const oh = getOpeningHoursValue(point);
 
     // If there are multiple rules.
@@ -115,12 +115,12 @@ const TunnelPopup = (props: PopupProps) => {
 
   return (
     <Popup
-      latitude={props.lngLat.lat}
-      longitude={props.lngLat.lng}
-      onClose={props.onClose}
+      latitude={popup.lngLat[0]}
+      longitude={popup.lngLat[1]}
+      onClose={popup.onClose}
     >
-      <Typography gutterBottom>{getMessage(props.point)}</Typography>
-      {getOpeningHoursTable(props.point)}
+      <Typography gutterBottom>{getMessage(popup.point)}</Typography>
+      {getOpeningHoursTable(popup.point)}
     </Popup>
   );
 };

@@ -37,13 +37,9 @@ import InfoPopup, {
   TOILET_POPUP,
   BIKE_ROUTE_POPUP,
 } from "./popup/InfoPopup";
-import type {
-  Coords,
-  Elevation,
-  Feature,
-  InfoPopupType,
-  SnowPlow,
-} from "./types";
+import type { Elevation, SnowPlow, SnowPlowCollection, SnowPlowFeature, MapFeature, Trip, PopupProps, PopupPropsForBikeRoute } from "./types";
+import type { GeoJSONSource } from "maplibre-gl";
+import type { GeoJSON, Position } from "geojson";
 
 const INITIAL_LAT = 59.868;
 const INITIAL_LON = 10.322;
@@ -51,7 +47,7 @@ const INITIAL_ZOOM = 8;
 
 type Props = {
   isWidget?: boolean;
-  dest?: Coords;
+  dest?: number[];
   destDescription?: string;
   zoom?: number;
 };
@@ -60,31 +56,20 @@ const MapContainer = (props: Props) => {
   const lat = window.location.hash
     ? Number(window.location.hash.split("/")[1])
     : props.dest
-      ? props.dest.lat
+      ? props.dest[0]
       : INITIAL_LAT;
   const lon = window.location.hash
     ? Number(window.location.hash.split("/")[2])
     : props.dest
-      ? props.dest.lng
+      ? props.dest[1]
       : INITIAL_LON;
   const zoom = props.zoom ?? INITIAL_ZOOM;
 
-  const [start, setStart] = useState<Coords | null>(null);
-  const [dest, setDest] = useState<Coords | null>(props.dest ?? null);
+  const [start, setStart] = useState<Position | null>(null);
+  const [dest, setDest] = useState<Position | null>(props.dest ?? null);
   const [isBackdropOpen, setIsBackdropOpen] = useState(false);
-  // TODO: These three popup states are related and can be combined into one
-  //       state object like `const [popup, setPopup] = useState<PopupType|null>(null)`
-  const [popupType, setPopupType] = useState<InfoPopupType | null>(null);
-  const [popupCoords, setPopupCoords] = useState<Coords | null>(null);
-  const [popupPoint, setPopupPoint] = useState<any | null>(null); // TODO: Use a type instead of any
-  // TODO: These four route states are related and can be combined into one
-  //       state object like `const [trip, setTrip] = useState<TripType|null>(null)`
-  const [routeDuration, setRouteDuration] = useState<number | null>(null);
-  const [routeDistance, setRouteDistance] = useState<number | null>(null);
-  const [routeElevation, setRouteElevation] = useState<number | null>(null);
-  const [routeElevationProfile, setRouteElevationProfile] = useState<
-    number[] | null
-  >(null);
+  const [popup, setPopup] = useState<PopupProps | PopupPropsForBikeRoute | null>(null);
+  const [trip, setTrip] = useState<Trip | null>(null);
   const [simulateLayer, setSimulateLayer] = useState<SnowPlow | null>(null);
 
   const wrapper = useRef<HTMLDivElement | null>(null);
@@ -180,14 +165,14 @@ const MapContainer = (props: Props) => {
           const roadSnow = [];
           for (const feature of jsonResponse.features) {
             if (jsonResponse.isSnowing) {
-              roadSnow.push(feature);
+              roadSnow.push(feature as SnowPlowFeature);
             } else if (
               feature.properties.isOld === undefined ||
               feature.properties.isOld
             ) {
-              roadWarn.push(feature);
+              roadWarn.push(feature as SnowPlowFeature);
             } else {
-              roadOk.push(feature);
+              roadOk.push(feature as SnowPlowFeature);
             }
           }
           drawOnMap(roadOk, roadWarn, roadSnow);
@@ -198,29 +183,22 @@ const MapContainer = (props: Props) => {
     }
   };
 
-  // Simulate snow plow data
-  type SimulationFeature = {
-    type: string;
-    geometry: {
-      type: string;
-      coordinates: number[][];
-    };
-  };
   const drawSimulation = () => {
-    let roadOk: SimulationFeature[] = [];
-    let roadWarn: SimulationFeature[] = [];
-    let roadSnow: SimulationFeature[] = [];
+    let roadOk: SnowPlowFeature[] = [];
+    let roadWarn: SnowPlowFeature[] = [];
+    let roadSnow: SnowPlowFeature[] = [];
+    const dataCollection = data as SnowPlowCollection;
     if (simulateLayer === null) {
       // all white
-      roadSnow = data.features;
+      roadSnow = dataCollection.features;
       setSimulateLayer("snow-plow-snow");
     } else if (simulateLayer === "snow-plow-snow") {
       // all orange
-      roadWarn = data.features;
+      roadWarn = dataCollection.features;
       setSimulateLayer("snow-plow-warn");
     } else if (simulateLayer === "snow-plow-warn") {
       // all green
-      roadOk = data.features;
+      roadOk = dataCollection.features;
       setSimulateLayer("snow-plow-ok");
     } else {
       // empty all
@@ -228,24 +206,25 @@ const MapContainer = (props: Props) => {
     }
     drawOnMap(roadOk, roadWarn, roadSnow);
   };
+
   const drawOnMap = (
-    roadOk: SimulationFeature[],
-    roadWarn: SimulationFeature[],
-    roadSnow: SimulationFeature[],
+    roadOk: SnowPlowFeature[],
+    roadWarn: SnowPlowFeature[],
+    roadSnow: SnowPlowFeature[],
   ) => {
     if (map.current !== null) {
-      // @ts-expect-error TODO: Are we sure setData works here?
-      map.current.getSource("snow-plow-ok")?.setData({
+      const okRoadSource = map.current.getSource("snow-plow-ok") as GeoJSONSource;
+      okRoadSource.setData({
         type: "FeatureCollection",
         features: roadOk,
       });
-      // @ts-expect-error TODO: Are we sure setData works here?
-      map.current.getSource("snow-plow-warn")?.setData({
+      const warnRoadSource = map.current.getSource("snow-plow-warn") as GeoJSONSource;
+      warnRoadSource.setData({
         type: "FeatureCollection",
         features: roadWarn,
       });
-      // @ts-expect-error TODO: Are we sure setData works here?
-      map.current.getSource("snow-plow-snow")?.setData({
+      const snowyRoadSource = map.current.getSource("snow-plow-snow") as GeoJSONSource;
+      snowyRoadSource.setData({
         type: "FeatureCollection",
         features: roadSnow,
       });
@@ -257,9 +236,7 @@ const MapContainer = (props: Props) => {
     if (!props.isWidget) {
       setDest(null);
     }
-    setRouteDuration(null);
-    setRouteDistance(null);
-    setRouteElevation(null);
+    setTrip(null);
 
     const url = new URL(window.location.href);
     url.searchParams.delete("from");
@@ -271,7 +248,7 @@ const MapContainer = (props: Props) => {
 
   const onStartChoose = (
     event: SyntheticEvent | null,
-    value: Feature | string | null,
+    value: MapFeature | string | null,
   ) => {
     if (typeof value === "string") {
       console.error("string param not supported yet");
@@ -282,10 +259,10 @@ const MapContainer = (props: Props) => {
         value.geometry.coordinates[0],
         value.geometry.coordinates[1],
       );
-      map.current.setCenter(value.geometry.coordinates);
-      updateQueryFromParam(coords);
+      map.current.setCenter(coords);
+      updateQueryFromParam(value.geometry.coordinates);
       if (dest !== null) {
-        getQuery(coords, dest);
+        getQuery(value.geometry.coordinates, dest);
       }
     } else {
       resetRoute();
@@ -294,17 +271,17 @@ const MapContainer = (props: Props) => {
 
   const onDestChoose = (
     event: SyntheticEvent | null,
-    value: Feature | string | null,
+    value: MapFeature | string | null,
   ) => {
     if (typeof value === "string") {
       console.error("string param not supported yet");
       return;
     }
     if (value !== null && map.current !== null) {
-      const coords = new maplibregl.LngLat(
+      const coords = [
         value.geometry.coordinates[0],
         value.geometry.coordinates[1],
-      );
+      ] as Position;
       updateQueryToParam(coords);
       if (start !== null) {
         getQuery(start, coords);
@@ -316,11 +293,11 @@ const MapContainer = (props: Props) => {
 
   const parseLngLat = (s: string) => {
     const [lat, lng] = s.split(",").map((n) => Number(n));
-    return { lng, lat };
+    return [ lng, lat ] as Position;
   };
 
-  const lngLatToString = (lngLat: { lat: number; lng: number }) =>
-    `${lngLat.lat.toFixed(5)},${lngLat.lng.toFixed(5)}`;
+  const lngLatToString = (lngLat: Position) =>
+    `${lngLat[1].toFixed(5)},${lngLat[0].toFixed(5)}`;
 
   const onMapClick = (event: MapLayerMouseEvent) => {
     if (map.current !== null) {
@@ -362,70 +339,84 @@ const MapContainer = (props: Props) => {
         ],
       });
       if (bikelyFeatures.length > 0) {
-        const feature = bikelyFeatures[0].properties;
-        setPopupType(BIKELY_POPUP);
-        setPopupCoords(event.lngLat);
-        setPopupPoint(feature);
+        setPopup({
+          type: BIKELY_POPUP,
+          onClose: onPopupClose,
+          lngLat: [event.lngLat.lng, event.lngLat.lat],
+          point: bikelyFeatures[0].properties
+        });
       } else if (sykkelHotelFeatures.length > 0) {
-        const feature = sykkelHotelFeatures[0].properties;
-        setPopupType(SYKKELHOTEL_POPUP);
-        setPopupCoords(event.lngLat);
-        setPopupPoint(feature);
+        setPopup({
+          type: SYKKELHOTEL_POPUP,
+          onClose: onPopupClose,
+          lngLat: [event.lngLat.lng, event.lngLat.lat],
+          point: sykkelHotelFeatures[0].properties
+        });
       } else if (snowPlowFeatures.length > 0) {
-        const feature = snowPlowFeatures[0].properties;
-        setPopupType(SNOWPLOW_POPUP);
-        setPopupCoords(event.lngLat);
-        setPopupPoint(feature);
+        setPopup({
+          type: SNOWPLOW_POPUP,
+          onClose: onPopupClose,
+          lngLat: [event.lngLat.lng, event.lngLat.lat],
+          point: snowPlowFeatures[0].properties
+        });
       } else if (tunnelFeatures.length > 0) {
-        const feature = tunnelFeatures[0].properties;
-        setPopupType(TUNNEL_POPUP);
-        setPopupCoords(event.lngLat);
-        setPopupPoint(feature);
+        setPopup({
+          type: TUNNEL_POPUP,
+          onClose: onPopupClose,
+          lngLat: [event.lngLat.lng, event.lngLat.lat],
+          point: tunnelFeatures[0].properties
+        });
       } else if (closedRoadFeatures.length > 0) {
-        const feature = closedRoadFeatures[0].properties;
-        setPopupType(CLOSED_ROAD_POPUP);
-        setPopupCoords(event.lngLat);
-        setPopupPoint(feature);
+        setPopup({
+          type: CLOSED_ROAD_POPUP,
+          onClose: onPopupClose,
+          lngLat: [event.lngLat.lng, event.lngLat.lat],
+          point: closedRoadFeatures[0].properties
+        });
       } else if (toiletFeatures.length > 0) {
-        const feature = toiletFeatures[0].properties;
-        setPopupType(TOILET_POPUP);
-        setPopupCoords(event.lngLat);
-        setPopupPoint(feature);
+        setPopup({
+          type: TOILET_POPUP,
+          onClose: onPopupClose,
+          lngLat: [event.lngLat.lng, event.lngLat.lat],
+          point: toiletFeatures[0].properties
+        });
       } else if (bikeRouteFeatures.length > 0) {
-        setPopupType(BIKE_ROUTE_POPUP);
-        setPopupCoords(event.lngLat);
-        setPopupPoint(bikeRouteFeatures);
+        setPopup({
+          type: BIKE_ROUTE_POPUP,
+          onClose: onPopupClose,
+          lngLat: [event.lngLat.lng, event.lngLat.lat],
+          routes: bikeRouteFeatures.map(e => e.properties)
+        });
       } else {
-        addMarker(event);
+        addMarker([event.lngLat.lng, event.lngLat.lat]);
       }
     }
   };
 
   const onPopupClose = () => {
-    setPopupType(null);
-    setPopupPoint(null);
+    setPopup(null);
   };
 
-  const addMarker = (event: MapLayerMouseEvent) => {
+  const addMarker = (lngLat: Position) => {
     if (start !== null && dest !== null) {
       return;
     }
     if (start === null && dest !== null) {
-      updateQueryFromParam(event.lngLat);
-      getQuery(event.lngLat, dest);
+      updateQueryFromParam(lngLat);
+      getQuery(lngLat, dest);
     } else if (start === null) {
-      updateQueryFromParam(event.lngLat);
+      updateQueryFromParam(lngLat);
     } else {
-      getQuery(start, event.lngLat);
+      getQuery(start, lngLat);
     }
   };
 
-  const updateStartCoord = (event: { lngLat: Coords }) => {
-    getQuery(event.lngLat, dest);
+  const updateStartCoord = (lngLat: Position) => {
+    getQuery(lngLat, dest);
   };
 
-  const updateDestCoord = (event: { lngLat: Coords }) => {
-    getQuery(start, event.lngLat);
+  const updateDestCoord = (lngLat: Position) => {
+    getQuery(start, lngLat);
   };
 
   const drawPolyline = (lines: string[]) => {
@@ -442,8 +433,9 @@ const MapContainer = (props: Props) => {
       type: "FeatureCollection",
       features,
     };
-    // @ts-expect-error TODO: Are we sure setData works here?
-    map.current?.getSource("route")?.setData(geojson);
+
+    const routeSource = map.current?.getSource("route") as GeoJSONSource;
+    routeSource.setData(geojson as GeoJSON);
 
     const coordinates = features.flatMap((f) => f.geometry.coordinates);
 
@@ -468,14 +460,14 @@ const MapContainer = (props: Props) => {
     }
   };
 
-  const updateQueryFromParam = (start: Coords) => {
+  const updateQueryFromParam = (start: Position) => {
     const url = new URL(window.location.href);
     url.searchParams.set("from", lngLatToString(start));
     window.history.pushState({}, "", url);
     setStart(start);
   };
 
-  const updateQueryToParam = (dest: Coords) => {
+  const updateQueryToParam = (dest: Position) => {
     if (!props.isWidget) {
       const url = new URL(window.location.href);
       url.searchParams.set("to", lngLatToString(dest));
@@ -484,7 +476,7 @@ const MapContainer = (props: Props) => {
     }
   };
 
-  const getQuery = (start: Coords | null, dest: Coords | null) => {
+  const getQuery = (start: Position | null, dest: Position | null) => {
     if (start === null || dest === null) {
       return;
     }
@@ -500,8 +492,8 @@ const MapContainer = (props: Props) => {
 					{
 					  trip(
 					    modes: { directMode: bicycle, accessMode: bicycle, egressMode: bicycle, transportModes: { transportMode: water }},
-					    from: {coordinates: {latitude: ${start.lat}, longitude: ${start.lng} }},
-					    to: {coordinates: {latitude: ${dest.lat}, longitude: ${dest.lng}}}
+					    from: {coordinates: {latitude: ${start[1]}, longitude: ${start[0]} }},
+					    to: {coordinates: {latitude: ${dest[1]}, longitude: ${dest[0]}}}
 					    bicycleOptimisationMethod: triangle
 					    triangleFactors: {safety: 0.5, slope: 0.2, time: 0.3}
 					    bikeSpeed: 7
@@ -542,14 +534,12 @@ const MapContainer = (props: Props) => {
             lastLeg?.elevationProfile[lastLeg?.elevationProfile.length - 1]
               .elevation;
           setIsBackdropOpen(false);
-          setRouteDuration(response.data.trip.tripPatterns[0].duration);
-          setRouteDistance(response.data.trip.tripPatterns[0].distance);
-          setRouteElevation(endElevation - startElevation);
-          setRouteElevationProfile(
-            tripPattern.legs[0].elevationProfile.map(
-              (e: Elevation) => e.elevation,
-            ),
-          );
+          setTrip({
+            duration: response.data.trip.tripPatterns[0].duration,
+            distance: response.data.trip.tripPatterns[0].distance,
+            elevation: endElevation - startElevation,
+            elevationProfile: tripPattern.legs[0].elevationProfile.map((e: Elevation) => e.elevation)
+          });
           drawPolyline(polyline);
         } else {
           setIsBackdropOpen(false);
@@ -802,13 +792,8 @@ const MapContainer = (props: Props) => {
             "line-width": 5,
           }}
         />
-        {popupType !== null && popupCoords !== null && (
-          <InfoPopup
-            type={popupType}
-            popupCoords={popupCoords}
-            onPopupClose={onPopupClose}
-            popupPoint={popupPoint}
-          />
+        {popup !== null && (
+          <InfoPopup popup={popup} />
         )}
         {props.isWidget ? (
           <MenuWidget
@@ -816,10 +801,7 @@ const MapContainer = (props: Props) => {
             reset={resetRoute}
             start={start}
             dest={dest}
-            duration={routeDuration}
-            distance={routeDistance}
-            elevation={routeElevation}
-            elevationProfile={routeElevationProfile}
+            trip={trip}
           />
         ) : (
           <Menu
@@ -828,10 +810,7 @@ const MapContainer = (props: Props) => {
             reset={resetRoute}
             start={start}
             dest={dest}
-            duration={routeDuration}
-            distance={routeDistance}
-            elevation={routeElevation}
-            elevationProfile={routeElevationProfile}
+            trip={trip}
           />
         )}
         <GeolocateControl
@@ -860,24 +839,24 @@ const MapContainer = (props: Props) => {
         </div>
         {start && (
           <Marker
-            longitude={start?.lng}
-            latitude={start?.lat}
+            longitude={start[0]}
+            latitude={start[1]}
             color="white"
             anchor="center"
             draggable
-            onDragEnd={updateStartCoord}
+            onDragEnd={(e) => updateStartCoord([e.lngLat.lng, e.lngLat.lat])}
           >
             <TripOriginIcon />
           </Marker>
         )}
         {dest && (
           <Marker
-            longitude={dest?.lng}
-            latitude={dest?.lat}
+            longitude={dest[0]}
+            latitude={dest[1]}
             anchor="center"
             color="red"
             draggable={!props.isWidget} // Disable dragging in widget mode, destination is fixed
-            onDragEnd={updateDestCoord}
+            onDragEnd={(e) => updateDestCoord([e.lngLat.lng, e.lngLat.lat])}
             popup={destPopup}
             ref={setDestMarkerRef}
             onClick={(e) => {

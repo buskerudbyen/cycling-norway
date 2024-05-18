@@ -1,10 +1,9 @@
 import { Box, Button, Modal, Typography } from "@mui/material";
 import React, { useState } from "react";
 import type { MapRef } from "react-map-gl/maplibre";
-import type { Coords } from "./types";
 
 type Props = {
-  dest?: Coords;
+  dest?: number[];
   isWidget?: boolean;
   mapRef: {
     current: MapRef | null;
@@ -42,7 +41,7 @@ const AttributionPanel = (props: Props) => {
               thisUrl.searchParams,
             ).toString();
             const to = props.dest
-              ? `&to=${props.dest.lat}%2C${props.dest.lng}`
+              ? `&to=${props.dest[0]}%2C${props.dest[1]}`
               : "";
             const newUrl = `https://sykkelveier.no/?${searchParams}${to}#${props.mapRef?.current?.getZoom()}/${
               props.mapRef?.current?.getCenter().lat

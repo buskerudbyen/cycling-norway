@@ -3,11 +3,11 @@ import React from "react";
 import { Popup } from "react-map-gl";
 import type { PopupProps } from "../types";
 
-const ClosedRoadPopup = (props: PopupProps) => (
+const ClosedRoadPopup = ({popup}: {popup: PopupProps}) => (
   <Popup
-    latitude={props.lngLat.lat}
-    longitude={props.lngLat.lng}
-    onClose={props.onClose}
+    latitude={popup.lngLat[1]}
+    longitude={popup.lngLat[0]}
+    onClose={popup.onClose}
   >
     <Typography>
       Usikkert vinterføre. Anlegg er merket med at det ikke måkes om vinteren.

@@ -6,7 +6,7 @@ import AddressField, { type Feature } from "./AddressField";
 import "./widget.css";
 
 type WidgetOptions = {
-  dest?: { lat: number; lng: number };
+  dest?: number[];
   destDescription?: string;
   zoom?: number;
   width?: CSSProperties["width"];
@@ -144,7 +144,7 @@ export const Demo = () => {
             ?.style.setProperty("height", "350px");
           // Load the widget
           window.CyclingWidget({
-            dest: { lat, lng },
+            dest: [ lat, lng ],
             destDescription,
             zoom,
             width: "100%",

@@ -3,12 +3,12 @@ import React from "react";
 import { Popup } from "react-map-gl";
 import type { PopupProps } from "../types";
 
-const SnowPlowPopup = (props: PopupProps) => (
+const SnowPlowPopup = ({popup}: {popup: PopupProps}) => (
   <Popup
     maxWidth="280px"
-    latitude={props.lngLat.lat}
-    longitude={props.lngLat.lng}
-    onClose={props.onClose}
+    latitude={popup.lngLat[1]}
+    longitude={popup.lngLat[0]}
+    onClose={popup.onClose}
   >
     <h3>Vinterbrøytning av sykkelveier (test)</h3>
     <table style={{ borderCollapse: "collapse" }}>

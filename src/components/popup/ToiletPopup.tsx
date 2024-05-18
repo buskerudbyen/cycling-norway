@@ -11,11 +11,11 @@ import { SimpleOpeningHours } from "simple-opening-hours";
 import type { OpeningHourTable, PopupProps } from "../types";
 import { DAYS } from "./InfoPopup";
 
-const ToiletPopup = (props: PopupProps) => {
+const ToiletPopup = ({popup}: {popup: PopupProps}) => {
   const getOpeningHoursTable = () => {
-    if (props.point.opening_hours === undefined) return null;
+    if (popup.point.opening_hours === undefined) return null;
 
-    const oh = props.point.opening_hours;
+    const oh = popup.point.opening_hours;
 
     // If there are multiple rules.
     if (oh.split(";").length - 1 > 1) {
@@ -43,9 +43,9 @@ const ToiletPopup = (props: PopupProps) => {
 
   return (
     <Popup
-      latitude={props.lngLat.lat}
-      longitude={props.lngLat.lng}
-      onClose={props.onClose}
+      latitude={popup.lngLat[0]}
+      longitude={popup.lngLat[1]}
+      onClose={popup.onClose}
     >
       <Typography>
         Alle toaletter kan ha åpingstider, der for eksempel bygget ellers er
@@ -53,7 +53,7 @@ const ToiletPopup = (props: PopupProps) => {
         vedlikehold, etc.).
       </Typography>
       <Typography>
-        Betaling: {props.point.fee === "yes" ? "ja" : "nei"}
+        Betaling: {popup.point.fee === "yes" ? "ja" : "nei"}
       </Typography>
       {getOpeningHoursTable()}
     </Popup>

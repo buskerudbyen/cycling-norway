@@ -1,6 +1,6 @@
 import type React from "react";
 import { useEffect, useState } from "react";
-import type { Coords, Feature } from "../types";
+import type { MapFeature, Trip } from "../types";
 import ButtonHelp from "./ButtonHelp";
 import ButtonResetRoute from "./ButtonResetRoute";
 import ButtonToggleMenu from "./ButtonToggleMenu";
@@ -11,19 +11,16 @@ import useResponsiveness from "./useResponsiveness";
 type Props = {
   chooseStart: (
     event: React.SyntheticEvent,
-    value: Feature | string | null,
+    value: MapFeature | string | null,
   ) => void;
   chooseDest: (
     event: React.SyntheticEvent,
-    value: Feature | string | null,
+    value: MapFeature | string | null,
   ) => void;
   reset: () => void;
-  start: Coords | null;
-  dest: Coords | null;
-  duration: number | null;
-  distance: number | null;
-  elevation: number | null;
-  elevationProfile: number[] | null;
+  start: number[] | null;
+  dest: number[] | null;
+  trip: Trip | null;
 };
 
 /**
@@ -71,10 +68,7 @@ const Menu = (props: Props) => {
           />
         </div>
         <RoutingResults
-          distance={props.distance}
-          duration={props.duration}
-          elevation={props.elevation}
-          elevationProfile={props.elevationProfile}
+          trip={props.trip}
           start={props.start}
           dest={props.dest}
         />
