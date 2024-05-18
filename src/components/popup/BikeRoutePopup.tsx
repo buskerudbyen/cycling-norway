@@ -18,7 +18,7 @@ const BikeRoutePopup = ({popup}: {popup: PopupPropsForBikeRoute}) => {
     setChosenRoute(route);
   };
 
-  const getNetwork = (network: Network) => {
+  const getNetwork = (network: Network | undefined) => {
     if (network === "international") return "(internasjonal)";
     if (network === "national") return "(nasjonal)";
     if (network === "regional") return "(regional)";
@@ -32,10 +32,10 @@ const BikeRoutePopup = ({popup}: {popup: PopupPropsForBikeRoute}) => {
     const [hasDetails, noDetails] = popup.routes.reduce(
       (arr, cur) => {
         arr[
-          cur.properties.from ||
-          cur.properties.to ||
-          cur.properties.description ||
-          cur.properties.website
+          cur.from ||
+          cur.to ||
+          cur.description ||
+          cur.website
             ? 0
             : 1
         ].push(cur);
@@ -48,28 +48,31 @@ const BikeRoutePopup = ({popup}: {popup: PopupPropsForBikeRoute}) => {
     for (const r of hasDetails) {
       rowsEnabled.push(
         <Button
-          key={r.properties.name}
+          key={r.name}
           className="routeChoice"
           variant="outlined"
           size="small"
           onClick={() => chooseRoute(r)}
         >
-          {r.properties.name}
+          {r.name}
         </Button>,
       );
     }
     const rowsDisabled: JSX.Element[] = [];
     for (const r of noDetails) {
+      if (r.name === undefined) {
+        continue;
+      }
       rowsDisabled.push(
         <Button
-          key={r.properties.name}
+          key={r.name}
           className="routeChoice"
           variant="outlined"
           size="small"
           disabled
           onClick={() => chooseRoute(r)}
         >
-          {r.properties.name}
+          {r.name}
         </Button>,
       );
     }
@@ -88,7 +91,7 @@ const BikeRoutePopup = ({popup}: {popup: PopupPropsForBikeRoute}) => {
   };
 
   const getSingleRoutePopup = () => {
-    const route = chosenRoute!.properties;
+    const route = chosenRoute!;
     const hasFromTo = route.from && route.to;
     const hasDesc = route.description;
     const hasWebsite = route.website;
