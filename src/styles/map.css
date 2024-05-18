@@ -45,10 +45,6 @@
     width: 220px;
   }
 
-  .menu button {
-    font-size: 112%;
-  }
-
   #searchFieldsButton {
     display: block;
   }
@@ -81,13 +77,16 @@
   position: absolute;
   top: 9px;
   left: 47px;
-  gap: 2.5px;
   z-index: 1; /* Show over map popups */
+}
+
+.menu button {
+  font-size: 112%;
 }
 
 #routing {
   position: absolute;
-  top: 46px;
+  top: 50px;
   left: 9px;
   display: flex;
   flex-direction: column;
