@@ -161,7 +161,7 @@ export const Demo = () => {
         Kopier og lim inn denne koden i din HTML-fil, i &lt;head&gt;
       </Typography>
       <pre className="cycling-demo-code">
-        <code>{`<script src="https://sykkelveier.no/widget.js"></script>`}</code>
+        <code>{`<script src="https://widget.sykkelveier.no/widget.js"></script>`}</code>
       </pre>
       <Typography variant="body1" gutterBottom>
         Kopier og lim inn denne koden i din HTML-fil, i &lt;body&gt;
