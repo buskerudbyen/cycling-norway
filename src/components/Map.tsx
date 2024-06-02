@@ -40,6 +40,7 @@ import InfoPopup, {
 import type { Elevation, SnowPlow, SnowPlowCollection, SnowPlowFeature, MapFeature, Trip, PopupProps, PopupPropsForBikeRoute } from "./types";
 import type { GeoJSONSource } from "maplibre-gl";
 import type { GeoJSON, Position } from "geojson";
+import { Point } from "react-map-gl";
 
 const INITIAL_LAT = 59.868;
 const INITIAL_LON = 10.322;
@@ -339,6 +340,8 @@ const MapContainer = (props: Props) => {
         ],
       });
       if (bikelyFeatures.length > 0) {
+        console.log(bikelyFeatures);
+        console.log(bikelyFeatures[0].properties);
         setPopup({
           type: BIKELY_POPUP,
           onClose: onPopupClose,
@@ -527,19 +530,14 @@ const MapContainer = (props: Props) => {
           const polyline = tripPattern.legs.map(
             (l: any) => l.pointsOnLink.points,
           ) as [string];
-          const startElevation =
-            tripPattern.legs[0].elevationProfile[0]?.elevation;
-          const lastLeg = tripPattern.legs[tripPattern.legs.length - 1];
-          const endElevation =
-            lastLeg?.elevationProfile[lastLeg?.elevationProfile.length - 1]
-              .elevation;
-          setIsBackdropOpen(false);
+          const elevationProfile: number[] = tripPattern.legs[0].elevationProfile.map((e: Elevation) => e.elevation);
           setTrip({
             duration: response.data.trip.tripPatterns[0].duration,
             distance: response.data.trip.tripPatterns[0].distance,
-            elevation: endElevation - startElevation,
-            elevationProfile: tripPattern.legs[0].elevationProfile.map((e: Elevation) => e.elevation)
+            elevation: getElevationSum(elevationProfile),
+            elevationProfile
           });
+          setIsBackdropOpen(false);
           drawPolyline(polyline);
         } else {
           setIsBackdropOpen(false);
@@ -549,6 +547,16 @@ const MapContainer = (props: Props) => {
         }
       });
   };
+
+  const getElevationSum = (elevationProfile: number[]): number => {
+    let sum = 0;
+    for (let i = 0; i <= elevationProfile.length; i++) {
+      if(i !== 0 && elevationProfile[i] > elevationProfile[i-1]) {
+        sum += elevationProfile[i] - elevationProfile[i-1];
+      }
+    }
+    return sum;
+  }
 
   const mapOnLoad = () => {
     addLegend();
