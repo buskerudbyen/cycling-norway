@@ -77,10 +77,10 @@ const ButtonHelp = () => {
             <a href="https://www.buskerudbyen.no/">Buskerudbyen</a>,{" "}
             <a href="https://bymiljopakken.no/">Bymiljøpakken</a> /{" "}
             <a href="https://www.kolumbus.no/">Kolumbus</a>, &nbsp;
-            <a href="https://viken.no/">Viken fylkeskommune</a>,
+            <a href="https://viken.no/">Viken fylkeskommune</a>, &nbsp;
             <a href="https://www.vegvesen.no/fag/trafikk/its-portalen/its-i-statens-vegvesen/">
               Statens vegvesen (ITS-programmet)
-            </a>og{" "}
+            </a> og{" "}
             <a href="https://bypakka.no/">Bypakke Grenland</a>
             . Takk også til alle frivillige bidragsytere av{" "}
             <a href="https://wiki.openstreetmap.org/wiki/No:Main_Page">
