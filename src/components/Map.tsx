@@ -40,7 +40,6 @@ import InfoPopup, {
 import type { Elevation, SnowPlow, SnowPlowCollection, SnowPlowFeature, MapFeature, Trip, PopupProps, PopupPropsForBikeRoute } from "./types";
 import type { GeoJSONSource } from "maplibre-gl";
 import type { GeoJSON, Position } from "geojson";
-import { Point } from "react-map-gl";
 
 const INITIAL_LAT = 59.868;
 const INITIAL_LON = 10.322;
@@ -340,8 +339,6 @@ const MapContainer = (props: Props) => {
         ],
       });
       if (bikelyFeatures.length > 0) {
-        console.log(bikelyFeatures);
-        console.log(bikelyFeatures[0].properties);
         setPopup({
           type: BIKELY_POPUP,
           onClose: onPopupClose,
