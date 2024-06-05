@@ -79,11 +79,11 @@ export const Demo = () => {
         widgeten uten forhåndssamtykke. Se vår kildekode for instruksjoner om
         hvordan du bruker widgeten på ditt eget nettsted:{" "}
         <Link
-          href="https://github.com/buskerudbyen/cycling-norway/widget"
+          href="https://github.com/buskerudbyen/cycling-norway/tree/main/widget"
           target="_blank"
           rel="noreferrer"
         >
-          https://github.com/buskerudbyen/cycling-norway/widget
+          https://github.com/buskerudbyen/cycling-norway/tree/main/widget
         </Link>
       </Typography>
       <div className="cycling-demo-menu">
