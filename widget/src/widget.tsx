@@ -75,16 +75,9 @@ export const Demo = () => {
         Sykkelveier.no Widget Demo
       </Typography>
       <Typography variant="body1" gutterBottom>
-        Dette er en enkel demoside for Sykkelveier.no-widgeten. Du kan bruke
-        widgeten uten forhåndssamtykke. Se vår kildekode for instruksjoner om
-        hvordan du bruker widgeten på ditt eget nettsted:{" "}
-        <Link
-          href="https://github.com/buskerudbyen/cycling-norway/tree/main/widget"
-          target="_blank"
-          rel="noreferrer"
-        >
-          https://github.com/buskerudbyen/cycling-norway/tree/main/widget
-        </Link>
+        Destinasjonskart som kan legges inn på egen nettside: Dette er en widget som fremhever bruk av sykkel/elsparkesykkel til lokasjoner i Norge.
+        Løsningen benytter seg av stedssøk fra Entur og sykkelløsninger fra mange andre kilder, men først og fremst OpenStreetMap og fra løsningen sykkelveier.no.
+        Man kan bruke widgeten på egen webside uten forhåndssamtykke. Se under for instruksjoner om hvordan den kan benyttes.
       </Typography>
       <div className="cycling-demo-menu">
         <AddressField
