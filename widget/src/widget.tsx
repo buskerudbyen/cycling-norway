@@ -3,10 +3,11 @@ import { type CSSProperties, type SyntheticEvent, useState } from "react";
 import { createRoot } from "react-dom/client";
 import ReactMap from "../../src/components/Map";
 import AddressField, { type Feature } from "./AddressField";
+import type { Position } from "geojson";
 import "./widget.css";
 
 type WidgetOptions = {
-  dest?: number[];
+  dest?: Position;
   destDescription?: string;
   zoom?: number;
   width?: CSSProperties["width"];
@@ -144,7 +145,7 @@ export const Demo = () => {
             ?.style.setProperty("height", "350px");
           // Load the widget
           window.CyclingWidget({
-            dest: [ lat, lng ],
+            dest: [ lng, lat ],
             destDescription,
             zoom,
             width: "100%",
