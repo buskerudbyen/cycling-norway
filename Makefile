@@ -10,6 +10,7 @@ deploy: build
 	rsync -rCv \
 		-e "ssh" --rsync-path="sudo rsync" \
 		--exclude 'Makefile' \
+		--exclude 'widget' \
 		--delete \
 		`pwd`/build/ \
 		cycling-norway.leonard.io:${DEST}

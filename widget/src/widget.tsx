@@ -170,7 +170,7 @@ export const Demo = () => {
       <pre className="cycling-demo-code">
         <code>
           {`window.CyclingWidget({
-  dest: { lat: ${lat}, lng: ${lng} },
+  dest: [ ${lng}, ${lat} ],
   destDescription: "${destDescription ?? "Frivillig beskrivelse her"}",
   zoom: ${zoom},
   width: "100%",
