@@ -47,7 +47,7 @@ const INITIAL_ZOOM = 8;
 
 type Props = {
   isWidget?: boolean;
-  dest?: number[];
+  dest?: Position;
   destDescription?: string;
   zoom?: number;
 };
@@ -56,12 +56,12 @@ const MapContainer = (props: Props) => {
   const lat = window.location.hash
     ? Number(window.location.hash.split("/")[1])
     : props.dest
-      ? props.dest[0]
+      ? props.dest[1]
       : INITIAL_LAT;
   const lon = window.location.hash
     ? Number(window.location.hash.split("/")[2])
     : props.dest
-      ? props.dest[1]
+      ? props.dest[0]
       : INITIAL_LON;
   const zoom = props.zoom ?? INITIAL_ZOOM;
 
