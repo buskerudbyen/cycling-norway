@@ -79,7 +79,7 @@ const MapContainer = (props: Props) => {
   useEffect(() => {
     const url = new URL(window.location.href);
     if (props.isWidget) {
-      if (props.isWidget && url.searchParams.has("from") && dest) {
+      if (url.searchParams.has("from") && dest) {
         const from = parseLngLat(url.searchParams.get("from")!);
         getQuery(from, dest);
       }
@@ -102,7 +102,9 @@ const MapContainer = (props: Props) => {
     }
     // TODO: This click listener for the legend should be moved to the legend
     //       itself instead of being on the wrapper for the whole map.
-    wrapper.current?.addEventListener("click", (e) => updateQueryByLegend(e));
+    if (!props.isWidget) {
+      wrapper.current?.addEventListener("click", (e) => updateQueryByLegend(e));
+    }
   }, []);
 
   const getLocation = (position: {
@@ -461,9 +463,11 @@ const MapContainer = (props: Props) => {
   };
 
   const updateQueryFromParam = (start: Position) => {
-    const url = new URL(window.location.href);
-    url.searchParams.set("from", lngLatToString(start));
-    window.history.pushState({}, "", url);
+    if (!props.isWidget) {
+      const url = new URL(window.location.href);
+      url.searchParams.set("from", lngLatToString(start));
+      window.history.pushState({}, "", url);
+    }
     setStart(start);
   };
 
@@ -472,16 +476,18 @@ const MapContainer = (props: Props) => {
       const url = new URL(window.location.href);
       url.searchParams.set("to", lngLatToString(dest));
       window.history.pushState({}, "", url);
-      setDest(dest);
     }
+    setDest(dest);
   };
 
   const getQuery = (start: Position | null, dest: Position | null) => {
     if (start === null || dest === null) {
       return;
     }
-    updateQueryFromParam(start);
-    updateQueryToParam(dest);
+    if (!props.isWidget) {
+      updateQueryFromParam(start);
+      updateQueryToParam(dest);
+    }
     setIsBackdropOpen(true);
     fetch("https://api.entur.io/journey-planner/v3/graphql", {
       method: "POST",
@@ -557,7 +563,9 @@ const MapContainer = (props: Props) => {
 
   const mapOnLoad = () => {
     addLegend();
-    updateLegendByQuery();
+    if (!props.isWidget) {
+      updateLegendByQuery();
+    }
     loadSnowPlowData();
   };
 
@@ -655,7 +663,7 @@ const MapContainer = (props: Props) => {
         mapStyle="https://byvekstavtale.leonard.io/tiles/bicycle/v1/style.json"
         onClick={onMapClick}
         onLoad={mapOnLoad}
-        hash={true}
+        hash={!props.isWidget}
         locale={{
           "FullscreenControl.Enter": "Fullskjerm",
           "FullscreenControl.Exit": "Avslutt fullskjerm",
