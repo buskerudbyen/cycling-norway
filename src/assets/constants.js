@@ -18,6 +18,7 @@ export const TARGETS = {
   "poi-pump-track": "Sykkelbaner",
   "poi-bike-track": "Markastier",
   "poi-bikely": "Bikely parkering",
+  "poi-bikeep": "Bikeep parkering",
   "poi-slow-road": "Lavhastighetsgater",
 };
 
@@ -41,6 +42,7 @@ export const TARGET_URLS = new Map([
   ["poi-pump-track", "pumptrack"],
   ["poi-bike-track", "loype"],
   ["poi-bikely", "bikely"],
+  ["poi-bikeep", "bikeep"],
   ["poi-slow-road", "lavhastighet"],
 ]);
 

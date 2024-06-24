@@ -701,13 +701,42 @@ const MapContainer = (props: Props) => {
         <Source
           type="vector"
           id="bikely"
-          url="https://byvekstavtale.leonard.io/tiles/bikely.json"
+          url="https://bikely.cycling-norway.leonard.io/otp/routers/default/vectorTiles/parking/tilejson.json"
         />
         <Layer
           type="symbol"
           id="poi-bikely"
           source="bikely"
-          source-layer="bikely"
+          source-layer="parking"
+          minzoom={7}
+          layout={{
+            "icon-image": "bicycle_parking_lockers_bikely_11",
+            "icon-size": 1.2,
+            "text-anchor": "top",
+            "text-field": "{availability.bicyclePlaces}",
+            "text-font": ["Noto Sans Regular"],
+            "text-max-width": 9,
+            "text-offset": [0.6, -1.1],
+            "text-padding": 2,
+            "text-size": 12,
+          }}
+          paint={{
+            "text-color": "#ffffff",
+            "text-halo-blur": 0.5,
+            "text-halo-color": "#858484",
+            "text-halo-width": 1,
+          }}
+        />
+        <Source
+          type="vector"
+          id="bikeep"
+          url="https://bikeep.cycling-norway.leonard.io/otp/routers/default/vectorTiles/parking/tilejson.json"
+        />
+        <Layer
+          type="symbol"
+          id="poi-bikeep"
+          source="bikeep"
+          source-layer="parking"
           minzoom={7}
           layout={{
             "icon-image": "bicycle_parking_lockers_bikely_11",
