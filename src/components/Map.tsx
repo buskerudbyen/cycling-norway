@@ -694,7 +694,7 @@ const MapContainer = (props: Props) => {
           type="symbol"
           id="poi-bikely"
           source="bikely"
-          source-layer="bikely"
+          source-layer="parking"
           minzoom={7}
           layout={{
             "icon-image": "bicycle_parking_lockers_bikely_11",
@@ -723,7 +723,7 @@ const MapContainer = (props: Props) => {
           type="symbol"
           id="poi-bikeep"
           source="bikeep"
-          source-layer="bikeep"
+          source-layer="parking"
           minzoom={7}
           layout={{
             "icon-image": "bicycle_parking_lockers_bikely_11",
