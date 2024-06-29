@@ -100,11 +100,6 @@ const MapContainer = (props: Props) => {
         getRandomCityLocation();
       }
     }
-    // TODO: This click listener for the legend should be moved to the legend
-    //       itself instead of being on the wrapper for the whole map.
-    if (!props.isWidget) {
-      wrapper.current?.addEventListener("click", (e) => updateQueryByLegend(e));
-    }
   }, []);
 
   const getLocation = (position: {
@@ -573,51 +568,18 @@ const MapContainer = (props: Props) => {
     const url = new URL(window.location.href);
     if (url.searchParams.has("layers")) {
       const layerList = url.searchParams.get("layers")!.split(",");
-      TARGET_URLS.forEach((key, value) => {
-        if (layerList.includes(value)) {
+      TARGET_URLS.forEach((param, poi) => {
+        if (layerList.includes(param)) {
           map.current
-            ?.getLayer(key)
+            ?.getLayer(poi)
             ?.setLayoutProperty("visibility", "visible");
         } else {
-          map.current?.getLayer(key)?.setLayoutProperty("visibility", "none");
+          map.current?.getLayer(poi)?.setLayoutProperty("visibility", "none");
         }
       });
-    } else {
-      url.searchParams.set(
-        "layers",
-        [...TARGET_URLS.values()].flat().join(","),
-      );
+      url.searchParams.delete("layers");
       window.history.pushState({}, "", url);
     }
-  };
-
-  const updateQueryByLegend = (event: MouseEvent) => {
-    const target = event.target as HTMLInputElement;
-
-    if (target.type === "checkbox" && TARGET_URLS.has(target.name)) {
-      const url = new URL(window.location.href);
-      const layerList: string[] =
-        url.searchParams.get("layers")?.split(",") ?? [];
-      const urlTag = TARGET_URLS.get(target.name);
-
-      const layerVisible = isVisible(map.current, target.name);
-      if (urlTag !== undefined) {
-        const layerWasVisible = layerList.includes(urlTag);
-        if (!layerVisible && layerWasVisible) {
-          const index = layerList.indexOf(urlTag);
-          layerList.splice(index, 1);
-        } else if (layerVisible && !layerWasVisible) {
-          layerList.push(urlTag);
-        }
-      }
-
-      url.searchParams.set("layers", layerList.join(","));
-      window.history.pushState({}, "", url);
-    }
-  };
-
-  const isVisible = (map: MapRef | null, layer: string) => {
-    return map?.getLayoutProperty(layer, "visibility") === "visible";
   };
 
   // The destination marker can show a popup when clicked
@@ -853,6 +815,7 @@ const MapContainer = (props: Props) => {
             start={start}
             dest={dest}
             trip={trip}
+            map={map}
           />
         )}
         <GeolocateControl

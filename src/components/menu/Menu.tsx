@@ -1,5 +1,5 @@
 import type React from "react";
-import { useEffect, useState } from "react";
+import { type MutableRefObject, useEffect, useState } from "react";
 import type { MapFeature, Trip } from "../types";
 import ButtonHelp from "./ButtonHelp";
 import ButtonResetRoute from "./ButtonResetRoute";
@@ -7,6 +7,8 @@ import ButtonToggleMenu from "./ButtonToggleMenu";
 import RoutingResults from "./RoutingResults";
 import SearchField from "./SearchField";
 import useResponsiveness from "./useResponsiveness";
+import ButtonShare from "./ButtonShare";
+import type { MapRef } from "react-map-gl/maplibre";
 
 type Props = {
   chooseStart: (
@@ -21,6 +23,7 @@ type Props = {
   start: number[] | null;
   dest: number[] | null;
   trip: Trip | null;
+  map: MutableRefObject<MapRef | null>;
 };
 
 /**
@@ -48,6 +51,7 @@ const Menu = (props: Props) => {
         />
         <ButtonResetRoute resetRoute={resetRoute} />
         <ButtonHelp />
+        <ButtonShare map={props.map}/>
       </div>
       <div
         id="routing"
