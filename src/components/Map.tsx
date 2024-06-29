@@ -40,6 +40,7 @@ import InfoPopup, {
 import type { Elevation, SnowPlow, SnowPlowCollection, SnowPlowFeature, MapFeature, Trip, PopupProps, PopupPropsForBikeRoute } from "./types";
 import type { GeoJSONSource } from "maplibre-gl";
 import type { GeoJSON, Position } from "geojson";
+import mlcontour from "maplibre-contour";
 
 const INITIAL_LAT = 59.868;
 const INITIAL_LON = 10.322;
@@ -647,6 +648,16 @@ const MapContainer = (props: Props) => {
     toggleDestPopup();
   }, [toggleDestPopup]);
 
+  const demSource = new mlcontour.DemSource({
+    url: "https://elevation-tiles-prod.s3.amazonaws.com/terrarium/{z}/{x}/{y}.png",
+    encoding: "terrarium", // "mapbox" or "terrarium" default="terrarium"
+    maxzoom: 13,
+    worker: true, // offload isoline computation to a web worker to reduce jank
+    cacheSize: 100, // number of most-recent tiles to cache
+    timeoutMs: 10_000, // timeout on fetch requests
+  });
+  demSource.setupMaplibre(maplibregl);
+
   return (
     <div className={`map-wrap ${props.isWidget ? "widget" : ""}`} ref={wrapper}>
       <ReactMap
@@ -677,6 +688,47 @@ const MapContainer = (props: Props) => {
           "TouchPanBlocker.Message": "Bruk to fingre for å bevege kartet",
         }}
       >
+        <Source 
+          id="dem"
+          type="raster-dem"
+          encoding="terrarium"
+          tiles={[demSource.sharedDemProtocolUrl]} // share cached DEM tiles with contour layer
+          maxzoom={13}
+          tileSize={256}
+        />
+        <Source 
+          id="contours"
+          type="vector"
+          tiles={[
+            demSource.contourProtocolUrl({
+              thresholds: {
+                // zoom: [minor, major]
+                11: [200, 1000],
+                12: [100, 500],
+                13: [100, 500],
+                14: [50, 200],
+                15: [20, 100],
+              },
+              elevationKey: "ele",
+              levelKey: "level",
+              contourLayer: "contours",
+            }),
+          ]}
+          maxzoom={16}
+        />
+        <Layer 
+          id="contours"
+          type="line"
+          source="contours"
+          source-layer="contours"
+          paint={{
+            "line-color": "rgba(0,0,0, 50%)",
+            "line-width": ["match", ["get", "level"], 1, 1, 0.5],
+          }}
+          layout={{
+            "line-join": "round",
+          }}
+        />
         <Source
           type="geojson"
           id="route"

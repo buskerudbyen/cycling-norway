@@ -19,6 +19,7 @@
     "@mui/material": "^5.11.6",
     "@watergis/maplibre-gl-legend": "2.0.4",
     "chart.js": "4.4.0",
+    "maplibre-contour": "^0.0.7",
     "maplibre-gl": "3.6.1",
     "moment": "^2.29.4",
     "opening_hours": "^3.8.0",
@@ -42,7 +43,10 @@
     "biome": "npx @biomejs/biome check --apply ."
   },
   "eslintConfig": {
-    "extends": ["react-app", "react-app/jest"]
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
   },
   "browserslist": {
     "production": [
