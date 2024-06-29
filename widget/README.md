@@ -1,5 +1,14 @@
 # Sykkelveier.no Widget
 
+## Integration
+
+1. Go to https://widget.sykkelveier.no/.
+2. Choose your destination and add an initial zoom level.
+3. Click on `Last inn widget` to check the result.
+4. Copy the necessary codes from below (the proper `script` tag, the corresponding `div` and the JavaScript code) to your website.
+
+## Development
+
 Based on a minimal setup to get React working in Vite with hot module reloading
 and some ESLint rules.
 
