@@ -492,7 +492,7 @@ const MapContainer = (props: Props) => {
       body: `
 					{
 					  trip(
-					    modes: { directMode: bicycle, accessMode: bicycle, egressMode: bicycle, transportModes: { transportMode: water }},
+					    modes: { directMode: bicycle, accessMode: bicycle, egressMode: bicycle, transportModes: []},
 					    from: {coordinates: {latitude: ${start[1]}, longitude: ${start[0]} }},
 					    to: {coordinates: {latitude: ${dest[1]}, longitude: ${dest[0]}}}
 					    bicycleOptimisationMethod: triangle
