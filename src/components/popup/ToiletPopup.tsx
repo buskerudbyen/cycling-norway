@@ -43,8 +43,8 @@ const ToiletPopup = ({popup}: {popup: PopupProps}) => {
 
   return (
     <Popup
-      latitude={popup.lngLat[0]}
-      longitude={popup.lngLat[1]}
+      latitude={popup.lngLat[1]}
+      longitude={popup.lngLat[0]}
       onClose={popup.onClose}
     >
       <Typography>
