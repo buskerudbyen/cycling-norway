@@ -81,16 +81,22 @@ const MapContainer = (props: Props) => {
     if (props.isWidget) {
       if (url.searchParams.has("from") && dest) {
         const from = parseLngLat(url.searchParams.get("from")!);
-        getQuery(from, dest);
+        if (from) {
+          getQuery(from, dest);
+        }
       }
     } else {
       if (url.searchParams.has("from") && url.searchParams.has("to")) {
         const from = parseLngLat(url.searchParams.get("from")!);
         const to = parseLngLat(url.searchParams.get("to")!);
-        getQuery(from, to);
+        if (from && to) {
+          getQuery(from, to);
+        }
       } else if (url.searchParams.has("from")) {
         const from = parseLngLat(url.searchParams.get("from")!);
-        updateQueryFromParam(from);
+        if (from) {
+          updateQueryFromParam(from);
+        }
       } else if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
           getLocation,
@@ -288,9 +294,22 @@ const MapContainer = (props: Props) => {
     }
   };
 
-  const parseLngLat = (s: string) => {
-    const [lat, lng] = s.split(",").map((n) => Number(n));
-    return [ lng, lat ] as Position;
+  const parseLngLat = (s: string): Position | null => {
+    // Guard against double-encoded values (e.g. "%252C" instead of "%2C"),
+    // which URLSearchParams only decodes once, leaving a literal "%2C" here.
+    let decoded = s;
+    try {
+      decoded = decodeURIComponent(s);
+    } catch {
+      // ignore malformed percent-encoding, fall back to the raw string
+    }
+    const parts = decoded.split(",").map((n) => Number(n));
+    if (parts.length !== 2 || parts.some((n) => Number.isNaN(n))) {
+      console.warn(`Invalid lat/lng in URL: "${s}"`);
+      return null;
+    }
+    const [lat, lng] = parts;
+    return [lng, lat] as Position;
   };
 
   const lngLatToString = (lngLat: Position) =>
