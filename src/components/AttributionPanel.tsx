@@ -41,7 +41,7 @@ const AttributionPanel = (props: Props) => {
               thisUrl.searchParams,
             ).toString();
             const to = props.dest
-              ? `&toLat=${props.dest[1]}&toLon=${props.dest[0]}`
+              ? `&to=${props.dest[0]}%2C${props.dest[1]}`
               : "";
             const newUrl = `https://sykkelveier.no/?${searchParams}${to}#${props.mapRef?.current?.getZoom()}/${
               props.mapRef?.current?.getCenter().lat

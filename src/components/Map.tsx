@@ -79,21 +79,21 @@ const MapContainer = (props: Props) => {
   useEffect(() => {
     const url = new URL(window.location.href);
     if (props.isWidget) {
-      if (hasPositionParam(url, "from") && dest) {
-        const from = getPositionParam(url, "from");
+      if (url.searchParams.has("from") && dest) {
+        const from = parseLngLat(url.searchParams.get("from")!);
         if (from) {
           getQuery(from, dest);
         }
       }
     } else {
-      if (hasPositionParam(url, "from") && hasPositionParam(url, "to")) {
-        const from = getPositionParam(url, "from");
-        const to = getPositionParam(url, "to");
+      if (url.searchParams.has("from") && url.searchParams.has("to")) {
+        const from = parseLngLat(url.searchParams.get("from")!);
+        const to = parseLngLat(url.searchParams.get("to")!);
         if (from && to) {
           getQuery(from, to);
         }
-      } else if (hasPositionParam(url, "from")) {
-        const from = getPositionParam(url, "from");
+      } else if (url.searchParams.has("from")) {
+        const from = parseLngLat(url.searchParams.get("from")!);
         if (from) {
           updateQueryFromParam(from);
         }
@@ -106,7 +106,6 @@ const MapContainer = (props: Props) => {
         getRandomCityLocation();
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const getLocation = (position: {
@@ -243,13 +242,8 @@ const MapContainer = (props: Props) => {
     setTrip(null);
 
     const url = new URL(window.location.href);
-    // TODO(remove after January 2027): "from"/"to" are the legacy param names.
     url.searchParams.delete("from");
     url.searchParams.delete("to");
-    url.searchParams.delete("fromLat");
-    url.searchParams.delete("fromLon");
-    url.searchParams.delete("toLat");
-    url.searchParams.delete("toLon");
     window.history.pushState({}, "", url);
 
     drawPolyline([]);
@@ -300,11 +294,6 @@ const MapContainer = (props: Props) => {
     }
   };
 
-  // TODO(remove after January 2027): legacy format, a single "from"/"to"
-  // param holding "lat,lng". Superseded by the fromLat/fromLon/toLat/toLon
-  // params below (added August 2026); kept only so previously shared URLs
-  // keep working. Safe to delete this function along with its callers in
-  // getPositionParam/hasPositionParam once that grace period has passed.
   const parseLngLat = (s: string): Position | null => {
     // Guard against double-encoded values (e.g. "%252C" instead of "%2C"),
     // which URLSearchParams only decodes once, leaving a literal "%2C" here.
@@ -323,31 +312,8 @@ const MapContainer = (props: Props) => {
     return [lng, lat] as Position;
   };
 
-  // Whether either the current ("fromLat"/"fromLon") or legacy ("from")
-  // param pair is present for the given prefix.
-  // TODO(remove after January 2027): drop the `url.searchParams.has(prefix)`
-  // fallback below once legacy single-param URLs are no longer supported.
-  const hasPositionParam = (url: URL, prefix: "from" | "to") =>
-    (url.searchParams.has(`${prefix}Lat`) &&
-      url.searchParams.has(`${prefix}Lon`)) ||
-    url.searchParams.has(prefix);
-
-  const getPositionParam = (url: URL, prefix: "from" | "to"): Position | null => {
-    const lat = url.searchParams.get(`${prefix}Lat`);
-    const lon = url.searchParams.get(`${prefix}Lon`);
-    if (lat !== null && lon !== null) {
-      const latNum = Number(lat);
-      const lonNum = Number(lon);
-      if (Number.isNaN(latNum) || Number.isNaN(lonNum)) {
-        console.warn(`Invalid ${prefix}Lat/${prefix}Lon in URL: "${lat}, ${lon}"`);
-        return null;
-      }
-      return [lonNum, latNum] as Position;
-    }
-    // TODO(remove after January 2027): legacy "from"/"to" comma-format fallback.
-    const legacy = url.searchParams.get(prefix);
-    return legacy !== null ? parseLngLat(legacy) : null;
-  };
+  const lngLatToString = (lngLat: Position) =>
+    `${lngLat[1].toFixed(5)},${lngLat[0].toFixed(5)}`;
 
   const onMapClick = (event: MapLayerMouseEvent) => {
     if (map.current !== null) {
@@ -526,10 +492,7 @@ const MapContainer = (props: Props) => {
   const updateQueryFromParam = (start: Position) => {
     if (!props.isWidget) {
       const url = new URL(window.location.href);
-      url.searchParams.set("fromLat", start[1].toFixed(5));
-      url.searchParams.set("fromLon", start[0].toFixed(5));
-      // TODO(remove after January 2027): clears the legacy "from" param.
-      url.searchParams.delete("from");
+      url.searchParams.set("from", lngLatToString(start));
       window.history.pushState({}, "", url);
     }
     setStart(start);
@@ -538,10 +501,7 @@ const MapContainer = (props: Props) => {
   const updateQueryToParam = (dest: Position) => {
     if (!props.isWidget) {
       const url = new URL(window.location.href);
-      url.searchParams.set("toLat", dest[1].toFixed(5));
-      url.searchParams.set("toLon", dest[0].toFixed(5));
-      // TODO(remove after January 2027): clears the legacy "to" param.
-      url.searchParams.delete("to");
+      url.searchParams.set("to", lngLatToString(dest));
       window.history.pushState({}, "", url);
     }
     setDest(dest);
