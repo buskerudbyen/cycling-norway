@@ -3,6 +3,7 @@ import type { PopupProps, PopupPropsForBikeRoute } from "../types";
 import BikeRoutePopup from "./BikeRoutePopup";
 import BikelyPopup from "./BikelyPopup";
 import ClosedRoadPopup from "./ClosedRoadPopup";
+import EmbeddedTramRailsPopup from "./EmbeddedTramRailsPopup";
 import SnowPlowPopup from "./SnowPlowPopup";
 import SykkelHotelPopup from "./SykkelHotelPopup";
 import ToiletPopup from "./ToiletPopup";
@@ -14,6 +15,7 @@ export const SNOWPLOW_POPUP = "snowplow";
 export const TUNNEL_POPUP = "tunnel";
 export const CLOSED_ROAD_POPUP = "closed_road";
 export const TOILET_POPUP = "toilet";
+export const EMBEDDED_TRAM_RAILS_POPUP = "embedded_tram_rails";
 export const BIKE_ROUTE_POPUP = "bike_route";
 
 export const DAYS = new Map([
@@ -46,6 +48,9 @@ export default function InfoPopup({popup}: {popup: PopupProps | PopupPropsForBik
     }
 		case TOILET_POPUP: {
 			return <ToiletPopup popup={popup} />;
+    }
+		case EMBEDDED_TRAM_RAILS_POPUP: {
+			return <EmbeddedTramRailsPopup popup={popup} />;
     }
     case BIKE_ROUTE_POPUP: {
       return <BikeRoutePopup popup={popup} />;

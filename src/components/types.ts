@@ -21,6 +21,7 @@ export type InfoPopupType =
   | "tunnel"
   | "closed_road"
   | "toilet"
+  | "embedded_tram_rails"
   | "bike_route";
 
 export type Network = "international" | "national" | "regional" | "local";
@@ -45,7 +46,8 @@ export type PopupProps = {
     | "snowplow"
     | "tunnel"
     | "closed_road"
-    | "toilet";
+    | "toilet"
+    | "embedded_tram_rails";
   onClose: () => void;
   lngLat: number[];
   point: PopupProperties;

@@ -31,6 +31,7 @@ import MenuWidget from "./menu/MenuWidget";
 import InfoPopup, {
   BIKELY_POPUP,
   CLOSED_ROAD_POPUP,
+  EMBEDDED_TRAM_RAILS_POPUP,
   SNOWPLOW_POPUP,
   SYKKELHOTEL_POPUP,
   TUNNEL_POPUP,
@@ -346,6 +347,12 @@ const MapContainer = (props: Props) => {
       const toiletFeatures = map.current.queryRenderedFeatures(event.point, {
         layers: ["poi-toilets"],
       });
+      const embeddedTramRailsFeatures = map.current.queryRenderedFeatures(
+        event.point,
+        {
+          layers: ["embedded-tram-rails"],
+        },
+      );
       const bikeRouteFeatures = map.current.queryRenderedFeatures(event.point, {
         layers: [
           "bicycle-route-local-overlay",
@@ -395,6 +402,13 @@ const MapContainer = (props: Props) => {
           onClose: onPopupClose,
           lngLat: [event.lngLat.lng, event.lngLat.lat],
           point: toiletFeatures[0].properties
+        });
+      } else if (embeddedTramRailsFeatures.length > 0) {
+        setPopup({
+          type: EMBEDDED_TRAM_RAILS_POPUP,
+          onClose: onPopupClose,
+          lngLat: [event.lngLat.lng, event.lngLat.lat],
+          point: embeddedTramRailsFeatures[0].properties
         });
       } else if (bikeRouteFeatures.length > 0) {
         setPopup({
