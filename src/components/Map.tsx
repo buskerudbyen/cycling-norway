@@ -484,7 +484,20 @@ const MapContainer = (props: Props) => {
       features,
     };
 
-    const routeSource = map.current?.getSource("route") as GeoJSONSource;
+    const routeSource = map.current?.getSource("route") as
+      | GeoJSONSource
+      | undefined;
+    if (!routeSource) {
+      // The map (and its "route" source) may still be loading, e.g. when a
+      // route is requested via URL params right as the page opens. Retry
+      // once the map is ready instead of crashing.
+      if (map.current) {
+        map.current.once("idle", () => drawPolyline(lines));
+      } else {
+        window.setTimeout(() => drawPolyline(lines), 100);
+      }
+      return;
+    }
     routeSource.setData(geojson as GeoJSON);
 
     const coordinates = features.flatMap((f) => f.geometry.coordinates);
